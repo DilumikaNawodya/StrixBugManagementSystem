@@ -131,9 +131,9 @@ class ResetPassword(APIView):
         
         if self.token_generator.check_token(user,token):
             if password==retypedPass:
-                # user.set_password(password)
-                # user.save()
-                print("I am here")
+                user.set_password(password)
+                user.save()
+                # print("I am here")
                 return Response({},status=200)
             else:
                 return Response(True,status=404)

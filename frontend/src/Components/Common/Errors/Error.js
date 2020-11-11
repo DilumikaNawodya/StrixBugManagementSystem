@@ -1,30 +1,17 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import './Error.scss'
 
 function Error()  {
     return (
-        <div className="container">
-            <div className="row">
-                <div className="col-md-12">
-                    <div className="error-template">
-                        <h1>
-                            Oops!</h1>
-                        <h2>
-                            404 Not Found</h2>
-                        <div className="error-details">
-                            Sorry, an error has occured, Requested page not found!
-                        </div>
-                        <div className="error-actions">
-                            <Link to='/'>
-                            <button className="btn btn-primary btn-lg">
-                                <span className="glyphicon glyphicon-home"></span> Take Me Home
-                            </button>
-                            </Link>
-                        </div>
-                    </div>
+        <div id="notfound">
+		    <div class="notfound">
+                <div class="notfound-404">
+                    <h1>Oops!</h1>
+                    <h2>404 - The Page can't be found</h2>
                 </div>
-            </div>
-        </div>
+			    <a href="#">Go TO Homepage</a>
+		    </div>
+	    </div>
     )
 }
 

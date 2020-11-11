@@ -56,9 +56,11 @@ function Auth(props){
                 <PrivateRoute path="/QA" roles={[Role.QA]} component={DashboardQA} />
                 <PrivateRoute path="/Developer" roles={[Role.Developer]} component={DashboardDev} />
                 <PrivateRoute path="/Customer" roles={[Role.Customer]} component={DashboardCust} />
-                <Route path="/error" component={error} />
+        
                 <Route exact path="/forgotpassword" component={ForgotPassword} />
                 <Route exact path="/passconfirmation/:uid/:token/" component={PasswordConfirmation} />
+
+                <Route path="/error" component={error} />
                 <Route path="/" component={LoginForm} />
             </Switch>
         </Router>

@@ -1,10 +1,24 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import  './NavigationBar.css'
-import {NavLink} from 'react-router-dom';
 import {authenticationService} from '../../../Services/LoginService'
-
+import { Modal } from 'react-bootstrap';
 
 function NavigationBar(){
+
+  const [logoutModal,setModal] = useState(false)
+
+  const modalOpen = () => {
+    setModal(true)
+  }
+  const modalLogout = () => {
+    setModal(false)
+    authenticationService.logout()
+  }
+
+  const modalClose = () => {
+    setModal(false)
+  }
+
   return(
     <div>
       <nav class="mb-1 navbar navbar-expand-lg navbar-dark bg-dark">
@@ -46,12 +60,12 @@ function NavigationBar(){
           </ul>
           <ul class="navbar-nav ml-auto nav-flex-icons">
 
-            <div class="d-flex justify-content-center">
+            {/* <div class="d-flex justify-content-center">
               <div class="searchbar">
                 <input class="search_input" type="text" name="" placeholder="Search..."/>
                 <a href="#" class="search_icon"><i class="fas fa-search"></i></a>
               </div>
-            </div>
+            </div> */}
 
             <li class="nav-item dropdown">
 
@@ -66,7 +80,7 @@ function NavigationBar(){
                   <i class="fa fa-fw fa-id-badge mr-2"></i>
                     Profile
                 </button>
-                <button class="dropdown-item" onClick={authenticationService.logout}>
+                <button class="dropdown-item" onClick={modalOpen}>
                   <i class="fa fa-fw fa-sign-out-alt mr-2"></i>
                     Log out
                 </button>
@@ -78,6 +92,21 @@ function NavigationBar(){
           
         </div>
       </nav>
+
+      <Modal show={logoutModal}>
+        <Modal.Header>
+          <i class="far fa-frown"></i>
+        </Modal.Header>
+        <Modal.Body>
+          <div class="head_txt"></div>
+          <div class="body_txt">Are you sure you want to log out ?</div>
+          <center>
+            <button class="btn btn-dark" onClick={modalLogout}>Log out</button>
+            <button class="btn btn-dark ml-3" onClick={modalClose}>Cancel</button>
+          </center>
+        </Modal.Body>
+      </Modal>
+
     </div>
   )
 }

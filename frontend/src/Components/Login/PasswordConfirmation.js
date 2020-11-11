@@ -3,6 +3,8 @@ import { authenticationService } from '../../Services/LoginService';
 import loginImage from '../../Assets/login.jpg';
 import  './LoginForm.scss';
 import { Formik } from 'formik';
+import '../Common/Errors/Error.scss'
+
 
 function PasswordConfirmation(props){
 
@@ -73,7 +75,7 @@ function PasswordConfirmation(props){
 
                                 render={({values,handleChange,handleSubmit}) => (
 
-                                        <form onSubmit={handleSubmit}>
+                                    <form onSubmit={handleSubmit}>
                                         <div class="form-group">
                                             <label for="password" class="sr-only">Password</label>
                                             <input
@@ -99,7 +101,7 @@ function PasswordConfirmation(props){
                                             />
                                         </div>
                                         <button type="submit" className="btn btn-block login-btn mb-4 bg-dark">Set Password</button>
-                                        </form>
+                                    </form>
                                  )}
                             />
                         </div>
@@ -107,11 +109,17 @@ function PasswordConfirmation(props){
                 </div>
             </div>}
 
-            
+            {!confirm.status && <div id="notfound">
+		        <div class="notfound">
+                    <div class="notfound-404">
+                        <h1>oops!</h1>
+                        <h2>This link is broken.Try again</h2>
+                    </div>
+                    <a href="/">Go TO LoginPage</a>
+		        </div>
+	        </div>}
 
         </div>
-
-
     )
 }
 
