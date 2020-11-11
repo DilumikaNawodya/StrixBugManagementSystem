@@ -97,7 +97,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-''' This is original databse for the backend
+''' This is original database for the backend ElephantSQL
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -108,7 +108,6 @@ DATABASES = {
         'PORT': '5432'
     }
 }
-'''
 
 
 DATABASES = {
@@ -117,6 +116,19 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+'''
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd8srd2smtqkkia',
+        'USER': 'mufchzhqbnhunn',
+        'PASSWORD': '953a1eebde811bd625b4b47abce5fc0a7044e8e130bec5cff6b9626e30f3d4bf',
+        'HOST': 'ec2-54-246-67-245.eu-west-1.compute.amazonaws.com',
+        'PORT': '5432'
+    }
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators

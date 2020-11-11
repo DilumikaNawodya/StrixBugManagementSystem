@@ -1,8 +1,7 @@
 import React from 'react';
 import { BehaviorSubject } from 'rxjs';
-import axios from 'axios';
 import API from './Base';
-import { NavLink } from 'react-router-dom';
+
 
 const currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('currentUser')));
 
