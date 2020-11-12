@@ -14,16 +14,6 @@ function DashboardCus() {
   return (
     <Layout>
         <Switch>
-              {/* 
-              <Route exact path="/Projectlist" component={Projectlist} />
-              <Route exact path="/bcldashboard" component={Projectlist} />
-              <Route exact path="/" component={Projectlist} />
-              <Route path="/Aboutus" component={Aboutus} />
-              <Route path="/Help" component={Help} />
-              <Route path="/ProjectIssues" component={ProjectIssues} />
-              <Route path="/Newsfeed" component={Newsfeed} />
-              <Route component={Error} /> 
-              */}
               <h1>This is Customer page</h1>
         </Switch>
     </Layout>

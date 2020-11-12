@@ -49,7 +49,7 @@ function Login(props){
                                     authenticationService.login(values.email, values.password)
                                         .then(function(response){
                                             const path = '/' + response.data.Role;
-                                            const { from } = props.location.state || { from: { pathname: path } };
+                                            const { from } = { from: { pathname: path } };
                                             props.history.push(from);
                                         })
                                         .catch(function(error){
