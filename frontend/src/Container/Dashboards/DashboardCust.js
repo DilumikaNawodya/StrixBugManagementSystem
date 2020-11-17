@@ -1,22 +1,31 @@
-import React, { Component } from 'react';
-import Aboutus from '../../Components/Common/Aboutus/Aboutus';
-import Help from '../../Components/Common/Help/Help';
-import Error from '../../Components/Common/Errors/Error';
-import Projectlist from '../../Components/BCL/Project/Projectlist';
-import ProjectIssues from '../../Components/BCL/Project/ProjectIssues'
-import Newsfeed from '../../Components/BCL/Project/Newsfeed';
-import { BrowserRouter as Router,Switch, Route } from 'react-router-dom';
-import Layout from '../Layout';
+import React from 'react';
+import { Route } from 'react-router-dom';
+import BCLHome from '../../Components/BCL/BCLHome';
+import IssueBacklogBCL from '../../Components/BCL/IssueBacklog/IssueBacklogBCL';
+import Footer from '../../Components/Common/Footer/Footer';
+import NavBar from '../../Components/Common/Navbar/Navbar';
 
+
+
+const sidebarItems = [
+  "Dashboard",
+  "Backlog",
+  "Reports"
+]
 
 function DashboardCus() {
 
   return (
-    <Layout>
-        <Switch>
-              <h1>This is Customer page</h1>
-        </Switch>
-    </Layout>
+      <>
+        <Route exact path="/Customer">
+          <NavBar items={false} page={<BCLHome/>} sideBarItems={[]}/>
+          <Footer/>
+        </Route>
+        <Route exact path="/Customer/IssueBacklog/:pid">
+          <NavBar items={true} page={<IssueBacklogBCL/>} sideBarItems={sidebarItems}/>
+          <Footer/>
+        </Route>
+      </>
   )
 
 }

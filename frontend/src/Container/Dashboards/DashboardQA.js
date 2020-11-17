@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router,Switch, Route } from 'react-router-dom';
-import Layout from '../Layout';
+import BMSHome from '../../Components/BMS/BMSHome';
 
 
 function DashboardQA() {
 
   return (
-    <Layout>
-        <Switch>
-        <h1>This is QA page</h1>
-        </Switch>
-    </Layout>
+
+      <BMSHome/>
+
   )
 
 }

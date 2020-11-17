@@ -1,18 +1,12 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router,Switch, Route } from 'react-router-dom';
-import Layout from '../Layout';
+import BMSHome from '../../Components/BMS/BMSHome';
 
 
 function DashboardManager() {
 
   return (
-    <Layout>
-        <Switch>
-        <h1>This is Manager page</h1>
-        </Switch>
-    </Layout>
+      <BMSHome/>
   )
-
 }
 
 export default DashboardManager;
