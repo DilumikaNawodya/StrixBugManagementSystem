@@ -66,7 +66,7 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = ()
 
 modelsArray = [models.Project,models.Workstate,models.Ticket,models.Sprint,
-                models.Comment,models.DeveloperTicket,models.QATicket,Permission]
+                models.Comment,models.DeveloperTicket,models.QATicket,Permission,models.TicketMedia,models.Pinned]
 
 
 # Register your models here.

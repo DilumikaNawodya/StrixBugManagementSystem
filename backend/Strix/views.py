@@ -1,12 +1,14 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 import json
+from django.core import serializers
 from django.contrib.auth.mixins import PermissionRequiredMixin,LoginRequiredMixin
 from .mixins import RoleRequiredMixin
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate
 from .models import * 
+
 
 from django.core.exceptions import ValidationError
 from django.contrib.auth.tokens import default_token_generator
@@ -16,9 +18,11 @@ from django.utils.http import urlsafe_base64_decode
 
 class Login(APIView):
 
-    def post(self, request, format=None):
+    def post(self, request):
 
         data = json.loads(request.body)
+
+        print(data)
 
         email = data['email']
         password = data['password']
@@ -27,7 +31,7 @@ class Login(APIView):
             Username = User.objects.get(email=email).username
         else:
             return Response({"msg":"You are not a registered user try again"},status=404)
-        print(Username)
+        
         user = authenticate(username=Username,password=password)
 
         if user is not None:
@@ -126,9 +130,34 @@ class ResetPassword(APIView):
             if password==retypedPass:
                 user.set_password(password)
                 user.save()
-                # print("I am here")
                 return Response({},status=200)
             else:
                 return Response(True,status=404)
         else:
             return Response(False,status=404)
+
+###############################################################################################
+
+
+class ProjectList(APIView):
+
+    def get(self,request):
+
+        user = request.user
+
+        if user.is_anonymous:
+            return Response("Thota pissuda",status=404)
+        else:
+            role = User.objects.get(username=user).groups.values_list('name',flat=True)
+            if role[0]=='Admin':
+                projects = self.Admin(user)
+            else:
+                projects = self.OtherUser(user)
+
+        return Response(projects.values(),status=200)
+
+    def Admin(self,user):
+        return(Project.objects.filter(adminid=user))
+        
+    def OtherUser(self,user):
+        return(Project.objects.filter(userlist=user))

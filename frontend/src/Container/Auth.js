@@ -14,8 +14,6 @@ import ForgotPassword from '../Components/Login/ForgotPassword';
 import PasswordConfirmation from '../Components/Login/PasswordConfirmation';
 import { createBrowserHistory } from 'history';
 
-
-
 const history = createBrowserHistory();
 
 const Role = {
@@ -56,6 +54,7 @@ function Auth(props){
                 <PrivateRoute path="/QA" roles={[Role.QA]} component={DashboardQA} />
                 <PrivateRoute path="/Developer" roles={[Role.Developer]} component={DashboardDev} />
                 <PrivateRoute path="/Customer" roles={[Role.Customer]} component={DashboardCust} />
+
         
                 <Route exact path="/forgotpassword" component={ForgotPassword} />
                 <Route exact path="/passconfirmation/:uid/:token/" component={PasswordConfirmation} />

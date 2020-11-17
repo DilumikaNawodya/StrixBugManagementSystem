@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Error.scss'
 
 function Error()  {
@@ -9,7 +10,7 @@ function Error()  {
                     <h1>Oops!</h1>
                     <h2>404 - The Page can't be found</h2>
                 </div>
-			    <a href="#">Go TO Homepage</a>
+			   <Link to='/'>Go TO Homepage</Link>
 		    </div>
 	    </div>
     )

@@ -94,3 +94,16 @@ $gr-1:linear-gradient(170deg, white 0%,white 100%);
     }
   }
 }
+
+
+.trimTextBCL{
+  display: block;
+  display: -webkit-box;
+  max-width: 400px;
+  height: 75px;
+  line-height: 1.2;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

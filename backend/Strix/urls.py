@@ -12,6 +12,8 @@ urlpatterns = [
     path('passconfirmation/',views.PasswordConfirmation.as_view()),
     path('resetpassword/',views.ResetPassword.as_view()),
 
+    path('projectlist/',views.ProjectList.as_view()),
+
 ]
 
 

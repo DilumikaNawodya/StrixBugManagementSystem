@@ -16,6 +16,7 @@ export const authenticationService = {
 };
 
 function login(email,password){
+    console.log(email,password)
     const request = API.post('login/',{
         email: email,
         password: password

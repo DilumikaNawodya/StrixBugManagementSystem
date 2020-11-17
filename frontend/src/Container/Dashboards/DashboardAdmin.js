@@ -1,17 +1,18 @@
-import React, { Component } from 'react';
-import { BrowserRouter as Router,Switch, Route } from 'react-router-dom';
+import React from 'react';
+import { Nav } from 'react-bootstrap';
 import AdminHome from '../../Components/Admin/AdminHome';
-import Layout from '../Layout';
+import Footer from '../../Components/Common/Footer/Footer';
+import NavBar from '../../Components/Common/Navbar/Navbar';
 
 
 function DashboardAdmin() {
 
   return (
-    <Layout>
-        <AdminHome />
-    </Layout>
+    <>
+    <NavBar items={false} page={<AdminHome/>} sideBarItems={[]}/>
+    <Footer/>
+    </>
   )
-
 }
 
 export default DashboardAdmin;

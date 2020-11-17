@@ -1,0 +1,16 @@
+
+.trimText{
+  display: block;
+  display: -webkit-box;
+  max-width: 535px;
+  height: 175px;
+  line-height: 1.2;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table{
+    background-color: lightgray;
+}
