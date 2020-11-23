@@ -142,7 +142,6 @@ class ResetPassword(APIView):
 class ProjectList(APIView):
 
     def get(self,request):
-
         user = request.user
 
         if user.is_anonymous:
@@ -161,3 +160,80 @@ class ProjectList(APIView):
         
     def OtherUser(self,user):
         return(Project.objects.filter(userlist=user))
+
+
+    def post(self,request):
+        data = json.loads(request.body)
+        project = Project.objects.filter(id=data['pid'])
+
+        return Response(project.values(),status=200)
+
+
+class Filters(APIView):
+
+    def get(self,request):
+
+        SEVERITY = []
+        for i in  SEVERITY_METHODS:
+            SEVERITY.append(i[0])
+
+        BUGTYPE = []
+        for i in  BUGTYPE_METHODS:
+            BUGTYPE.append(i[0])
+
+        PRIORITY = []
+        for i in PRIORITY_METHODS:
+            PRIORITY.append(i[0])
+
+        Filters = {
+            "review": [
+                "Reviewd",
+                "Not Reviewd"
+            ],
+            "severity": SEVERITY,
+            "priority": PRIORITY,
+            "bugtype": BUGTYPE,
+            "status": [
+                "Open",
+                "In Progress",
+                "Review",
+                "Done"
+            ]
+        }
+
+        return Response(Filters,status=200)
+
+
+class GetTickets(APIView):
+
+    def post(self,request):
+
+        body = json.loads(request.body)
+
+        tickets = Ticket.objects.filter(project_id=body["pid"])
+        
+        Tickets = []
+
+        for ticket in tickets:
+
+            data = {
+                "id": ticket.id,
+                "issuename": ticket.issuename,
+                "issuedescription": ticket.issuedescription,
+                "date": ticket.date,
+                "bugtype": ticket.bugtype,
+                "priority": ticket.priority,
+                "severity": ticket.severity,
+                "bspstatus": "Included" if ticket.bspstatus else "Not Included",
+                "approval": "Approved" if ticket.approval else "Rejected",
+                "totaleffort": ticket.totaleffort,
+                "project": Project.objects.get(id=ticket.project_id).projectname,
+                "workstate": Workstate.objects.get(id=ticket.workstate_id).workstatename,
+                "externaluser_id": ticket.externaluser_id,
+                "review": "Reviewed" if ticket.review else "Not Reviewed"
+            }
+
+            Tickets.append(data)
+
+
+        return Response({"Tickets":Tickets},status=200)

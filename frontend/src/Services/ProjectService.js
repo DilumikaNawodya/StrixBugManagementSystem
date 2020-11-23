@@ -1,8 +1,14 @@
 import API from './Base';
-import React, { useEffect,useState } from 'react';
+import { useEffect,useState } from 'react';
 
 
-export default function GetProjectList() {
+export const projectService = {
+    GetProjectList,
+    GetProject
+}
+
+
+function GetProjectList() {
 
     const [state, setState] = useState({
         projects:[],
@@ -30,4 +36,28 @@ export default function GetProjectList() {
 
     return state
     
+}
+
+function GetProject(pid) {
+
+    const [state,setState] = useState({})
+
+    useEffect(()=>{
+        API.post('projectlist/', {
+            pid: pid
+        })
+        .then(function(response){
+            console.log(response.data.projectname)
+            setState(
+                response.data
+            )
+        })
+        .catch(function(error){
+            setState(
+                {}
+            )
+        })
+    },[])
+
+    return state
 }

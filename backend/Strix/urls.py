@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path,include
+from django.conf.urls import url
 from . import views
 
 urlpatterns = [
@@ -13,7 +14,8 @@ urlpatterns = [
     path('resetpassword/',views.ResetPassword.as_view()),
 
     path('projectlist/',views.ProjectList.as_view()),
-
+    path('ticketlist/',views.GetTickets.as_view()),
+    path('filters/',views.Filters.as_view()),
 ]
 
 

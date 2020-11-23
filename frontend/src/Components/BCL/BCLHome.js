@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
-import GetProjectList from '../../Services/ProjectService';
+import { projectService } from '../../Services/ProjectService';
+import Preloader from '../Common/Preloader/Preloader';
 import  './BCLHome.scss'
 
 
@@ -8,8 +9,10 @@ import  './BCLHome.scss'
 function BCLHome(props){
 
     const history = useHistory()
-    const state = GetProjectList()
+    const state = projectService.GetProjectList()
 
+    localStorage.removeItem("projectID")
+    
     return (
         <div class="container h-100">
             {! state.loading && ! state.error && <div class="row">
@@ -20,7 +23,7 @@ function BCLHome(props){
                             <h1>{project.projectname}</h1>
                             <p>{project.description}</p>
                         </div>
-                        <NavLink to={"/Customer/IssueBacklog/" + project.id}>
+                        <NavLink to={"/Customer/IssueBacklogBCL/" + project.id}>
                             <i class="fas fa-external-link-alt"></i>
                         </NavLink>
                     </div>
@@ -30,7 +33,7 @@ function BCLHome(props){
 
             { state.loading && <div>
 
-                Hi its me
+                <Preloader/>
 
             </div>}
 

@@ -1,36 +1,62 @@
 import React,{useState} from 'react';
+import { useParams } from 'react-router-dom';
+import { projectService } from '../../../Services/ProjectService';
+import useFetchBugs from '../../../Services/TicketService';
 import SetPagination from '../../Common/Pagination/Pagination';
+import Filters from './Filters';
 import './IssueBacklogBMS.scss'
 
 
 function IssueBacklogBMS() {
 
-  const bugs = ["bug1","bug1","bug1","bug1","bug1","bug1","bug1","bug1","bug1","bug1","bug1","bug1"]
+  const [params, setParams] = useState({});
 
+  const handleInput = (e) => {
+    const param = e.target.name;
+    const value = e.target.value;
+    setParams((prevParams) => {
+      return { ...prevParams, [param]: value };
+    })
+  }
+
+  const {pid} = useParams()
+  localStorage.setItem('projectID', JSON.stringify(pid))
+
+  const projectName = projectService.GetProject(pid).projectname
+  console.log(projectName)
+  const { bugs, loading, error } = useFetchBugs(params,pid)
   const [currentPage, setCurrentPage] = useState(1);
   const [IssuePerPage, setIssuePerPage] = useState(7);
   const indexOfLastIssue = currentPage * IssuePerPage;
   const indexOfFirstIssue = indexOfLastIssue - IssuePerPage;
   const currentIssue = bugs.slice(indexOfFirstIssue, indexOfLastIssue);
-
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+
   return (
-    <div class="d-flex fontSize" id="wrapper">
-      <div id="page-content-wrapper">
+      <>
 
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-          <h1 class="h2">Dashboard</h1>
+          <h1 class="h2">Backlog</h1>
+
           <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group mr-2">
-              <button class="btn btn-sm btn-outline-secondary">Add Issue</button>
+              <button class="btn btn-sm btn-dark">Add Sprint</button>
             </div>
-            <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
-              <span data-feather="calendar"></span>
-              Sort by
+            <button class="btn btn-sm btn-dark dropdown-toggle" type="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                <span data-feather="calendar"></span>
+                Sort by
             </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">By Date</a>
+                <a class="dropdown-item" href="#">By Name</a>
+                {/* <a class="dropdown-item" href="#"></a> */}
+              </div>
           </div>
         </div>
+
+        <Filters params={params} onInputChange={handleInput} />
 
         <div class="card ml-3 mt-2 mb-3 mr-3">
 
@@ -41,18 +67,26 @@ function IssueBacklogBMS() {
 
           <div class="list-group mb-0">
 
-            <table class="table table-striped table-success">
+            <table class="table table-striped">
               <thead>
                 <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">BugName</th>
+                  <th scope="col">Initial Review</th>
+                  <th scope="col">Severity</th>
+                  <th scope="col">Priority</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Issue Name</th>
+                  <th scope="col">Bug type</th>
                 </tr>
               </thead>
               <tbody>
                 {currentIssue.map(bug=>(
                   <tr>
-                    <th scope="row">{bugs.indexOf(bug)}</th>
-                    <td>{bug}</td>
+                    <td>{bug.review}</td>
+                    <td>{bug.severity}</td>
+                    <td>{bug.priority}</td>
+                    <td>{bug.date}</td>
+                    <td>{bug.issuename}</td>
+                    <td>{bug.bugtype}</td>
                   </tr>
                 ))}
               </tbody>
@@ -69,10 +103,7 @@ function IssueBacklogBMS() {
           paginate={paginate}
         />
       </div>
-
-      </div>
-      
-    </div>
+      </>
   )
 }
 

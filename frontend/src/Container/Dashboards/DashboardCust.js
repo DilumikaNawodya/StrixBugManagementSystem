@@ -7,11 +7,10 @@ import NavBar from '../../Components/Common/Navbar/Navbar';
 
 
 
-const sidebarItems = [
-  "Dashboard",
-  "Backlog",
-  "Reports"
-]
+const sidebarItems = {
+  Dashboard: "/Customer",
+  Backlog: "/Customer/IssueBacklogBCL/"
+}
 
 function DashboardCus() {
 
@@ -21,7 +20,7 @@ function DashboardCus() {
           <NavBar items={false} page={<BCLHome/>} sideBarItems={[]}/>
           <Footer/>
         </Route>
-        <Route exact path="/Customer/IssueBacklog/:pid">
+        <Route exact path="/Customer/IssueBacklogBCL/:pid">
           <NavBar items={true} page={<IssueBacklogBCL/>} sideBarItems={sidebarItems}/>
           <Footer/>
         </Route>
