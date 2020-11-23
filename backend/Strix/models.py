@@ -61,7 +61,7 @@ SEVERITY_METHODS = (
 class Ticket(models.Model):
 	issuename = models.CharField(max_length=50)
 	issuedescription = models.CharField(max_length=1000)
-	date = models.DateField(auto_now_add=True,null=True)
+	date = models.DateField()
 	bugtype = models.CharField(max_length=50,choices=BUGTYPE_METHODS,blank=True)
 	priority = models.CharField(max_length=50,choices=PRIORITY_METHODS,blank=True)
 	severity = models.CharField(max_length=50,choices=SEVERITY_METHODS,blank=True)

@@ -4,9 +4,9 @@ import React, { Component } from 'react';
 function Footer(){
     return(
         <div class="fixed-bottom">
-            <footer class="font-small bg-dark">
-                <div class="footer-copyright text-center text-white">
-                    {new Date().getFullYear()}@Strix -All Rights Reserved
+            <footer class="page-footer font-small bg-dark">
+                <div class="footer-copyright text-center py-3">© 2020 Copyright:
+                    <a href="#">Strix</a>
                 </div>
             </footer>
         </div>

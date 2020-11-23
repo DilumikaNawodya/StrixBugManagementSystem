@@ -21,7 +21,22 @@ function reducer(state,action){
     }
 }
 
-export default function useFetchBugs(params) {
+function Filter(data,params){
+
+    var filteredData = data
+
+    Object.keys(params).map((key,value)=>{
+        if(params[key]!="All"){
+            filteredData = data.filter(function(obj) {
+                return obj[key] === params[key];
+            })
+        }
+    })
+    return filteredData
+}
+
+
+function useFetchBugs(params,pid) {
 
     const initialState = {
         bugs:[],
@@ -33,14 +48,13 @@ export default function useFetchBugs(params) {
 
     useEffect(()=>{
 
-        dispatch({type:ACTIONS.MAKE_REQUEST})
-        API.get('projectlist/',{
-            params:{...params}
+        API.post('ticketlist/',{
+            pid: pid
         })
         .then(res=>{
             dispatch({
                 type: ACTIONS.GET_DATA,
-                payload:{bugs:res.data}
+                payload: {bugs: Filter(res.data.Tickets,params)}
             })
         })
         .catch((e)=>{
@@ -51,5 +65,6 @@ export default function useFetchBugs(params) {
     },[params])    
 
     return state
-    
 }
+
+export default useFetchBugs;

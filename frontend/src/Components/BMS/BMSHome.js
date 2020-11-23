@@ -1,28 +1,31 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
-import GetProjectList from '../../Services/ProjectService';
+import { NavLink, useHistory } from 'react-router-dom';
+import { authenticationService } from '../../Services/LoginService';
+import { projectService } from '../../Services/ProjectService';
+import Preloader from '../Common/Preloader/Preloader';
 import  './BMSHome.scss'
-
 
 
 function BMSHome(props){
 
     const history = useHistory()
-    const state = GetProjectList()
-        
+    const state = projectService.GetProjectList()
+
+    localStorage.removeItem("projectID")
+
     return (
         <div class="container h-100">
             {! state.loading && ! state.error && <div class="row">
                 {state.projects.map(project => (
                 <div class="col-md-6 col-lg-4 column">
-                    <div class="card gr-1 trimTextBMS">
-                        <div class="txt">
+                    <div class="cardF gr-1">
+                        <div class="txt trimTextBMS">
                             <h1>{project.projectname}</h1>
                             <p>{project.description}</p>
                         </div>
-                        <a href="#">
+                        <NavLink to={"/"+ authenticationService.userRole +"/IssueBacklogBMS/" + project.id}>
                             <i class="fas fa-external-link-alt"></i>
-                        </a>
+                        </NavLink>
                     </div>
                 </div>
                 ))}
@@ -30,7 +33,7 @@ function BMSHome(props){
 
             { state.loading && <div>
 
-                Hi its me
+              <Preloader/>
 
             </div>}
 

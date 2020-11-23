@@ -1,7 +1,5 @@
-import React from 'react';
 import { BehaviorSubject } from 'rxjs';
 import API from './Base';
-
 
 const currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('currentUser')));
 
@@ -12,6 +10,7 @@ export const authenticationService = {
     PasswordConfirmation,
     SetPassword,
     currentUser: currentUserSubject.asObservable(),
+    get userRole () { return currentUserSubject.value.Role },
     get currentUserValue () { return currentUserSubject.value }
 };
 
@@ -20,9 +19,10 @@ function login(email,password){
     const request = API.post('login/',{
         email: email,
         password: password
-    })
+    },{})
     request
         .then(function(response){
+            console.log(response.data)
             localStorage.setItem('currentUser', JSON.stringify(response.data))
             API.defaults.headers.common['Authorization'] = 'Token ' + response.data.Token
             currentUserSubject.next(response.data)
