@@ -1,31 +1,18 @@
 import React from 'react';
-import BMSHome from '../../Components/BMS/BMSHome';
-import IssueBacklogBMS from '../../Components/BMS/IssueBacklog/IssueBacklogBMS';
+import BMSHome from '../../Components/BMS/BMSHome/BMSHome';
 import { Route } from 'react-router-dom';
-import Footer from '../../Components/Common/Footer/Footer';
-import NavBar from '../../Components/Common/Navbar/Navbar';
+import NavBar from '../../Components/Common/Navbar/NavBar';
 
 
-const sidebarItems = {
-  Dashboard: "/QA",
-  Backlog: "/QA/IssueBacklogBMS/",
-  Sprints: {
-    "Sprint 1": "#",
-    "Sprint 2": "#",
-    "Sprint 3": "#"
-  }
-}
 function DashboardQA() {
 
   return (
     <>
       <Route exact path="/QA">
-        <NavBar items={false} page={<BMSHome />} sideBarItems={[]} />
-        <Footer />
+        <NavBar/>
       </Route>
       <Route exact path="/QA/IssueBacklogBMS/:pid">
-        <NavBar items={true} page={<IssueBacklogBMS/>} sideBarItems={sidebarItems} />
-        <Footer />
+        <NavBar/>
       </Route>
     </>
   )

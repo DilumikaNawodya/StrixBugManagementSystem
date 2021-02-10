@@ -12,7 +12,6 @@ function GetProjectList() {
 
     const [state, setState] = useState({
         projects:[],
-        loading:true,
         error:false
     })
 
@@ -21,14 +20,12 @@ function GetProjectList() {
             .then(function (response) {
                 setState({
                     projects: response.data,
-                    loading: false,
                     error:false
                 })
             })
             .catch(function (error) {
                 setState({
                     projects:[],
-                    loading: false,
                     error:true
                 })
             })

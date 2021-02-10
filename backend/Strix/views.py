@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import viewsets
 import json
 from django.core import serializers
 from django.contrib.auth.mixins import PermissionRequiredMixin,LoginRequiredMixin
@@ -8,7 +9,7 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate
 from .models import * 
-
+from .serializers import *
 
 from django.core.exceptions import ValidationError
 from django.contrib.auth.tokens import default_token_generator
@@ -139,34 +140,34 @@ class ResetPassword(APIView):
 ###############################################################################################
 
 
-class ProjectList(APIView):
+# class ProjectList(APIView):
 
-    def get(self,request):
-        user = request.user
+#     def get(self,request):
+#         user = request.user
 
-        if user.is_anonymous:
-            return Response("Thota pissuda",status=404)
-        else:
-            role = User.objects.get(username=user).groups.values_list('name',flat=True)
-            if role[0]=='Admin':
-                projects = self.Admin(user)
-            else:
-                projects = self.OtherUser(user)
+#         if user.is_anonymous:
+#             return Response("Thota pissuda",status=404)
+#         else:
+#             role = User.objects.get(username=user).groups.values_list('name',flat=True)
+#             if role[0]=='Admin':
+#                 projects = self.Admin(user)
+#             else:
+#                 projects = self.OtherUser(user)
 
-        return Response(projects.values(),status=200)
+#         return Response(projects.values(),status=200)
 
-    def Admin(self,user):
-        return(Project.objects.filter(adminid=user))
+#     def Admin(self,user):
+#         return(Project.objects.filter(adminid=user))
         
-    def OtherUser(self,user):
-        return(Project.objects.filter(userlist=user))
+#     def OtherUser(self,user):
+#         return(Project.objects.filter(userlist=user))
 
 
-    def post(self,request):
-        data = json.loads(request.body)
-        project = Project.objects.filter(id=data['pid'])
+#     def post(self,request):
+#         data = json.loads(request.body)
+#         project = Project.objects.filter(id=data['pid'])
 
-        return Response(project.values(),status=200)
+#         return Response(project.values(),status=200)
 
 
 class Filters(APIView):
@@ -237,3 +238,34 @@ class GetTickets(APIView):
 
 
         return Response({"Tickets":Tickets},status=200)
+
+
+##############################################################################################
+
+
+# Internal Users
+class InternalUserList(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        return User.objects.filter(groups__in=[1,3,4,2])
+
+# External Users
+class ExternalUserList(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        return User.objects.filter(groups=5)
+
+# Projects
+class ProjectList(viewsets.ModelViewSet):
+    serializer_class = ProjectSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        role = User.objects.get(username=user).groups.values_list('name',flat=True)
+        if role[0]=='Admin':
+            return(Project.objects.filter(adminid=user))
+        else:
+            return(Project.objects.filter(userlist=user))
+

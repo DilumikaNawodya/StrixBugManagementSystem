@@ -14,7 +14,7 @@ function IssueBacklogBCL() {
 
   const projectName = projectService.GetProject(pid).projectname
 
-  const { bugs, loading, error } = useFetchBugs('',pid)
+  const { bugs } = useFetchBugs('',pid)
 
   const [isModelOpen, setisModelOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
