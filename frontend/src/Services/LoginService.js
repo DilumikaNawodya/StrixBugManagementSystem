@@ -36,6 +36,7 @@ function logout() {
     .then(function(response){
         if(response){
             localStorage.removeItem('currentUser')
+            localStorage.removeItem('projectID')
             currentUserSubject.next(null)
         }
     })

@@ -22,9 +22,7 @@ function IssueBacklogBMS() {
   const {pid} = useParams()
   localStorage.setItem('projectID', JSON.stringify(pid))
 
-  const projectName = projectService.GetProject(pid).projectname
-  console.log(projectName)
-  const { bugs, loading, error } = useFetchBugs(params,pid)
+  const { bugs } = useFetchBugs(params,pid)
   const [currentPage, setCurrentPage] = useState(1);
   const [IssuePerPage, setIssuePerPage] = useState(7);
   const indexOfLastIssue = currentPage * IssuePerPage;
@@ -51,7 +49,6 @@ function IssueBacklogBMS() {
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="#">By Date</a>
                 <a class="dropdown-item" href="#">By Name</a>
-                {/* <a class="dropdown-item" href="#"></a> */}
               </div>
           </div>
         </div>

@@ -26,7 +26,7 @@ function ProjectReportDashboard(){
                                 To
                                 <small><Calender/></small>
                             </div>
-                            <div className="col" syle={{}}>
+                            <div className="col" style={{}}>
                                 <button className="btn btn-md btn-outline-dark">Filter by Date</button>
                             </div>
                         </div>

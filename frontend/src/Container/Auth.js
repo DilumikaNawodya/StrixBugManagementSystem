@@ -55,7 +55,6 @@ function Auth(props){
                 <PrivateRoute path="/Developer" roles={[Role.Developer]} component={DashboardDev} />
                 <PrivateRoute path="/Customer" roles={[Role.Customer]} component={DashboardCust} />
 
-        
                 <Route exact path="/forgotpassword" component={ForgotPassword} />
                 <Route exact path="/passconfirmation/:uid/:token/" component={PasswordConfirmation} />
 
