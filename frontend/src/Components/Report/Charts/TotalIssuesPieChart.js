@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Pie } from 'react-chartjs-2';
-import axios from 'axios'
+
 import { reportService } from '../../../Services/ReportService';
 
 function TotalIssuesPieCharts() {
@@ -19,7 +19,7 @@ function TotalIssuesPieCharts() {
             proj.push(obj.Pname)
 
         }
-
+    
         setIssues(
             {
                 labels: proj,
