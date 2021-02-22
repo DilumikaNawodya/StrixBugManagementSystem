@@ -5,7 +5,10 @@ import BMSLayout from '../../Components/BMS/BMSLayout';
 import IssueBacklogBMS from '../../Components/BMS/IssueBacklog/IssueBacklogBMS';
 import ProjectReportDashboard from '../../Components/Report/ProjectReportDashboard';
 import NavBar from '../../Components/Common/Navbar/NavBar';
-
+import ReportLayout from '../../Components/Report/ReportLayout';
+import DevTimesheetDash from '../../Components/Report/Developer_Timesheet/DevTimesheetDash'
+import AlldataTable from '../../Components/Report/Developer_Timesheet/AllDataTable/AlldataTable';
+import FilreredData from '../../Components/Report/Developer_Timesheet/FilteredTable/FilreredData';
 
 function DashboardManager() {
 
@@ -19,7 +22,16 @@ function DashboardManager() {
         <BMSLayout page={<IssueBacklogBMS/>}/>
       </Route>
       <Route exact path="/Manager/ReportDashboard">
-        <BMSLayout page={<ProjectReportDashboard/>}/>
+        <ReportLayout page={<ProjectReportDashboard/>}/>
+      </Route>
+      <Route exact path="/Manager/DeveloperTimesheeet">
+        <ReportLayout page={<DevTimesheetDash/>}/>
+      </Route>
+      <Route exact path="/Manager/DeveloperTimesheeet/AlldataTable">
+        <ReportLayout page={<AlldataTable/>}/>
+      </Route>
+      <Route exact path="/Manager/DeveloperTimesheeet/FilreredTable">
+        <ReportLayout page={<FilreredData/>}/>
       </Route>
       <Route exact path="/Manager/SprintBacklog/">
         <BMSLayout/>

@@ -1,9 +1,11 @@
 import React from 'react';
-import { NavLink, useHistory } from 'react-router-dom';
+import { NavLink, useHistory,Link,BrowserRouter,Switch,Route } from 'react-router-dom';
+import {Button} from 'react-bootstrap'
 import { authenticationService } from '../../../Services/LoginService';
 import { projectService } from '../../../Services/ProjectService';
 import Preloader from '../../Common/Preloader/Preloader';
 import  './BMSHome.scss'
+
 
 
 function BMSHome(props){
@@ -15,6 +17,13 @@ function BMSHome(props){
 
     return (
         <div class="container h-100">
+             <div style={{marginTop:40}}>
+                        <NavLink to={"/"+  authenticationService.userRole +"/ReportDashboard"}>
+                              <Button className="primary" to=""> Reports
+                              </Button>
+                        </NavLink>
+                                 
+            </div>
             {! state.loading && ! state.error && <div class="row">
                 {state.projects.map(project => (
                 <div class="col-md-6 col-lg-4 column">
@@ -44,6 +53,8 @@ function BMSHome(props){
             </div>}
 
         </div>
+     
+        
   )
 }
 
