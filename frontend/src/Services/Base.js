@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
 import axios from 'axios';
 import { BehaviorSubject } from 'rxjs';
 
 const currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('currentUser')));
-
 
 const API = axios.create({
     baseURL: 'http://127.0.0.1:8000/'

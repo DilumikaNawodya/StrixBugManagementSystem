@@ -1,6 +1,15 @@
 import API from './Base';
-import {useReducer,useEffect} from 'react'
+import {useReducer,useEffect, useState} from 'react'
 import axios from 'axios'
+
+
+export const ticketService = {
+    useFetchBugs,
+    Filters
+}
+
+
+
 
 const ACTIONS = {
     MAKE_REQUEST:'make-request',
@@ -21,27 +30,11 @@ function reducer(state,action){
     }
 }
 
-function Filter(data,params){
-
-    var filteredData = data
-
-    Object.keys(params).map((key,value)=>{
-        if(params[key]!="All"){
-            filteredData = data.filter(function(obj) {
-                return obj[key] === params[key];
-            })
-        }
-    })
-    return filteredData
-}
-
-
-function useFetchBugs(params,pid) {
+function useFetchBugs(pid) {
 
     const initialState = {
         bugs:[],
-        loading:true,
-        params:''
+        loading:true
     }
 
     const [state, dispatch] = useReducer(reducer, initialState)
@@ -49,12 +42,12 @@ function useFetchBugs(params,pid) {
     useEffect(()=>{
 
         API.post('ticketlist/',{
-            pid: pid
+            pid: 1
         })
         .then(res=>{
             dispatch({
                 type: ACTIONS.GET_DATA,
-                payload: {bugs: Filter(res.data.Tickets,params)}
+                payload: {bugs: res.data.Tickets }
             })
         })
         .catch((e)=>{
@@ -62,9 +55,32 @@ function useFetchBugs(params,pid) {
             dispatch({type:ACTIONS.ERROR,payload:{error:e}})
         })
 
-    },[params])    
+    },[])    
 
     return state
 }
 
-export default useFetchBugs;
+
+function Filters(){
+    const [state, setState] = useState({
+        filters:[],
+        error:false
+    })
+
+    useEffect(()=>{
+        API.get('filters/')
+            .then(function (response) {
+                setState({
+                    filters: response.data,
+                    error:false
+                })
+            })
+            .catch(function (error) {
+                setState({
+                    filters:[],
+                    error:true
+                })
+            })
+    },[])
+    return state
+}

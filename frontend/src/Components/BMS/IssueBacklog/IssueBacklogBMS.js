@@ -1,106 +1,156 @@
-import React,{useState} from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import MaterialTable from 'material-table';
+import { Badge } from "react-bootstrap";
+import { ticketService } from '../../../Services/TicketService';
+import * as IoIcons from 'react-icons/io';
+import { authenticationService } from '../../../Services/LoginService';
+import { Redirect } from 'react-router-dom';
 import { projectService } from '../../../Services/ProjectService';
-import useFetchBugs from '../../../Services/TicketService';
-import SetPagination from '../../Common/Pagination/Pagination';
-import Filters from './Filters';
-import './IssueBacklogBMS.scss'
 
+function IssueBacklogBMS(){
 
-function IssueBacklogBMS() {
-
-  const [params, setParams] = useState({});
-
-  const handleInput = (e) => {
-    const param = e.target.name;
-    const value = e.target.value;
-    setParams((prevParams) => {
-      return { ...prevParams, [param]: value };
-    })
+  var userRole = "Block"
+  if(authenticationService.currentUserValue!=null){
+    userRole = authenticationService.userRole
   }
 
-  const {pid} = useParams()
-  localStorage.setItem('projectID', JSON.stringify(pid))
+  const [state,setState] = useState(null)
+  const pid = projectService.getCurrentProject()
+  projectService.GetProject(pid)
+  .then(function(response){
+    setState(
+      response.data.projectname
+    )
+  })
 
-  const { bugs } = useFetchBugs(params,pid)
-  const [currentPage, setCurrentPage] = useState(1);
-  const [IssuePerPage, setIssuePerPage] = useState(7);
-  const indexOfLastIssue = currentPage * IssuePerPage;
-  const indexOfFirstIssue = indexOfLastIssue - IssuePerPage;
-  const currentIssue = bugs.slice(indexOfFirstIssue, indexOfLastIssue);
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const { bugs } = ticketService.useFetchBugs(1)
+  const { filters } = ticketService.Filters()
 
+  const PriorityBadge = (type) => {
+    switch (type) {
 
-  return (
-      <>
+      case "urgent":
+        return "danger";
+        break;
 
-        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-          <h1 class="h2">Backlog</h1>
+      case "high":
+        return "warning";
+        break;
 
-          <div class="btn-toolbar mb-2 mb-md-0">
-            <div class="btn-group mr-2">
-              <button class="btn btn-sm btn-dark">Add Sprint</button>
-            </div>
-            <button class="btn btn-sm btn-dark dropdown-toggle" type="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                <span data-feather="calendar"></span>
-                Sort by
-            </button>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" href="#">By Date</a>
-                <a class="dropdown-item" href="#">By Name</a>
-              </div>
-          </div>
-        </div>
+      case "medium":
+        return "success";
+        break;
 
-        <Filters params={params} onInputChange={handleInput} />
+      case "low":
+        return "primary";
+        break;
+    }
+  }
+  
+  const SeverityBadge = (type) => {
+    switch (type) {
 
-        <div class="card ml-3 mt-2 mb-3 mr-3">
+      case "critical":
+        return "danger";
+        break;
 
-          <div class="card-header text-uppercase">
-            <h6 class="d-inline">Project A</h6>
-            <a href="" class="float-right text-dark"><i class="fa fa-search"></i></a>
-          </div>
+      case "high":
+        return "warning";
+        break;
 
-          <div class="list-group mb-0">
+      case "medium":
+        return "success";
+        break;
 
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th scope="col">Initial Review</th>
-                  <th scope="col">Severity</th>
-                  <th scope="col">Priority</th>
-                  <th scope="col">Date</th>
-                  <th scope="col">Issue Name</th>
-                  <th scope="col">Bug type</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentIssue.map(bug=>(
-                  <tr>
-                    <td>{bug.review}</td>
-                    <td>{bug.severity}</td>
-                    <td>{bug.priority}</td>
-                    <td>{bug.date}</td>
-                    <td>{bug.issuename}</td>
-                    <td>{bug.bugtype}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      case "low":
+        return "primary";
+        break;
+    }
+  }
+  
+  const columns = [
+    {
+      title: "Issuename",
+      field: "issuename",
+    },
+    {
+      title: "Review",
+      field: "review",
+      lookup: filters.review
+    },
+    {
+      title: "Status",
+      field: "workstate",
+      lookup: filters.status
+    },
+    {
+      title: "Bugtype",
+      field: "bugtype",
+      lookup: filters.bugtype
+    },
+    {
+      title: "Severity",
+      field: "severity",
+      render: (row) => (
+        <Badge variant={SeverityBadge(row.severity)}>{row.severity}</Badge>
+      ),
+      lookup: filters.severity
+    },
+    {
+      title: "Priority",
+      field: "priority",
+      render: (row) => (
+        <Badge variant={PriorityBadge(row.priority)}>{row.priority}</Badge>
+      ),
+      lookup: filters.priority
+    },
+    {
+      title: "Date",
+      field: "date",
+    },
+  ]
 
-          </div>
-
-        </div>
-
-      <div class="row ml-3 mt-2 mb-3 mr-3">
-        <SetPagination
-          IssuePerPage={IssuePerPage}
-          totalIssues={bugs.length}
-          paginate={paginate}
-        />
-      </div>
-      </>
+  return(
+    <div class="container-fluid mt-4">
+      {userRole=="Manager" && <MaterialTable 
+        title={state}
+        columns={columns}
+        data={bugs}        
+        options={{
+          sorting: true,
+          filtering: true,
+          actionsColumnIndex: -1
+        }}
+        actions={[
+          {
+            icon: () => <i class="fas fa-plus-square"></i>,
+            onClick: (event, rowData) => console.log(rowData)
+          },
+          {
+            icon: () => <button class="btn btn-sm btn-dark">Add Sprint</button>,
+            isFreeAction: true ,
+            onClick: () => console.log("hi")
+          }
+        ]}
+      />}
+      {userRole=="Block" && <Redirect to="/error"/>}
+      {userRole!="Manager" && userRole!="Block" && <MaterialTable 
+        title={state}
+        columns={columns}
+        data={bugs}        
+        options={{
+          sorting: true,
+          filtering: true,
+          actionsColumnIndex: -1
+        }}
+        actions={[
+          {
+            icon: () => <IoIcons.IoMdArchive/>,
+            onClick: (event, rowData) => console.log(rowData)
+          }
+        ]}
+      />}
+    </div>
   )
 }
 

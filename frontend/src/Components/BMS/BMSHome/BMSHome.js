@@ -1,17 +1,20 @@
 import React from 'react';
-import { NavLink, useHistory } from 'react-router-dom';
-import { authenticationService } from '../../../Services/LoginService';
+import { NavLink, Redirect, useHistory } from 'react-router-dom';
 import { projectService } from '../../../Services/ProjectService';
 import Preloader from '../../Common/Preloader/Preloader';
 import  './BMSHome.scss'
-
 
 function BMSHome(props){
 
     const history = useHistory()
     const state = projectService.GetProjectList()
+    projectService.removeCurrentProject()
 
-    localStorage.removeItem("projectID")
+    const handleProject = (pid) => {
+        projectService.setCurrentProject(pid)
+        history.push('/issuebacklogbms')
+    }
+
 
     return (
         <div class="container h-100">
@@ -19,13 +22,13 @@ function BMSHome(props){
                 {state.projects.map(project => (
                 <div class="col-md-6 col-lg-4 column">
                     <div class="cardF gr-1">
-                        <div class="txt trimTextBMS">
+                        <div class="txt trimTextBMS mb-3">
                             <h1>{project.projectname}</h1>
                             <p>{project.description}</p>
                         </div>
-                        <NavLink to={"/"+ authenticationService.userRole +"/IssueBacklogBMS/" + project.id}>
+                        <button class="btn btn-sm btn-white" onClick={() => handleProject(project.id)}>
                             <i class="fas fa-external-link-alt"></i>
-                        </NavLink>
+                        </button>
                     </div>
                 </div>
                 ))}

@@ -1,21 +1,18 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
 import BCLHome from '../../Components/BCL/BCLHome/BCLHome';
-import BCLLayout from '../../Components/BCL/BCLLayout';
-import NavBar from '../../Components/Common/Navbar/NavBar';
+import { Route, Switch } from 'react-router-dom';
+import CommonLayout from './CommonLayout';
+import { CustomerHomeSideBar, SidebarItem, SidebarItemDrop } from '../../Components/BCL/SidebarItem';
+
 
 function DashboardCus() {
 
   return (
-      <>
-        <Route exact path="/Customer">
-          <NavBar/>
-          <BCLHome/>
+    <Switch>
+        <Route exact path={["/", "/home"]}>
+          <CommonLayout page={<BCLHome/>} SidebarItem={CustomerHomeSideBar} SidebarItemDrop={SidebarItemDrop}/>
         </Route>
-        <Route exact path="/Customer/IssueBacklogBCL/:pid">
-          <BCLLayout/>
-        </Route>
-      </>
+    </Switch>
   )
 
 }

@@ -1,20 +1,21 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import BMSHome from '../../Components/BMS/BMSHome/BMSHome';
-import NavBar from '../../Components/Common/Navbar/NavBar';
-
+import CommonLayout from './CommonLayout';
+import { DeveloperHomeSideBar, SidebarItem, SidebarItemDrop } from '../../Components/BMS/SidebarItem';
+import IssueBacklogBMS from '../../Components/BMS/IssueBacklog/IssueBacklogBMS';
 
 function DashboardDev() {
 
   return (
-    <>
-      <Route exact path="/Developer">
-        <NavBar/>
-      </Route>
-      <Route exact path="/Developer/IssueBacklogBMS/:pid">
-        <NavBar/>
-      </Route>
-    </>
+    <Switch>
+        <Route exact path="/issuebacklogbms">
+          <CommonLayout page={<IssueBacklogBMS/>} SidebarItem={SidebarItem} SidebarItemDrop={SidebarItemDrop}/>
+        </Route>
+        <Route exact path={["/", "/home"]}>
+          <CommonLayout page={<BMSHome/>} SidebarItem={DeveloperHomeSideBar} SidebarItemDrop={SidebarItemDrop}/>
+        </Route>
+    </Switch>
   )
 
 }

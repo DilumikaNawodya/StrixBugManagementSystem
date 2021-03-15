@@ -1,36 +1,37 @@
 import React from 'react';
-import { Route, Router, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import AdminHome from '../../Components/Admin/AdminHome/AdminHome';
-import AdminLayout from '../../Components/Admin/AdminLayout';
-import NavBar from '../../Components/Common/Navbar/NavBar';
-import { createBrowserHistory } from 'history';
 import UserTableInternal from '../../Components/Admin/Users/UserTableInternal';
 import UserTableExternal from '../../Components/Admin/Users/UserTableExternal';
 import Projects from '../../Components/Admin/Projects/Projects';
-
-const history = createBrowserHistory();
+import CommonLayout from './CommonLayout';
+import { AdminHomeSideBar, SidebarItem, SidebarItemDrop } from '../../Components/Admin/SidebarItem';
 
 function DashboardAdmin() {
 
   return (
-    <>
-        <Route exact path="/Admin">
-          <NavBar/>
-          <AdminHome/>
+    <Switch>
+        <Route exact path="/externalusers">
+          <CommonLayout page={<UserTableExternal/>} SidebarItem={SidebarItem} SidebarItemDrop={SidebarItemDrop}/>
         </Route>
-        <Route exact path="/Admin/ExternalUsers">
-          <AdminLayout page={<UserTableExternal/>}/>
+
+        <Route exact path="/internalusers">
+          <CommonLayout page={<UserTableInternal/>} SidebarItem={SidebarItem} SidebarItemDrop={SidebarItemDrop}/>
         </Route>
-        <Route exact path="/Admin/InternalUsers">
-          <AdminLayout page={<UserTableInternal/>}/>
+
+        <Route exact path="/projects">
+          <CommonLayout page={<Projects/>} SidebarItem={SidebarItem} SidebarItemDrop={SidebarItemDrop}/>
         </Route>
-        <Route exact path="/Admin/Projects">
-          <AdminLayout page={<Projects/>}/>
+
+        <Route exact path="/permissions">
+          <CommonLayout page={<></>} SidebarItem={SidebarItem} SidebarItemDrop={SidebarItemDrop}/>
         </Route>
-        <Route exact path="/Admin/Permissions">
-          <AdminLayout/>
+
+        <Route exact path={["/", "/home"]}>
+          <CommonLayout page={<AdminHome/>} SidebarItem={AdminHomeSideBar} SidebarItemDrop={SidebarItemDrop}/>
         </Route>
-    </>
+
+    </Switch>
   )
 }
 

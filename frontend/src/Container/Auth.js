@@ -1,30 +1,16 @@
 import React,{ useState,useEffect } from 'react';
 import { Router, Route, Switch } from 'react-router-dom';
-
 import { authenticationService } from '../Services/LoginService';
 import { PrivateRoute } from './PrivateRoute';
-import LoginForm from '../Components/Login/LoginForm'
-import DashboardCust from './Dashboards/DashboardCust';
-import DashboardAdmin from './Dashboards/DashboardAdmin';
-import DashboardQA from './Dashboards/DashboardQA';
-import DashboardManager from './Dashboards/DashboardManager';
-import DashboardDev from './Dashboards/DashboardDev';
 import error from '../Components/Common/Errors/Error';
 import ForgotPassword from '../Components/Login/ForgotPassword';
 import PasswordConfirmation from '../Components/Login/PasswordConfirmation';
 import { createBrowserHistory } from 'history';
+import CommonLayout from './Dashboards/CommonLayout';
+import Login from '../Components/Login/LoginForm';
+import IssueBacklogBMS from '../Components/BMS/IssueBacklog/IssueBacklogBMS';
 
 const history = createBrowserHistory();
-
-const Role = {
-    Admin: 'Admin',
-    Manager: 'Manager',
-    QA: 'QA',
-    Developer: 'Developer',
-    Customer: 'Customer',
-    Block: 'Block'    
-}
-
 
 function Auth(props){
 
@@ -43,23 +29,25 @@ function Auth(props){
 
     const logout = () => {
         authenticationService.logout();
-        history.push('/');
+        history.push('/login');
     }
 
+    console.log(state.role)
+
     return (
+        
         <Router history={history}>
             <Switch>
-                <PrivateRoute path="/Admin" roles={[Role.Admin]} component={DashboardAdmin} />
-                <PrivateRoute path="/Manager" roles={[Role.Manager]} component={DashboardManager} />
-                <PrivateRoute path="/QA" roles={[Role.QA]} component={DashboardQA} />
-                <PrivateRoute path="/Developer" roles={[Role.Developer]} component={DashboardDev} />
-                <PrivateRoute path="/Customer" roles={[Role.Customer]} component={DashboardCust} />
-
                 <Route exact path="/forgotpassword" component={ForgotPassword} />
                 <Route exact path="/passconfirmation/:uid/:token/" component={PasswordConfirmation} />
 
-                <Route path="/error" component={error} />
-                <Route path="/" component={LoginForm} />
+                <Route exact path="/error" component={error} />
+                
+                <Route exact path="/login" component={Login} />
+            
+                {/* <Route exact path="/test" component={IssueBacklogBMS} /> */}
+
+                <PrivateRoute path="/" roles={[state.role]}/>
             </Switch>
         </Router>
     );

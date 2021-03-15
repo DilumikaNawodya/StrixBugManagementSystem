@@ -19,12 +19,12 @@ class UserSerializer(serializers.ModelSerializer):
         elif id == 5:
             return "Customer"
         else:
-            return "Blocked"
+            return "Block"
 
     def get_color(self, obj):
         id = obj.groups.get().id
         if id == 1:
-            return "default"
+            return "dark"
         elif id == 2:
             return "primary"
         elif id == 3:

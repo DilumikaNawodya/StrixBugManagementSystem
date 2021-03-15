@@ -1,5 +1,6 @@
 import { BehaviorSubject } from 'rxjs';
 import API from './Base';
+import { projectService } from './ProjectService';
 
 const currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('currentUser')));
 
@@ -22,7 +23,6 @@ function login(email,password){
     },{})
     request
         .then(function(response){
-            console.log(response.data)
             localStorage.setItem('currentUser', JSON.stringify(response.data))
             API.defaults.headers.common['Authorization'] = 'Token ' + response.data.Token
             currentUserSubject.next(response.data)
@@ -36,7 +36,7 @@ function logout() {
     .then(function(response){
         if(response){
             localStorage.removeItem('currentUser')
-            localStorage.removeItem('projectID')
+            projectService.removeCurrentProject()
             currentUserSubject.next(null)
         }
     })
