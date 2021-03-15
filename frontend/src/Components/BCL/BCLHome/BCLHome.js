@@ -1,6 +1,5 @@
 import React from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
-import NavBar from '../../Common/Navbar/NavBar';
 import { projectService } from '../../../Services/ProjectService';
 import Preloader from '../../Common/Preloader/Preloader';
 import  './BCLHome.scss'
@@ -16,7 +15,6 @@ function BCLHome(props){
     
     return (
         <>
-            <NavBar/>
             <div class="container h-100" style={{ 'padding-top': 70}}>
                 {! state.loading && ! state.error && <div class="row">
                     {state.projects.map(project => (

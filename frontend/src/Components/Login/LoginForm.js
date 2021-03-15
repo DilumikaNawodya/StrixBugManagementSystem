@@ -10,15 +10,14 @@ function Login(props){
 
     const [loginError,setLoginError] = useState(false)
 
-    const handleClose = () => setLoginError(false);
-    const handleShow = () => setLoginError(true);
-
+    const handleClose = () => setLoginError(false)
+    const handleShow = () => setLoginError(true)
 
     useEffect(() => {
         if (authenticationService.currentUserValue) { 
             props.history.push('/');
         }
-    },[]);
+    },[])
 
     return(
         <div class="container">
@@ -48,7 +47,7 @@ function Login(props){
                                     setStatus()
                                     authenticationService.login(values.email, values.password)
                                         .then(function(response){
-                                            const path = '/' + response.data.Role;
+                                            const path = '/home';
                                             const { from } = { from: { pathname: path } };
                                             props.history.push(from);
                                         })

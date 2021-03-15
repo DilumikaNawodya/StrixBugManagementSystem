@@ -6,6 +6,19 @@ import MaterialTable from 'material-table'
 function UserTableInternal(){
 
   const { internalusers } = userService.GetInternalUserList();
+  const [state, setState] = useState(false)
+
+  const editExternalUsers = (id) =>{
+    alert(id)
+  }
+
+  const deleteExternalUsers = (id) =>{
+    alert(id)
+  }
+
+  const addExternalUser = () => {
+    setState(true)
+  }
 
   return (
     <>
@@ -31,13 +44,18 @@ function UserTableInternal(){
           }}
           actions={[
             {
-              icon: () => <button class="btn btn-sm btn-outline-warning"><i class="fas fa-edit fa-2x"></i></button>,
-              onClick: (event, rowData) => alert("You edited " + rowData.id)
+              icon: () => <i class="fas fa-edit success"></i>,
+              onClick: (event, rowData) => editExternalUsers(rowData.id)
             },
             {
-                icon: () => <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt fa-2x"></i></button>,
-                onClick: (event, rowData) => alert("You deleted " + rowData.id)
-            }
+              icon: () => <i class="fas fa-trash-alt"></i>,
+              onClick: (event, rowData) => deleteExternalUsers(rowData.id)
+            },
+            {
+              icon: () => <i class="fas fa-plus-square"></i>,
+              isFreeAction: true ,
+              onClick: (event, rowData) => addExternalUser()
+            },
           ]}
           options={{
               actionsColumnIndex: -1

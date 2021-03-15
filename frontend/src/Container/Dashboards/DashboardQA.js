@@ -1,20 +1,17 @@
 import React from 'react';
 import BMSHome from '../../Components/BMS/BMSHome/BMSHome';
-import { Route } from 'react-router-dom';
-import NavBar from '../../Components/Common/Navbar/NavBar';
-
+import { Switch, Route } from 'react-router-dom';
+import CommonLayout from './CommonLayout';
+import { QAHomeSideBar, SidebarItem, SidebarItemDrop } from '../../Components/BMS/SidebarItem';
 
 function DashboardQA() {
 
   return (
-    <>
-      <Route exact path="/QA">
-        <NavBar/>
-      </Route>
-      <Route exact path="/QA/IssueBacklogBMS/:pid">
-        <NavBar/>
-      </Route>
-    </>
+    <Switch>
+        <Route exact path={["/", "/home"]}>
+          <CommonLayout page={<BMSHome/>} SidebarItem={QAHomeSideBar} SidebarItemDrop={SidebarItemDrop}/>
+        </Route>
+    </Switch>
   )
 
 }

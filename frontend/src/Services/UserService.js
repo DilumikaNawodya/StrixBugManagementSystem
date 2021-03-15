@@ -3,7 +3,8 @@ import { useEffect,useState } from 'react';
 
 export const userService = {
     GetInternalUserList,
-    GetExternalUserList
+    GetExternalUserList,
+    AddExternalUser
 }
 
 function GetExternalUserList(){
@@ -52,6 +53,16 @@ function GetInternalUserList(){
                 })
             })
     },[])
-
     return state
+}
+
+
+function AddExternalUser(email, password, firstname, lastname){
+    const request = API.post('externaluserlist/',{
+        email: email,
+        password: password,
+        firstname: firstname,
+        lastname: lastname
+    })
+    return request
 }

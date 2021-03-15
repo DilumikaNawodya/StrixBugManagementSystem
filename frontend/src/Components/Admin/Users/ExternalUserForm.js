@@ -1,68 +1,86 @@
-import React,{ useEffect, useState } from 'react'
-import { Modal } from 'react-bootstrap';
+import React,{ useState } from 'react'
 import { Formik } from 'formik';
 import './Form.scss'
+import { userService } from '../../../Services/UserService';
+import { useHistory } from 'react-router';
 
-function ExternalUserForm({props}){
+function ExternalUserForm(props){
 
-    const [modalstate,setModalState] = useState(false)
-    const handleClose = () => setModalState(false);
-    const handleOpen = () => setModalState(props.state);
+    const history = useHistory()
 
     return(
+        <Formik
+            initialValues={{
+                email: '',
+                password: ''
+            }}
 
-        <Modal show={modalstate}>
-            <Modal.Header>
-                <span class="text-white display-4">Add User</span>
-            </Modal.Header>
-            <Modal.Body>
+            onSubmit={(values, { setStatus, setSubmitting }) => {
+                setStatus()
+                userService.AddExternalUser(values.email, values.password, values.firstname, values.lastname)
+                    .then(function (response) {
+                        history.push('/externalusers')
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    })
+            }}
 
-                <Formik
-                    initialValues={{
-                        email: '',
-                        password: ''
-                    }}
+            render={({ values, handleChange, handleSubmit }) => (
 
-                    onSubmit={(values, { setStatus, setSubmitting }) => {
-                        setStatus()
-                    }}
-
-                    render={({ values, handleChange, handleSubmit }) => (
-
-                        <form onSubmit={handleSubmit}>
-                            <div class="form-group">
-                                <label for="email" class="sr-only">Email</label>
-                                <input
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    className="form-control"
-                                    placeholder="Email"
-                                    onChange={handleChange}
-                                    value={values.email}
-                                />
-                            </div>
-                            <div class="form-group mb-4">
-                                <label for="password" class="sr-only">Password</label>
-                                <input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    className="form-control"
-                                    placeholder="*****************"
-                                    onChange={handleChange}
-                                    value={values.password}
-                                />
-                            </div>
-                            <button type="submit" className="btn login-btn mb-4 bg-white">Login</button>
-                            <button type="button" className="btn login-btn mb-4 bg-white" onClick={handleClose}>Cancel</button>
-                        </form>
-                    )}
-                />
-
-
-            </Modal.Body>
-        </Modal>
+                <form onSubmit={handleSubmit}>
+                    <div class="form-group">
+                        <label for="email" class="large mb-1">Email</label>
+                        <input
+                            id="email"
+                            name="email"
+                            type="email"
+                            className="form-control"
+                            placeholder="example@email.com"
+                            onChange={handleChange}
+                            value={values.email}
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="large mb-1">Password</label>
+                        <input
+                            id="password"
+                            name="password"
+                            type="password"
+                            className="form-control"
+                            placeholder="*****************"
+                            onChange={handleChange}
+                            value={values.password}
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="firstname" class="large mb-1">First Name</label>
+                        <input
+                            id="firstname"
+                            name="firstname"
+                            type="firstname"
+                            className="form-control"
+                            placeholder="John"
+                            onChange={handleChange}
+                            value={values.firstname}
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname" class="large mb-1">Last Name</label>
+                        <input
+                            id="lastname"
+                            name="lastname"
+                            type="lastname"
+                            className="form-control"
+                            placeholder="Doe"
+                            onChange={handleChange}
+                            value={values.lastname}
+                        />
+                    </div>
+                    <button type="submit" className="btn btn-dark mb-3 btn-block">Submit</button>
+                </form>
+            )}
+        />
     )
 }
 

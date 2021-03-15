@@ -15,15 +15,13 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.tokens import default_token_generator
 from .MailService import *
 from django.utils.http import urlsafe_base64_decode
-
+from django.contrib.auth.models import Group
 
 class Login(APIView):
 
     def post(self, request):
 
         data = json.loads(request.body)
-
-        print(data)
 
         email = data['email']
         password = data['password']
@@ -42,7 +40,8 @@ class Login(APIView):
             return Response(
                 {
                     "Token": token.key,
-                    "Role": role[0]
+                    "Role": role[0],
+                    "Name": user.first_name + " " + user.last_name 
                 },status=200)
         else:
             return Response({"msg":"You are not a registered user try again"},status=404)
@@ -174,32 +173,34 @@ class Filters(APIView):
 
     def get(self,request):
 
-        SEVERITY = []
+        print(request.user)
+
+        SEVERITY = {}
         for i in  SEVERITY_METHODS:
-            SEVERITY.append(i[0])
+            SEVERITY[i[0]] = i[1]
 
-        BUGTYPE = []
+        BUGTYPE = {}
         for i in  BUGTYPE_METHODS:
-            BUGTYPE.append(i[0])
+            BUGTYPE[i[0]] = i[1]
 
-        PRIORITY = []
+        PRIORITY = {}
         for i in PRIORITY_METHODS:
-            PRIORITY.append(i[0])
+            PRIORITY[i[0]] = i[1]
 
         Filters = {
-            "review": [
-                "Reviewd",
-                "Not Reviewd"
-            ],
+            "review": {
+                "Reviewed":"Reviewed",
+                "Not Reviewed":"Not Reviewed"
+            },
             "severity": SEVERITY,
             "priority": PRIORITY,
             "bugtype": BUGTYPE,
-            "status": [
-                "Open",
-                "In Progress",
-                "Review",
-                "Done"
-            ]
+            "status": {
+                "Open":"Open",
+                "In Progress":"In Progress",
+                "Review":"Review",
+                "Done":"Done"
+            }
         }
 
         return Response(Filters,status=200)
@@ -250,12 +251,42 @@ class InternalUserList(viewsets.ModelViewSet):
     def get_queryset(self):
         return User.objects.filter(groups__in=[1,3,4,2])
 
+
+
+
+
 # External Users
 class ExternalUserList(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
     def get_queryset(self):
         return User.objects.filter(groups=5)
+    
+    def create(self, request, *args, **kwargs):
+        createdby = request.user
+        body = json.loads(request.body)
+
+        email = body["email"]
+        password = body["password"]
+        firstname = body["firstname"]
+        lastname = body["lastname"]
+
+        if User.objects.filter(email=email).exists():
+            return Response({"msg":email + " is already taken"},status=404)
+        else:
+            UserInstance = User.objects.create(
+                email=email, 
+                username="Customer-"+firstname,
+                first_name=firstname,
+                last_name=lastname,
+                createdby=createdby)
+            UserInstance.groups.add(Group.objects.get(id=5))
+            UserInstance.set_password(password)
+            UserInstance.save()
+            return Response({"msg":"Succefully"},status=200)
+
+
+
 
 # Projects
 class ProjectList(viewsets.ModelViewSet):

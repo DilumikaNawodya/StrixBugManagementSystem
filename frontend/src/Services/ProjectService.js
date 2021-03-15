@@ -1,10 +1,14 @@
+import { BehaviorSubject } from 'rxjs';
 import API from './Base';
 import { useEffect,useState } from 'react';
 
 
 export const projectService = {
     GetProjectList,
-    GetProject
+    GetProject,
+    setCurrentProject,
+    removeCurrentProject,
+    getCurrentProject,
 }
 
 
@@ -36,25 +40,20 @@ function GetProjectList() {
 }
 
 function GetProject(pid) {
+    const request = API.get('projectlist/'+pid)
+    return request
+}
 
-    const [state,setState] = useState({})
 
-    useEffect(()=>{
-        API.post('projectlist/', {
-            pid: pid
-        })
-        .then(function(response){
-            console.log(response.data.projectname)
-            setState(
-                response.data
-            )
-        })
-        .catch(function(error){
-            setState(
-                {}
-            )
-        })
-    },[])
+function setCurrentProject(pid){
+    localStorage.setItem('currentProject', JSON.stringify(pid))
+}
 
-    return state
+function removeCurrentProject(){
+    localStorage.removeItem("currentProject")
+}
+
+function getCurrentProject(){
+    var currentProjectSubject = localStorage.getItem('currentProject')
+    return currentProjectSubject
 }

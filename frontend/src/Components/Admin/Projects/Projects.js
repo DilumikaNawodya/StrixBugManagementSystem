@@ -5,7 +5,19 @@ import { projectService } from "../../../Services/ProjectService";
 function Projects(){
     
   const {projects} = projectService.GetProjectList();
+  const [state, setState] = useState(false)
+  
+  const editProjects = (id) =>{
+    alert(id)
+  }
 
+  const deleteProjects = (id) =>{
+    alert(id)
+  }
+
+  const addProjects = () => {
+    setState(true)
+  }
   return (
     <>
     <div class="container-fluid mt-4">
@@ -29,14 +41,19 @@ function Projects(){
           sorting: true
         }}
         actions={[
-            {
-              icon: () => <button class="btn btn-sm btn-outline-warning"><i class="fas fa-edit fa-2x"></i></button>,
-              onClick: (event, rowData) => alert("You edited " + rowData.id)
-            },
-            {
-                icon: () => <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash-alt fa-2x"></i></button>,
-                onClick: (event, rowData) => alert("You deleted " + rowData.id)
-            }
+          {
+            icon: () => <i class="fas fa-edit success"></i>,
+            onClick: (event, rowData) => editProjects(rowData.id)
+          },
+          {
+            icon: () => <i class="fas fa-trash-alt"></i>,
+            onClick: (event, rowData) => deleteProjects(rowData.id)
+          },
+          {
+            icon: () => <i class="fas fa-plus-square"></i>,
+            isFreeAction: true ,
+            onClick: () => addProjects()
+          },
         ]}
         options={{
             actionsColumnIndex: -1

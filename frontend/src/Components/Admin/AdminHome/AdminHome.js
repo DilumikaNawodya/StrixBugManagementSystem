@@ -6,7 +6,7 @@ import  './AdminHome.scss'
 function AdminHome(){
   return (
     <div class="container h-100">
-        <div class="row">
+        <div class="row mb-3">
 
             <div class="col-md-6 col-lg-4 column">
                 <div class="cardF gr-1">
@@ -14,7 +14,7 @@ function AdminHome(){
                         <h1>External User Creation</h1>
                         <p>Creating external users to the system</p>
                     </div>
-                    <NavLink to={'/Admin/ExternalUsers'}>
+                    <NavLink to={'/externalusers'}>
                         <i class="fa fa-plus-circle"></i>
                     </NavLink>
                 </div>
@@ -26,7 +26,7 @@ function AdminHome(){
                         <h1>Internal User Creation</h1>
                         <p>Creating Managers, Developers and QAs</p>
                     </div>
-                    <NavLink to={'/Admin/InternalUsers'}>
+                    <NavLink to={'/internalusers'}>
                         <i class="fa fa-plus-circle"></i>
                     </NavLink>
                 </div>
@@ -38,7 +38,7 @@ function AdminHome(){
                         <h1>Project Creation</h1>
                         <p>Creating projects</p>
                     </div>
-                    <NavLink to={'/Admin/Projects'}>
+                    <NavLink to={'/projects'}>
                         <i class="fa fa-plus-circle"></i>
                     </NavLink>
                 </div>
@@ -50,7 +50,7 @@ function AdminHome(){
                         <h1>Access Control</h1>
                         <p>Assigning users to their respective projects</p>
                     </div>
-                    <NavLink to={'/Admin/Permissions'}>
+                    <NavLink to={'/permissions'}>
                         <i class="fa fa-plus-circle"></i>
                     </NavLink>
                 </div>
