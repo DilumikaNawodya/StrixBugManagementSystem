@@ -1,56 +1,94 @@
-import React, { useState } from 'react';
-import SetPagination from '../../Common/Pagination/Pagination';
-import './SprintBacklog.scss';
+import React, { useState } from "react";
+import { useParams, useHistory } from "react-router-dom";
+import { projectService } from "../../../Services/ProjectService";
+import { sprintService } from "../../../Services/SprintService";
+import Badge from "react-bootstrap/Badge";
+import { BehaviorSubject } from "rxjs";
+import { Fragment } from "react";
+import MaterialTable from "material-table";
+
+const projectID = new BehaviorSubject(
+  JSON.parse(localStorage.getItem("projectID"))
+);
 
 function SprintBacklog() {
-    const sprints = ["Sprint 1", "Sprint 2", "Sprint 3", "Sprint 4", "Sprint 5", "Sprint 6", "Sprint 7", "Sprint 8", "Sprint 9", "Sprint 10"]
-    const [currentPage, setCurrentPage] = useState(1);
-    const [SprintsPerPage, setSprintsPerPage] = useState(7);
-    const indexOfLastSprint = currentPage * SprintsPerPage;
-    const indexOfFirstSprint = indexOfLastSprint - SprintsPerPage;
-    const currentSprint = sprints.slice(indexOfFirstSprint, indexOfLastSprint);
+  const [params, setParams] = useState({});
+  const history = useHistory();
 
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const handleInput = (e) => {
+    const param = e.target.name;
+    const value = e.target.value;
+    setParams((prevParams) => {
+      return { ...prevParams, [param]: value };
+    });
+  };
 
-    return (
-        <div class="d-flex fontSize mt-5" id="wrapper">
-            <div id="page-content-wrapper">
-                <div class="card ml-3 mt-2 mb-3 mr-3">
-                    <div class="card-header text-uppercase">
-                        <h6 class="d-inline">Project A</h6>
-                        <a href="" class="float-right text-dark"><i class="fa fa-search"></i></a>
-                    </div>
+  const { sprints, loading, error } = sprintService.GetSprintList(
+    params,
+    projectID.value
+  );
 
-                    <div class="list-group mb-0">
-                        <table class="table table-striped table-success">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Sprint Name</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {currentSprint.map(sprint => (
-                                    <tr>
-                                        <th scope="row">{sprints.indexOf(sprint)}</th>
-                                        <td>{sprint}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="row ml-3 mt-2 mb-3 mr-3">
-                    <SetPagination
-                        IssuePerPage={SprintsPerPage}
-                        totalIssues={sprints.length}
-                        paginate={paginate}
-                    />
-                </div>
-            </div>
+  const launchKanban = () => {
+    history.push("/kanbanboard");
+  };
 
-        </div>
-    )
+  const pinnedSprint = () => {
+    console.log("pinned");
+  };
+
+  return (
+    <Fragment>
+      <div class="mt-4 mr-4 ml-4 mb-4">
+        <MaterialTable
+          title="Sprint Backlog"
+          columns={[
+            {
+              title: "Sprint ID",
+              field: "id",
+              editable: "never",
+            },
+            {
+              title: "Sprint Name",
+              field: "name",
+              editable: "onUpdate",
+            },
+            {
+              title: "Status",
+              field: "status",
+              editable: "onUpdate",
+              render: (rowData) => (
+                <Badge variant={rowData.status ? "success" : "danger"}>
+                  {rowData.status ? "Active" : "Inactive"}
+                </Badge>
+              ),
+            },
+          ]}
+          data={sprints}
+          options={{
+            sorting: true,
+          }}
+          options={{
+            actionsColumnIndex: -1,
+          }}
+          actions={[
+            {
+              icon: () => <i class="fas fa-external-link-alt"></i>,
+              onClick: () => launchKanban(),
+            },
+            {
+              icon: (rowData) => (
+                <i
+                  class="fas fa-thumbtack"
+                  style={{ color: rowData.status ? "black" : "lightgrey" }}
+                ></i>
+              ),
+              onClick: (event) => pinnedSprint(),
+            },
+          ]}
+        />
+      </div>
+    </Fragment>
+  );
 }
 
 export default SprintBacklog;

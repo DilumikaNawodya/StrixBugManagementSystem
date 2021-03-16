@@ -300,3 +300,49 @@ class ProjectList(viewsets.ModelViewSet):
         else:
             return(Project.objects.filter(userlist=user))
 
+
+class GetSprints(APIView):
+
+    def post(self,request):
+        data = json.loads(request.body)
+
+        tickets = Ticket.objects.filter(project_id=data["pid"])
+
+        #sprints = Sprint.objects.filter(ticketlist__in=tickets).distinct('id')
+        sprints = Sprint.objects.all()
+
+        Sprints=[]
+
+        for sprint in sprints:
+            datatemp = {
+                "id":sprint.id,
+                "name":sprint.name,
+                "status":sprint.status,
+                "startdate":sprint.startdate,
+                "enddate":sprint.enddate,
+                "createdby":User.objects.get(username=sprint.createdby).username
+            }
+            Sprints.append(datatemp)
+        return Response({"Sprints":Sprints},status=200)
+
+
+def code_generator():
+    length = 6
+    while True:
+        code = ''.join(random.choices(string.ascii_uppercase, k=length))
+        if Sprints.objects.filter(name=code).count() == 0:
+            break
+    return code
+
+
+class CreateSprintView(APIView):
+    serializer_class = CreateSprintSerializer
+
+    def post(self,request):
+        name = 'test1'
+        status = True
+        createdby = User.objects.get(username=request.user)      
+        new = Sprint(name=name, status=status,createdby=createdby)
+        new.save()
+
+        return Response(True, status=200)
