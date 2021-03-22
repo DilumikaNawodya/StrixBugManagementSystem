@@ -2,34 +2,73 @@ import React, { useState } from "react"
 import { userService } from "../../../Services/UserService"
 import MaterialTable from 'material-table'
 import ExternalUserForm from "./ExternalUserForm"
+import userdelete from '../../../Assets/delete.svg'
 import { Modal } from 'react-bootstrap';
+import Swal from 'sweetalert2'
 
-function UserTableExternal(){
-    
-  const {externalusers} = userService.GetExternalUserList()
+
+function UserTableExternal() {
+
+  const { externalusers } = userService.GetExternalUserList()
+
   const [showAddUser, setShowAddUser] = useState(false)
   const [showDeleteUser, setShowDeleteUser] = useState(false)
-  const [tempID, settempID] = useState(null)
+  const [showEditUser, setShowEditUser] = useState(false)
 
+  const [tempDeleteID, settempDeleteID] = useState(null)
+  const [tempEditID, settempEditID] = useState(null)
 
-  const editExternalUsers = (id) =>{
-    alert(id)
+  // User updating
+  const editExternalUsers = (id) => {
+    settempEditID(id)
+    editUserModal()
   }
 
-  const deleteExternalUsers = (id) =>{
-    settempID(id)
-    deleteUserModal()
+  const editUserModal = () => {
+    setShowEditUser(!showEditUser)
   }
 
-  const deleteUserConfirm = () =>{
+  // User Deletion
+  const deleteExternalUsers = (id) => {
+    settempDeleteID(id)
     deleteUserModal()
-    console.log(tempID)
+  }
+  
+  const deleteUserConfirm = () => {
+    deleteUserModal()
+
+    userService.DeleteExternalUser(tempDeleteID)
+      .then(function (response) {
+        Swal.fire({
+          position: 'middle',
+          icon: 'success',
+          title: response.data.data,
+          showConfirmButton: true,
+          timer: 5000
+        }).then(function () {
+          window.location = "/externalusers";
+        })
+      })
+      .catch(function (error) {
+        Swal.fire({
+          position: 'middle',
+          icon: 'warning',
+          title: error.response.data.data,
+          showConfirmButton: true,
+          timer: 5000
+        }).then(function () {
+          window.location = "/externalusers";
+        })
+      })
+
   }
 
   const deleteUserModal = () => {
     setShowDeleteUser(!showDeleteUser)
   }
 
+
+  // User Creation
   const addExternalUser = () => {
     setShowAddUser(!showAddUser)
   }
@@ -42,59 +81,67 @@ function UserTableExternal(){
           title="External Users"
           columns={[
             {
-              title: 'Name', 
-              field: 'first_name', 
+              title: 'Name',
+              field: 'first_name',
               render: rowData => rowData.first_name + " " + rowData.last_name
             },
+            { title: 'Email', field: 'email', type: 'email' },
             { title: 'Date Joined', field: 'date_joined', type: 'date' },
-            { 
-              title: 'Role', 
-              field: 'role', 
+            {
+              title: 'Role',
+              field: 'role',
               render: rowData => <span class={"badge badge-" + rowData.color}>{rowData.role}</span>
             }
           ]}
-          data={externalusers}        
+          data={externalusers}
           options={{
             sorting: true
           }}
           actions={[
-              {
-                icon: () => <i class="fas fa-edit success"></i>,
-                onClick: (event, rowData) => editExternalUsers(rowData.id)
-              },
-              {
-                icon: () => <i class="fas fa-trash-alt"></i>,
-                onClick: (event, rowData) => deleteExternalUsers(rowData.id)
-              },
-              {
-                icon: () => <i class="fas fa-plus-square"></i>,
-                isFreeAction: true ,
-                onClick: () => addExternalUser()
-              },
+            {
+              icon: () => <i class="fas fa-edit success"></i>,
+              onClick: (event, rowData) => editExternalUsers(rowData.id)
+            },
+            {
+              icon: () => <i class="fas fa-trash-alt"></i>,
+              onClick: (event, rowData) => deleteExternalUsers(rowData.id)
+            },
+            {
+              icon: () => <i class="fas fa-plus-square"></i>,
+              isFreeAction: true,
+              onClick: () => addExternalUser()
+            },
           ]}
           options={{
-              actionsColumnIndex: -1
+            actionsColumnIndex: -1
           }}
         />
       </div>
 
       <Modal show={showAddUser}>
-        <Modal.Header>
-        </Modal.Header>
-        <Modal.Body>
-          <ExternalUserForm/>
-          <button type="button" className="btn btn-dark mb-3 btn-block" onClick={addExternalUser}>Cancel</button>
+        <Modal.Body class="container">
+          <ExternalUserForm uid={0}/>
+          <button type="button" className="btnContact mb-4" onClick={addExternalUser}>Cancel</button>
         </Modal.Body>
       </Modal>
 
       <Modal show={showDeleteUser}>
-        <Modal.Header>
-          <i class="far fa-frown"></i>
-        </Modal.Header>
-        <Modal.Body>
-          <h3 class="ml-2 font-weight-lighter mb-5">Are you sure you want to delete this user ?</h3>
-          <button type="button" className="btn btn-dark ml-3" onClick={deleteUserConfirm}>Confirm</button>
-          <button type="button" className="btn btn-dark ml-3" onClick={deleteUserModal}>Cancel</button>
+        <Modal.Body class="container">
+          <div class="contact-form">
+            <div class="contact-image">
+              <img src={userdelete} alt="rocket_contact" width="100px" height="100px" />
+            </div>
+            <h3 class="ml-2 font-weight-lighter" style={{ marginTop: "-8rem", textAlign: "left" }}>Are you sure you want<br />to delete this user ?</h3>
+          </div>
+          <button type="button" className="btnContact mb-4" onClick={deleteUserConfirm}>Confirm</button>
+          <button type="button" className="btnContact mb-4" onClick={deleteUserModal}>Cancel</button>
+        </Modal.Body>
+      </Modal>
+
+      <Modal show={showEditUser}>
+        <Modal.Body class="container">
+          <ExternalUserForm uid={tempEditID}/>
+          <button type="button" className="btnContact mb-4" onClick={editUserModal}>Cancel</button>
         </Modal.Body>
       </Modal>
 

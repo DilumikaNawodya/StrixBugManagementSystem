@@ -6,9 +6,7 @@ import error from '../Components/Common/Errors/Error';
 import ForgotPassword from '../Components/Login/ForgotPassword';
 import PasswordConfirmation from '../Components/Login/PasswordConfirmation';
 import { createBrowserHistory } from 'history';
-import CommonLayout from './Dashboards/CommonLayout';
 import Login from '../Components/Login/LoginForm';
-import IssueBacklogBMS from '../Components/BMS/IssueBacklog/IssueBacklogBMS';
 
 const history = createBrowserHistory();
 
@@ -45,7 +43,7 @@ function Auth(props){
                 
                 <Route exact path="/login" component={Login} />
             
-                {/* <Route exact path="/test" component={IssueBacklogBMS} /> */}
+                {/* <Route exact path="/test" component={AddEdit} /> */}
 
                 <PrivateRoute path="/" roles={[state.role]}/>
             </Switch>

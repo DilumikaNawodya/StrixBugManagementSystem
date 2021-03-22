@@ -1,7 +1,7 @@
 import React from 'react';
 import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
-import * as IoIcons from 'react-icons/io';
+import * as BiIcons from 'react-icons/bi';
 
 export const SidebarItem = [
   {
@@ -20,6 +20,12 @@ export const SidebarItem = [
     title: 'Internal Users',
     path: '/internalusers',
     icon: <AiIcons.AiOutlineUser />,
+    cName: 'nav-text'
+  },
+  {
+    title: 'Blocked Users',
+    path: '/blockedusers',
+    icon: <BiIcons.BiUserX />,
     cName: 'nav-text'
   },
   {

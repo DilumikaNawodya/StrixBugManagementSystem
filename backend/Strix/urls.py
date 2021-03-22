@@ -9,6 +9,7 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 router.register(r'internaluserlist', views.InternalUserList, basename='InternalUser')
 router.register(r'externaluserlist', views.ExternalUserList, basename='ExternalUser')
+router.register(r'blockeduserlist', views.BlockedUserList, basename='BlockedUser')
 router.register(r'projectlist', views.ProjectList, basename='ProjectList')
 
 
