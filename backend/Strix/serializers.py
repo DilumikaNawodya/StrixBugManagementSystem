@@ -45,3 +45,8 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ['id', 'projectname', 'description']
+
+class CreateSprintSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sprint
+        fields = ('id','name','status','createdby','ticketlist')

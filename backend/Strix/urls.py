@@ -25,6 +25,8 @@ urlpatterns = [
     path('ticketlist/',views.GetTickets.as_view()),
     path('filters/',views.Filters.as_view()),
 
+    path('sprintlist/',views.GetSprints.as_view()),
+    path('createsprint/',views.CreateSprintView.as_view()),
     path('', include(router.urls)),
 ]
 
