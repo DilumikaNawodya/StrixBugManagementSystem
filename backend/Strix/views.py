@@ -1,8 +1,12 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.http import JsonResponse
 from rest_framework import viewsets
 import json
+import datetime
 from django.core import serializers
+from django.db.models import Avg
+from django.contrib.postgres.aggregates.general import ArrayAgg
 from django.contrib.auth.mixins import PermissionRequiredMixin,LoginRequiredMixin
 from .mixins import RoleRequiredMixin
 from rest_framework.authtoken.models import Token
@@ -10,13 +14,15 @@ from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate
 from .models import * 
 from .serializers import *
-
+from .middlewares import *
 from django.core.exceptions import ValidationError
 from django.contrib.auth.tokens import default_token_generator
 from .MailService import *
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.models import Group
 
+
+# Login
 class Login(APIView):
 
     def post(self, request):
@@ -46,7 +52,7 @@ class Login(APIView):
         else:
             return Response({"msg":"You are not a registered user try again"},status=404)
 
-
+# Logout
 class Logout(APIView):
 
     def post(self,request):
@@ -57,11 +63,7 @@ class Logout(APIView):
             auth.logout(request)
             return Response(True,status=200)
 
-
-
-###############################################################################################
-
-
+# Email Confirmation
 class EmailConfirmation(APIView):
 
     token_generator = default_token_generator
@@ -82,6 +84,7 @@ class EmailConfirmation(APIView):
         else:
             return Response({"key": "Not Done"},status=404)
 
+# Password Confirmation
 class PasswordConfirmation(APIView):
 
     token_generator = default_token_generator
@@ -105,7 +108,7 @@ class PasswordConfirmation(APIView):
 
             return Response(False,status=404)
 
-
+# Reset Password
 class ResetPassword(APIView):
     
     token_generator = default_token_generator
@@ -136,37 +139,188 @@ class ResetPassword(APIView):
         else:
             return Response(False,status=404)
 
-###############################################################################################
+# Internal Users
+class InternalUserList(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        return User.objects.filter(groups__in=[3,4,2])
+
+    def create(self, request, *args, **kwargs):
+        createdby = request.user
+        if UserValidation(createdby) and createdby=="!Admin":
+            return Response({"data":"You do not have permission to create users !"},status=404)
+        else:
+            body = json.loads(request.body)
+
+            email = body["email"]
+            password = body["password"]
+            firstname = body["firstname"]
+            lastname = body["lastname"]
+            role = body["role"]
+
+            if EmailExists(email):
+                return Response({"data":" Email is already taken !"},status=404)
+            else:
+                UserInstance = User.objects.create(
+                    email=email, 
+                    username=role+"-"+firstname,
+                    first_name=firstname,
+                    last_name=lastname,
+                    createdby=createdby
+                )
+                UserInstance.groups.add(Group.objects.get(name=role))
+                UserInstance.set_password(password)
+                UserInstance.save()
+                return Response({"data":"Successfully Created !"},status=200)
+
+    def update(self, request, pk, *args, **kwargs):
+        createdby = request.user
+        if UserValidation(createdby) and createdby=="!Admin":
+            return Response({"data":"You do not have permission to create users !"},status=404)
+        else:
+            body = json.loads(request.body)
+
+            email = body["email"]
+            role = body["role"]
+            firstname = body["firstname"]
+            lastname = body["lastname"]
+
+            UserInstance = User.objects.get(id=pk)
+            UserInstance.first_name = firstname
+            UserInstance.last_name = lastname
+            if role!="Block":
+                UserInstance.username = role + '-' + firstname
+            UserInstance.email = email
+
+            group_name = UserInstance.groups.get()
+            if role != group_name:
+                UserInstance.groups.remove(Group.objects.get(name=group_name))
+                UserInstance.groups.add(Group.objects.get(name=role))  
+            UserInstance.save()
+            return Response({"data":"Successfully Updated !"},status=200)
+
+    
+    def destroy(self, request, pk, *args, **kwargs):
+        createdby = request.user
+        if UserValidation(createdby) and createdby=="!Admin":
+            return Response({"data":"You do not have permission to create users !"},status=404)
+        else:
+            if UserExists(pk):
+                User.objects.get(id=pk).delete()
+                return Response({"data":"Successfully Deleted !"},status=200)
+            else:
+                return Response({"data":"User you are trying to delete does not exist"},status=404)
+
+# External Users
+class ExternalUserList(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        return User.objects.filter(groups=5)
+    
+    def create(self, request, *args, **kwargs):
+        createdby = request.user
+        if UserValidation(createdby) and createdby=="!Admin":
+            return Response({"data":"You do not have permission to create users !"},status=404)
+        else:
+            body = json.loads(request.body)
+
+            email = body["email"]
+            password = body["password"]
+            firstname = body["firstname"]
+            lastname = body["lastname"]
+
+            if EmailExists(email):
+                return Response({"data":" Email is already taken !"},status=404)
+            else:
+                UserInstance = User.objects.create(
+                    email=email, 
+                    username="Customer-"+firstname,
+                    first_name=firstname,
+                    last_name=lastname,
+                    createdby=createdby
+                )
+                UserInstance.groups.add(Group.objects.get(id=5))
+                UserInstance.set_password(password)
+                UserInstance.save()
+                return Response({"data":"Successfully Created !"},status=200)
+
+    def update(self, request, pk, *args, **kwargs):
+        createdby = request.user
+        if UserValidation(createdby) and createdby=="!Admin":
+            return Response({"data":"You do not have permission to create users !"},status=404)
+        else:
+            body = json.loads(request.body)
+
+            email = body["email"]
+            role = body["role"]
+            firstname = body["firstname"]
+            lastname = body["lastname"]
+
+            UserInstance = User.objects.get(id=pk)
+            UserInstance.first_name = firstname
+            UserInstance.last_name = lastname
+            UserInstance.email = email
+
+            group_name = UserInstance.groups.get()
+            if role != group_name:
+                UserInstance.groups.remove(Group.objects.get(name=group_name))
+                UserInstance.groups.add(Group.objects.get(name=role))  
+            UserInstance.save()
+            return Response({"data":"Successfully Updated !"},status=200)
+
+    
+    def destroy(self, request, pk, *args, **kwargs):
+        createdby = request.user
+        if UserValidation(createdby) and createdby=="!Admin":
+            return Response({"data":"You do not have permission to create users !"},status=404)
+        else:
+            if UserExists(pk):
+                User.objects.get(id=pk).delete()
+                return Response({"data":"Successfully Deleted !"},status=200)
+            else:
+                return Response({"data":"User you are trying to delete does not exist"},status=404)
 
 
-# class ProjectList(APIView):
+# Blocked Users
 
-#     def get(self,request):
-#         user = request.user
+class BlockedUserList(viewsets.ModelViewSet):
+    serializer_class = BlockedUserSerializer
 
-#         if user.is_anonymous:
-#             return Response("Thota pissuda",status=404)
-#         else:
-#             role = User.objects.get(username=user).groups.values_list('name',flat=True)
-#             if role[0]=='Admin':
-#                 projects = self.Admin(user)
-#             else:
-#                 projects = self.OtherUser(user)
+    def get_queryset(self):
+        return User.objects.filter(groups=6)
 
-#         return Response(projects.values(),status=200)
+    def update(self, request, pk, *args, **kwargs):
+        createdby = request.user
+        if UserValidation(createdby) and createdby=="!Admin":
+            return Response({"data":"You do not have permission to create users !"},status=404)
+        else:
+            body = json.loads(request.body)
+            role = body["role"]
 
-#     def Admin(self,user):
-#         return(Project.objects.filter(adminid=user))
-        
-#     def OtherUser(self,user):
-#         return(Project.objects.filter(userlist=user))
+            UserInstance = User.objects.get(id=pk)
+
+            group_name = UserInstance.groups.get()
+            if role != group_name:
+                UserInstance.groups.remove(Group.objects.get(name=group_name))
+                UserInstance.groups.add(Group.objects.get(name=role))  
+            UserInstance.save()
+            return Response({"data":"Successfully Updated !"},status=200)
 
 
-#     def post(self,request):
-#         data = json.loads(request.body)
-#         project = Project.objects.filter(id=data['pid'])
+# Projects
+class ProjectList(viewsets.ModelViewSet):
+    serializer_class = ProjectSerializer
 
-#         return Response(project.values(),status=200)
+    def get_queryset(self):
+        user = self.request.user
+        role = User.objects.get(username=user).groups.values_list('name',flat=True)
+        if role[0]=='Admin':
+            return(Project.objects.filter(adminid=user))
+        else:
+            return(Project.objects.filter(userlist=user))
+
 
 
 class Filters(APIView):
@@ -240,65 +394,125 @@ class GetTickets(APIView):
 
         return Response({"Tickets":Tickets},status=200)
 
-
-##############################################################################################
-
-
-# Internal Users
-class InternalUserList(viewsets.ModelViewSet):
-    serializer_class = UserSerializer
-
-    def get_queryset(self):
-        return User.objects.filter(groups__in=[1,3,4,2])
+        
+###############################################################################################
 
 
+# class ProjectList(APIView):
+
+#     def get(self,request):
+#         user = request.user
+
+#         if user.is_anonymous:
+#             return Response("Thota pissuda",status=404)
+#         else:
+#             role = User.objects.get(username=user).groups.values_list('name',flat=True)
+#             if role[0]=='Admin':
+#                 projects = self.Admin(user)
+#             else:
+#                 projects = self.OtherUser(user)
+
+#         return Response(projects.values(),status=200)
+
+#     def Admin(self,user):
+#         return(Project.objects.filter(adminid=user))
+        
+#     def OtherUser(self,user):
+#         return(Project.objects.filter(userlist=user))
 
 
+#     def post(self,request):
+#         data = json.loads(request.body)
+#         project = Project.objects.filter(id=data['pid'])
 
-# External Users
-class ExternalUserList(viewsets.ModelViewSet):
-    serializer_class = UserSerializer
-
-    def get_queryset(self):
-        return User.objects.filter(groups=5)
-    
-    def create(self, request, *args, **kwargs):
-        createdby = request.user
-        body = json.loads(request.body)
-
-        email = body["email"]
-        password = body["password"]
-        firstname = body["firstname"]
-        lastname = body["lastname"]
-
-        if User.objects.filter(email=email).exists():
-            return Response({"msg":email + " is already taken"},status=404)
-        else:
-            UserInstance = User.objects.create(
-                email=email, 
-                username="Customer-"+firstname,
-                first_name=firstname,
-                last_name=lastname,
-                createdby=createdby)
-            UserInstance.groups.add(Group.objects.get(id=5))
-            UserInstance.set_password(password)
-            UserInstance.save()
-            return Response({"msg":"Succefully"},status=200)
+#         return Response(project.values(),status=200)
 
 
 
+# class DeveloperPerformance(viewsets.ModelViewSet):
+#     serializer_class = DeveloperPerformanceSerializer
 
-# Projects
-class ProjectList(viewsets.ModelViewSet):
-    serializer_class = ProjectSerializer
+#     def get_queryset(self):
+#         return(DeveloperTicket.objects.filter(date__month=2))
 
-    def get_queryset(self):
-        user = self.request.user
-        role = User.objects.get(username=user).groups.values_list('name',flat=True)
-        if role[0]=='Admin':
-            return(Project.objects.filter(adminid=user))
-        else:
-            return(Project.objects.filter(userlist=user))
+#     def create(self, request, *args, **kwargs):
+
+#         body = json.loads(request.body)
+
+#         project = body["projectid"]
+#         year = body["year"]
+#         start_date = body["to"]
+#         end_date = body["from"]
+
+#         if(project):
+#             pro_tickets = Ticket.objects.filter(project=project)        
+#         else:
+#             pro_tickets = Ticket.objects.all()
+
+#         dev_tickets = DeveloperTicket.objects.filter(date__year=year, date__range=[start_date, end_date], ticket__in=pro_tickets)
+#         month_tickets = dev_tickets.values('date__month').annotate(Avg('dailyeffort'), ticket_list=ArrayAgg('ticket_id'))
+
+#         for month in month_tickets:
+#             total_assigned = 0
+#             resolved = 0
+#             in_progress = 0
+#             for ticket in month['ticket_list']:
+#                 temp_workstate = Ticket.objects.get(id=ticket).workstate.id
+
+#                 if(temp_workstate==2 or temp_workstate==3 or temp_workstate==4):
+#                     total_assigned += 1
+#                 if(temp_workstate==4):
+#                     resolved += 1
+#                 if(temp_workstate==2 or temp_workstate==3):
+#                     in_progress += 1
+
+#             month["total_assigned"] = total_assigned
+#             month["resolved"] = resolved
+#             month["in_progress"] = in_progress
+
+#         return Response({"data":month_tickets}, status=200)
+
+
+# class Test(viewsets.ModelViewSet):
+
+#     serializer_class = TicketSerializer
+
+#     def create(self, request, *args, **kwargs):
+
+#         data = json.loads(request.body)
+
+#         ticket_current = Ticket.objects.create(
+#             issuename = data['issuename'],
+#             issuedescription = data['issuedescription'],
+#             bugtype = data['bugtype'],
+#             priority = data['priority'],
+#             severity = data['severity'],
+#             bspstatus = False,
+#             approval = False,
+#             totaleffort = data['totaleffort'],
+#             review = False,
+#             project = Project.objects.get(id=data['project']),
+#             workstate = Workstate.objects.get(id=data['workstate']),
+#             externaluser = User.objects.get(id=data['externaluser'])
+#         )
+
+#         ticket_current.save()
+        
+        
+
+#         ticket_media = data['ticketMedia']
+        
+#         for media in ticket_media:
+#             MediaInstance = TicketMedia.objects.create(
+#                 issuename = ticket_current,
+#                 files = media
+#             )
+
+#             MediaInstance.save()
+
+#         serializer = TicketSerializer(ticket_current)
+#         return Response({"data":serializer.data}, status=200)
+
 
 
 class GetSprints(APIView):
