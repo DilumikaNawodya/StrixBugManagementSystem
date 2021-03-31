@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Bug from "./Bug";
 import { Droppable } from "react-beautiful-dnd";
+import { authenticationService } from "../../../Services/LoginService";
 
 const Container = styled.div`
   margin: 8px;
@@ -31,7 +32,12 @@ const Column = (props) => {
       <Title>{props.column.title}</Title>
       <Droppable
         droppableId={props.column.id}
-        type={props.column.id === "column-4" ? "done" : "active"}
+        type={
+          props.column.id === "column-4" &&
+          authenticationService.userRole === "Developer"
+            ? "done"
+            : "active"
+        }
       >
         {(provided, snapshot) => (
           <BugList

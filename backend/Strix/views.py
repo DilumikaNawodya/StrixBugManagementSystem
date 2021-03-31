@@ -560,3 +560,10 @@ class CreateSprintView(APIView):
         new.save()
 
         return Response(True, status=200)
+
+# from django.http import JsonResponse
+
+# def test_by_dilumika(request):
+
+#     Sprint.objects.filter(id=4).update(enddate=datetime.date.today())
+#     return JsonResponse({"data": "Done"})

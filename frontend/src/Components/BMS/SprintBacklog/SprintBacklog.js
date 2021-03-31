@@ -15,13 +15,20 @@ function SprintBacklog() {
   const [params, setParams] = useState({});
   const history = useHistory();
 
-  const handleInput = (e) => {
+  {
+    /*  const handleInput = (e) => {
     const param = e.target.name;
     const value = e.target.value;
     setParams((prevParams) => {
       return { ...prevParams, [param]: value };
     });
-  };
+  };*/
+  }
+  const [state, setState] = useState(null);
+  const pid = projectService.getCurrentProject();
+  projectService.GetProject(pid).then(function (response) {
+    setState(response.data.projectname);
+  });
 
   const { sprints, loading, error } = sprintService.GetSprintList(
     params,
@@ -40,7 +47,7 @@ function SprintBacklog() {
     <Fragment>
       <div class="mt-4 mr-4 ml-4 mb-4">
         <MaterialTable
-          title="Sprint Backlog"
+          title={state}
           columns={[
             {
               title: "Sprint ID",

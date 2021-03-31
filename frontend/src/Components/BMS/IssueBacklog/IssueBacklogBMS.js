@@ -6,14 +6,9 @@ import * as IoIcons from "react-icons/io";
 import { authenticationService } from "../../../Services/LoginService";
 import { Redirect } from "react-router-dom";
 import { projectService } from "../../../Services/ProjectService";
-import { sprintService } from "../../../Services/SprintService";
 import TicketView from "./TicketView";
 import { Modal } from "react-bootstrap";
-import { BehaviorSubject } from "rxjs";
-
-const currentUserSubject = new BehaviorSubject(
-  JSON.parse(localStorage.getItem("currentUser"))
-);
+import AddSprintModal from "./AddSprintModal";
 
 function IssueBacklogBMS() {
   var userRole = "Block";
@@ -22,7 +17,9 @@ function IssueBacklogBMS() {
   }
 
   const [state, setState] = useState(null);
+  const [ticketData, setTicketData] = useState(null);
   const [isModelOpen, setisModelOpen] = useState(false);
+  const [isAddSprintOpen, setisAddSprintOpen] = useState(false);
   const pid = projectService.getCurrentProject();
   projectService.GetProject(pid).then(function (response) {
     setState(response.data.projectname);
@@ -31,12 +28,8 @@ function IssueBacklogBMS() {
   const { bugs } = ticketService.useFetchBugs(1);
   const { filters } = ticketService.Filters();
 
-  const PriorityBadge = (type) => {
+  const BadgeColor = (type) => {
     switch (type) {
-      case "urgent":
-        return "danger";
-        break;
-
       case "high":
         return "warning";
         break;
@@ -48,26 +41,9 @@ function IssueBacklogBMS() {
       case "low":
         return "primary";
         break;
-    }
-  };
 
-  const SeverityBadge = (type) => {
-    switch (type) {
-      case "critical":
+      default:
         return "danger";
-        break;
-
-      case "high":
-        return "warning";
-        break;
-
-      case "medium":
-        return "success";
-        break;
-
-      case "low":
-        return "primary";
-        break;
     }
   };
 
@@ -99,7 +75,7 @@ function IssueBacklogBMS() {
       field: "severity",
 
       render: (row) => (
-        <Badge variant={SeverityBadge(row.severity)}>{row.severity}</Badge>
+        <Badge variant={BadgeColor(row.severity)}>{row.severity}</Badge>
       ),
       lookup: filters.severity,
     },
@@ -108,7 +84,7 @@ function IssueBacklogBMS() {
       field: "priority",
 
       render: (row) => (
-        <Badge variant={PriorityBadge(row.priority)}>{row.priority}</Badge>
+        <Badge variant={BadgeColor(row.priority)}>{row.priority}</Badge>
       ),
       lookup: filters.priority,
     },
@@ -134,7 +110,10 @@ function IssueBacklogBMS() {
             actions={[
               {
                 icon: () => <IoIcons.IoMdOpen />,
-                onClick: () => setisModelOpen(true),
+                onClick: (e, rowData) => {
+                  setisModelOpen(true);
+                  setTicketData(rowData);
+                },
               },
               {
                 icon: () => <i class="fas fa-plus-square"></i>,
@@ -145,8 +124,7 @@ function IssueBacklogBMS() {
                   <button class="btn btn-sm btn-dark">Add Sprint</button>
                 ),
                 isFreeAction: true,
-                onClick: () =>
-                  sprintService.CreateSprint(currentUserSubject.Token),
+                onClick: () => setisAddSprintOpen(true),
               },
             ]}
           />
@@ -177,7 +155,12 @@ function IssueBacklogBMS() {
       </div>
       <Modal size="lg" show={isModelOpen}>
         <Modal.Body>
-          <TicketView cl={() => setisModelOpen(false)} />
+          <TicketView cl={() => setisModelOpen(false)} data={ticketData} />
+        </Modal.Body>
+      </Modal>
+      <Modal size="lg" show={isAddSprintOpen}>
+        <Modal.Body>
+          <AddSprintModal cl={() => setisAddSprintOpen(false)} />
         </Modal.Body>
       </Modal>
     </>

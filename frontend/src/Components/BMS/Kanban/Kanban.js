@@ -3,6 +3,8 @@ import initialData from "./Data";
 import Column from "./Column";
 import { DragDropContext } from "react-beautiful-dnd";
 import styled from "styled-components";
+import WarningModal from "./WarningModal";
+import { Modal } from "react-bootstrap";
 
 const Container = styled.div`
   display: flex;
@@ -10,7 +12,7 @@ const Container = styled.div`
 
 const Kanban = () => {
   const [state, setState] = useState(initialData);
-
+  const [isModalOpen, setisModalOpen] = useState(false);
   const onDragEnd = (result) => {
     const { destination, source, draggableId } = result;
     if (!destination) {
@@ -22,6 +24,12 @@ const Kanban = () => {
       destination.index === source.index
     ) {
       return;
+    }
+    if (
+      destination.droppableId === "column-4" &&
+      source.droppableId != "column-4"
+    ) {
+      setisModalOpen(true);
     }
 
     const start = state.columns[source.droppableId];
@@ -76,16 +84,24 @@ const Kanban = () => {
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Container>
-        {state.columnOrder.map((columnID) => {
-          const column = state.columns[columnID];
-          const tasks = column.taskIds.map((taskId) => state.tasks[taskId]);
+    <div>
+      {" "}
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Container>
+          {state.columnOrder.map((columnID) => {
+            const column = state.columns[columnID];
+            const tasks = column.taskIds.map((taskId) => state.tasks[taskId]);
 
-          return <Column key={column.id} column={column} tasks={tasks} />;
-        })}
-      </Container>
-    </DragDropContext>
+            return <Column key={column.id} column={column} tasks={tasks} />;
+          })}
+        </Container>
+      </DragDropContext>
+      <Modal size="md" show={isModalOpen}>
+        <Modal.Body>
+          <WarningModal cl={() => setisModalOpen(false)} />
+        </Modal.Body>
+      </Modal>
+    </div>
   );
 };
 
