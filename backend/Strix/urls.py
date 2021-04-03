@@ -11,7 +11,12 @@ router.register(r'internaluserlist', views.InternalUserList, basename='InternalU
 router.register(r'externaluserlist', views.ExternalUserList, basename='ExternalUser')
 router.register(r'blockeduserlist', views.BlockedUserList, basename='BlockedUser')
 router.register(r'projectlist', views.ProjectList, basename='ProjectList')
-
+router.register(r'bsp',views.bspTicketList,basename='BspTicketList')
+router.register(r'approvalTickets',views.ApprovalTickets,basename='ApprovalTickets')
+router.register(r'bmstest',views.BMSTicketList,basename='BMSTicketList')
+router.register(r'statusupdate',views.TicketStatusUpdate,basename='TicketStatusUpdate')
+router.register(r'qaupdatebugtype',views.QAUpdateBugType,basename='QAUpdateBugType')
+router.register(r'qaupdateseverity',views.QAUpdateSeverity,basename='QAUpdateSeverity')
 
 urlpatterns = [
 

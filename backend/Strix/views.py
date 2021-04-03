@@ -567,3 +567,105 @@ class CreateSprintView(APIView):
 
 #     Sprint.objects.filter(id=4).update(enddate=datetime.date.today())
 #     return JsonResponse({"data": "Done"})
+
+
+################################## My views#########
+class bspTicketList(viewsets.ModelViewSet):
+    serializer_class = TicketSerializer
+    
+
+    def get_queryset(self):
+        return Ticket.objects.filter(project=self.request.query_params.get("pid"),bspstatus=True)
+
+
+class ApprovalTickets(viewsets.ModelViewSet):
+    serializer_class = TicketSerializer
+    
+
+    def get_queryset(self):
+        return Ticket.objects.filter(project=self.request.query_params.get("pid"),approval=True)
+         
+        
+class BMSTicketList(viewsets.ModelViewSet):
+    serializer_class = TicketSerializer
+    
+
+    def get_queryset(self):
+        return Ticket.objects.filter(project=self.request.query_params.get("pid")).order_by("id")
+        
+
+
+class TicketStatusUpdate(viewsets.ModelViewSet):
+    serializer_class = TicketSerializer
+
+    def get_queryset(self):
+        return Ticket.objects.all()
+
+    def update(self, request, pk, *args, **kwargs):
+        createdby = request.user                             #get current user
+        
+        
+        data = json.loads(request.body)        #python cannot read json data. convert into dictionaryType
+        approval = data['approval']
+        bspstatus = data['bspstatus']
+        
+        selected_ticket = Ticket.objects.get(id=pk)
+
+        selected_ticket.approval = approval
+        selected_ticket.bspstatus = bspstatus
+
+        selected_ticket.save()
+
+        return Response({"data":"Succefully Chnaged !"},status=200)
+
+        
+            #return Response({"data":"You do not have permission to change status !"},status=404)     #validate user in Uservalidation in mixing.py 
+        
+
+class QAUpdateBugType(viewsets.ModelViewSet):
+    serializer_class = TicketSerializer 
+
+    def get_queryset(self):
+        return Ticket.objects.all()
+
+    def update(self, request, pk, *args, **kwargs):
+        createdby = request.user                             #get current user
+        
+        
+        data = json.loads(request.body)        #python cannot read json data. convert into dictionaryType
+        bugtype = data['bugtype']
+            
+        selected_ticket = Ticket.objects.get(id=pk)
+
+        selected_ticket.bugtype = bugtype
+        selected_ticket.save()
+
+        return Response({"data":"Succefully updated !"},status=200)
+
+        #else:
+           # return Response({"data":"You do not have permission to change tags !"},status=404)
+
+
+
+
+class QAUpdateSeverity(viewsets.ModelViewSet):
+    serializer_class = TicketSerializer 
+
+    def get_queryset(self):
+        return Ticket.objects.all()
+
+    def update(self, request, pk, *args, **kwargs):
+        createdby = request.user                             #get current user
+        
+        
+        data = json.loads(request.body)        #python cannot read json data. convert into dictionaryType
+        severity = data['severity']
+            
+        selected_ticket = Ticket.objects.get(id=pk)
+
+        selected_ticket.severity = severity
+        selected_ticket.save()
+
+        return Response({"data":"Succefully updated !"},status=200)
+
+##################################################
