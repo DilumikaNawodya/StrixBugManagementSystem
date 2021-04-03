@@ -25,7 +25,7 @@ const BadgeColor = (type) => {
   }
 };
 
-function TicketView(props) {
+function QATicketView(props) {
   const workState = (props) => {
     if (props.data.workstate == 1) {
       return "Open";
@@ -39,6 +39,86 @@ function TicketView(props) {
       return "Done";
     }
   };
+
+  const [inHover, setHover] = useState(false);
+  const [stateB, setStateB] = useState(false);
+  const [stateS, setStateS] = useState(false);
+
+  function handleBugType(e) {
+    const bugtype = e.target.value; // Update the bug type tag
+    console.log(bugtype);
+    const request = API.patch(
+      "/qaupdatebugtype/" + props.data.id + "/",
+      {
+        bugtype: bugtype,
+      },
+      {}
+    );
+    window.location.reload(true);
+    return request;
+  }
+
+  const toggleDropdownBugType = () => {
+    setStateB(!stateB);
+  };
+
+  function renderDropDownBugTypeMenu() {                 // drop down menu of bug type
+    return (
+      <div style={{ marginLeft: "300px" }}>
+        <select
+          className="form-control"
+          name="bugType"
+          onChange={handleBugType}
+          style={{ width: `165px`, height: "40px" }}
+        >
+          <option selected>Select a new tag</option>
+          <option value="Functional">Functional</option>
+          <option value="Performance">Performance</option>
+          <option value="Usability">Usability</option>
+          <option value="Compatibility">Compatibility</option>
+          <option value="Security">Security</option>
+        </select>
+      </div>
+    );
+  }
+
+  function handleSeverity(e) {          // update the severity tag
+    const severity = e.target.value;
+    console.log(severity);
+    const request = API.patch(
+      "/qaupdateseverity/" + props.data.id + "/",
+      {
+        severity: severity,
+      },
+      {}
+    );
+    window.location.reload(true);
+    return request;
+  }
+
+
+  const toggleDropdownSeverity = () => {
+    setStateS(!stateS);
+  };
+
+  function renderDropDownSeverityMenu() {              // drop down menu of severity
+    return (
+      <div style={{ marginLeft: "300px" }}>
+        <select
+          className="form-control"
+          name="bugType"
+          onChange={handleSeverity}
+          style={{ width: `165px`, height: "40px" }}
+        >
+          <option selected>Select a new tag</option>
+          <option value="critical">critical</option>
+          <option value="high">high</option>
+          <option value="medium">medium</option>
+          <option value="low">low</option>
+        </select>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -74,8 +154,19 @@ function TicketView(props) {
             <Badge
               pill
               variant={BadgeColor(props.data.severity)}
+              onMouseEnter={() => setHover(true)}
+              onMouseLeave={() => setHover(false)}
             >
               <BsExclamationTriangle />
+              {inHover && (
+                <IconButton
+                  color="primary"
+                  size="small"
+                  onClick={toggleDropdownSeverity}
+                >
+                  <IoIcons.IoMdCreate />
+                </IconButton>
+              )}
             </Badge>
           </OverlayTrigger>
           &nbsp;
@@ -92,8 +183,20 @@ function TicketView(props) {
             <Badge
               pill
               variant="secondary"
+              onMouseEnter={() => setHover(true)}
+              onMouseLeave={() => setHover(false)}
             >
               {props.data.bugtype}
+              {inHover && (
+                <IconButton
+                  color="secondary"
+                  size="small"
+                  aria-label="upload picture"
+                  onClick={toggleDropdownBugType}
+                >
+                  <IoIcons.IoMdCreate />
+                </IconButton>
+              )}
             </Badge>
           </OverlayTrigger>
           &nbsp;
@@ -106,6 +209,8 @@ function TicketView(props) {
         </div>
 
         <div class="col p-0 text-center">
+          {stateB && renderDropDownBugTypeMenu()}
+          {stateS && renderDropDownSeverityMenu()}
 
         </div>
         <div class="row mt-3">
@@ -121,4 +226,4 @@ function TicketView(props) {
     </div>
   );
 }
-export default TicketView;
+export default QATicketView;

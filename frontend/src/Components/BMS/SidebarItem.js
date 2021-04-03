@@ -24,7 +24,99 @@ export const SidebarItem = [
   },
 ];
 
-export const SidebarItemDrop = [];
+
+export const SidebarItemManager = [
+  {
+      title: 'Dashboard',
+      path: '/home',
+      icon: <AiIcons.AiFillHome />,
+      cName: 'nav-text'
+  },
+  {
+      title: 'Issue Backlog',
+      path: '/issuebacklogbms',
+      icon: <BsIcons.BsTable />,
+      cName: 'nav-text'
+  },
+  {
+      title: 'Approved level tickets',
+      path: '/bspapproval',
+      icon: <BsIcons.BsCheckBox/>,
+      cName: 'nav-text'
+  },
+  {
+      title: 'Bug Solution Pool',
+      path: '/bsp',
+      icon: <BsIcons.BsBookmarksFill/>,
+      cName: 'nav-text'
+  },
+  {
+    title: "Sprint Backlog",
+    path: "/sprintbacklog",
+    icon: <FaIcons.FaRev />,
+    cName: "nav-text",
+  },
+]
+
+export const SidebarItemDeveloper = [
+  {
+      title: 'Dashboard',
+      path: '/home',
+      icon: <AiIcons.AiFillHome />,
+      cName: 'nav-text'
+  },
+  {
+      title: 'Issue Backlog',
+      path: '/issuebacklogbms',
+      icon: <BsIcons.BsTable />,
+      cName: 'nav-text'
+  },
+  {
+      title: 'Bug Solution Pool',
+      path: '/bsp',
+      icon: <BsIcons.BsBookmarksFill/>,
+      cName: 'nav-text'
+  },
+  {
+    title: "Sprint Backlog",
+    path: "/sprintbacklog",
+    icon: <FaIcons.FaRev />,
+    cName: "nav-text",
+  },
+]
+
+export const SidebarItemQA = [
+  {
+      title: 'Dashboard',
+      path: '/home',
+      icon: <AiIcons.AiFillHome />,
+      cName: 'nav-text'
+  },
+  {
+      title: 'Issue Backlog',
+      path: '/issuebacklogbms',
+      icon: <BsIcons.BsTable />,
+      cName: 'nav-text'
+  },
+  {
+      title: 'Bug Solution Pool',
+      path: '/bsp',
+      icon: <BsIcons.BsBookmarksFill/>,
+      cName: 'nav-text'
+  },
+  {
+    title: "Sprint Backlog",
+    path: "/sprintbacklog",
+    icon: <FaIcons.FaRev />,
+    cName: "nav-text",
+  },
+]
+
+
+export const SidebarItemDropManager = []
+export const SidebarItemDropDeveloper = []
+export const SidebarItemDropQA = []
+
 
 // Below arrays represent the items BMS sidebar home
 
