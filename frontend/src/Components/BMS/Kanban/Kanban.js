@@ -1,23 +1,57 @@
-import React, { useState } from "react";
-import initialData from "./Data";
+import React, { useState, useEffect,  } from "react";
 import Column from "./Column";
 import { DragDropContext } from "react-beautiful-dnd";
 import styled from "styled-components";
 import WarningModal from "./WarningModal";
 import { Modal } from "react-bootstrap";
+import SetKanbanData from "./Data";
+import { sprintService } from "../../../Services/SprintService";
+import { useParams } from "react-router";
 
 const Container = styled.div`
   display: flex;
 `;
 
 const Kanban = () => {
-  const [state, setState] = useState(initialData);
+
+  const {sid} = useParams()
+
+  const initialData = SetKanbanData(sid)
+  const [state, setState] = useState(initialData)
+  const [dropDetails, setDropDetails] = useState({
+    destid: '',
+    tid: ''
+  })
+
+  useEffect(() =>{
+    setState(initialData)
+  },[initialData])
+  
+  function SetDrop(){
+    sprintService.UpdateWorkstate(dropDetails)
+  }
+
   const [isModalOpen, setisModalOpen] = useState(false);
-  const onDragEnd = (result) => {
+  
+  function onDragEnd(result){
     const { destination, source, draggableId } = result;
+
     if (!destination) {
       return;
     }
+
+    if(destination.droppableId === "column-4"){
+      setDropDetails({
+        destid: destination.droppableId,
+        tid: draggableId
+      })
+    }else{
+      sprintService.UpdateWorkstate({
+        destid: destination.droppableId,
+        tid: draggableId
+      })
+    }
+    
 
     if (
       destination.droppableId === source.droppableId &&
@@ -89,16 +123,15 @@ const Kanban = () => {
       <DragDropContext onDragEnd={onDragEnd}>
         <Container>
           {state.columnOrder.map((columnID) => {
-            const column = state.columns[columnID];
-            const tasks = column.taskIds.map((taskId) => state.tasks[taskId]);
-
-            return <Column key={column.id} column={column} tasks={tasks} />;
+            let column = state.columns[columnID]
+            const tasks = column.taskIds.map((taskId) => state.tasks[taskId])
+            return <Column key={column.id} column={column} tasks={tasks} />
           })}
         </Container>
       </DragDropContext>
       <Modal size="md" show={isModalOpen}>
         <Modal.Body>
-          <WarningModal cl={() => setisModalOpen(false)} />
+          <WarningModal cl={() => setisModalOpen(false)} submit={() => SetDrop()} />
         </Modal.Body>
       </Modal>
     </div>

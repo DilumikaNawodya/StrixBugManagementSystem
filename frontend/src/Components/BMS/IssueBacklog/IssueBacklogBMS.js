@@ -1,90 +1,50 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import MaterialTable from "material-table";
-import { Badge, BootstrapDialog, Button } from "react-bootstrap";
+import { Badge } from "react-bootstrap";
 import { ticketService } from "../../../Services/TicketService";
 import { authenticationService } from "../../../Services/LoginService";
 import { Redirect } from "react-router-dom";
 import { projectService } from "../../../Services/ProjectService";
-//import { Tooltip } from "@material-ui/core";
-//import {Example} from './BacklogFunctions';
-import { backlogFunctions } from "./BacklogFunctions";
 import { Modal } from "react-bootstrap";
-import TicketView from "./TicketView";
-import QATicketView from "./QATicketView";
 import AddSprintModal from "./AddSprintModal";
 import * as IoIcons from "react-icons/io";
-import * as AiIcons from "react-icons/ai";
-import * as BsIcons from "react-icons/bs";
+import TicketViewNew from "./TicketViewUpdate";
+import Swal from 'sweetalert2'
+import { sprintService } from "../../../Services/SprintService";
 
 function IssueBacklogBMS() {
-  /* const { projectid } = useParams();
-  localStorage.setItem("projectID", JSON.stringify(projectid));
-*/
-  //actions
 
-  var userRole = "Block";
+  var userRole = "Block"
   if (authenticationService.currentUserValue != null) {
-    userRole = authenticationService.userRole;
+    userRole = authenticationService.userRole
   }
 
-  const [state1, setState] = useState(null);
-  const [ticketData, setTicketData] = useState(null);
-  const [isModelOpen, setisModelOpen] = useState(false);
-  const [isQAModelOpen, setisQAModelOpen] = useState(false);
-  const pid = projectService.getCurrentProject();
-  const [isAddSprintOpen, setisAddSprintOpen] = useState(false);
+  const [projectname, setProjectName] = useState('')
+  const [ticketData, setTicketData] = useState()
 
-  projectService.GetProject(pid).then(function (response) {
-    //update the state1 as the current project name
-    setState(response.data.projectname);
-  });
+  const [isManagerModelOpen, setisManagerModelOpen] = useState(false)
+  const [isQAModelOpen, setisQAModelOpen] = useState(false)
+  const [isDevModelOpen, setisDevModelOpen] = useState(false)
 
-  const { approvedBSPList } = ticketService.FetchBugsForApprovedBSP(pid); // for button disable
-  const { bspList } = ticketService.FetchBugsForBSP(pid); // for button disable
+  const [isAddSprintOpen, setisAddSprintOpen] = useState(false)
 
-  const { bmsList } = ticketService.FetchBugsForBMS(pid);
-  const { filters } = ticketService.Filters();
+  const pid = projectService.getCurrentProject()
 
-  const PriorityBadge = (type) => {
-    switch (type) {
-      case "urgent":
-        return "danger";
-        break;
+  useEffect(() => {
+    projectService.GetProject(pid)
+      .then(function (response) {
+        setProjectName(response.data.projectname)
+      })
+  }, [])
 
-      case "high":
-        return "warning";
-        break;
+  let ticketlist = []
+  const { sprints } = sprintService.GetSprintList(pid)
+  for(var i=0; i<sprints.length; i++){
+    ticketlist = ticketlist.concat(sprints[i].ticketlist)
+  }
 
-      case "medium":
-        return "success";
-        break;
-
-      case "low":
-        return "primary";
-        break;
-    }
-  };
-
-  const SeverityBadge = (type) => {
-    switch (type) {
-      case "critical":
-        return "danger";
-        break;
-
-      case "high":
-        return "warning";
-        break;
-
-      case "medium":
-        return "success";
-        break;
-
-      case "low":
-        return "primary";
-        break;
-    }
-  };
+  const { bmsList } = ticketService.FetchBugs(pid)
+  const { filters } = ticketService.Filters()
 
   const columns = [
     {
@@ -94,32 +54,32 @@ function IssueBacklogBMS() {
     {
       title: "Review",
       field: "review",
-      lookup: { true: "Reviewed", false: "Not Reviewed" },
+      lookup: filters.review,
     },
     {
       title: "Status",
-      field: "workstate",
-      lookup: { 4: "Done", 3: "Review", 2: "In Progress", 1: "Open" },
+      field: "Workstate.id",
+      lookup: filters.status,
     },
     {
       title: "Bugtype",
-      field: "bugtype",
+      field: "BugType.id",
       lookup: filters.bugtype,
     },
     {
       title: "Severity",
-      field: "severity",
+      field: "Severity.id",
       render: (row) => (
-        <Badge variant={SeverityBadge(row.severity)}>{row.severity}</Badge>
+        <Badge variant={row.Severity.color}> {row.Severity.severity} </Badge>
       ),
       lookup: filters.severity,
     },
     {
       title: "Priority",
-      field: "priority",
+      field: "Priority.id",
       editable: true,
       render: (row) => (
-        <Badge variant={PriorityBadge(row.priority)}>{row.priority}</Badge>
+        <Badge variant={row.Priority.color}> {row.Priority.priority}</Badge>
       ),
       lookup: filters.priority,
     },
@@ -127,11 +87,10 @@ function IssueBacklogBMS() {
       title: "Date",
       field: "date",
     },
-  ];
+  ]
 
   return (
     <div class="container-fluid mt-4">
-      <div></div>
 
       {userRole == "Manager" && (
         <MaterialTable
@@ -141,8 +100,8 @@ function IssueBacklogBMS() {
                 <IoIcons.IoIosSearch />
               </div>
             ),
-          }} // remove the default icon and pass the search icon
-          title={state1}
+          }}
+          title={projectname}
           columns={columns}
           data={bmsList}
           options={{
@@ -156,40 +115,38 @@ function IssueBacklogBMS() {
             },
           }}
           actions={[
-            {
+            (rowData) => ({
               icon: () => <i class="fas fa-plus-square"></i>,
-              onClick: (event, rowData) => alert("Add to sprint"),
-            },
+              onClick: () => alert("Add to sprint"),
+              disabled: ticketlist.some(sprint => sprint == rowData.id)
+            }),
             {
               icon: () => <IoIcons.IoIosOpen />,
               onClick: (event, rowData) => {
-                setisModelOpen(true);
-                setTicketData(rowData);
+                setisManagerModelOpen(true)
+                setTicketData(rowData)
               },
               tooltip: "Ticket view",
             },
             {
-              icon: () => (
-                <button class="btn btn-sm btn-dark">Create Sprint</button>
-              ),
+              icon: () => <button class="btn btn-sm btn-dark">Create Sprint</button>,
               isFreeAction: true,
               onClick: () => setisAddSprintOpen(true),
             },
           ]}
         />
       )}
-      {userRole == "Block" && <Redirect to="/error" />}
+
       {userRole == "Developer" && (
         <MaterialTable
           icons={{
-            // remove the default icon and pass the search icon
             Filter: () => (
               <div>
                 <IoIcons.IoIosSearch />
               </div>
             ),
           }}
-          title={state1}
+          title={projectname}
           columns={columns}
           data={bmsList}
           options={{
@@ -200,21 +157,44 @@ function IssueBacklogBMS() {
           actions={[
             (rowData) => ({
               icon: () => <IoIcons.IoIosDownload />,
-              onClick: (event, rowData) =>
-                backlogFunctions.addBugsToBSP(rowData, true, false),
+              onClick: (event, rowData) => ticketService.StateChange(rowData, true, false)
+                .then(function (response) {
+                  Swal.fire({
+                      position: 'middle',
+                      icon: 'success',
+                      title: response.data.data,
+                      showConfirmButton: true,
+                      timer: 5000
+                  }).then(function () {
+                      window.location.reload(true)
+                  })
+                })
+                .catch(function (error) {
+                    Swal.fire({
+                        position: 'middle',
+                        icon: 'warning',
+                        title: error.response.data.data,
+                        showConfirmButton: true,
+                        timer: 5000
+                    }).then(function () {
+                        window.location.reload(true)
+                    })
+                }),
               tooltip: "Add bugs to bsp",
-              disabled:
-                bspList.find((o) => o.id === rowData.id) ||
-                approvedBSPList.find((o) => o.id === rowData.id),
+              disabled: rowData.bspstatus == true || rowData.approval == true,
             }),
             {
               icon: () => <IoIcons.IoIosOpen />,
-              onClick: (event, rowData) => {setisModelOpen(true);setTicketData(rowData);},
+              onClick: (event, rowData) => { 
+                setisDevModelOpen(true)
+                setTicketData(rowData)
+              },
               tooltip: "Ticket view",
             },
           ]}
         />
       )}
+
       {userRole == "QA" && (
         <MaterialTable
           icons={{
@@ -224,7 +204,7 @@ function IssueBacklogBMS() {
               </div>
             ),
           }}
-          title={state1}
+          title={projectname}
           columns={columns}
           data={bmsList}
           options={{
@@ -241,39 +221,70 @@ function IssueBacklogBMS() {
           actions={[
             (rowData) => ({
               icon: () => <IoIcons.IoIosDownload />,
-              onClick: (event, rowData) =>
-                backlogFunctions.addBugsToBSP(rowData, true, false),
+              onClick: (event, rowData) => ticketService.StateChange(rowData, true, false)
+                .then(function (response) {
+                  Swal.fire({
+                      position: 'middle',
+                      icon: 'success',
+                      title: response.data.data,
+                      showConfirmButton: true,
+                      timer: 5000
+                  }).then(function () {
+                      window.location.reload(true)
+                  })
+                })
+                .catch(function (error) {
+                    Swal.fire({
+                        position: 'middle',
+                        icon: 'warning',
+                        title: error.response.data.data,
+                        showConfirmButton: true,
+                        timer: 5000
+                    }).then(function () {
+                        window.location.reload(true)
+                    })
+                }),
               tooltip: "Add bugs to bsp",
-              disabled:
-                bspList.find((o) => o.id === rowData.id) ||
-                approvedBSPList.find((o) => o.id === rowData.id),
+              disabled: rowData.bspstatus == true || rowData.approval == true,
             }),
-
             {
               icon: () => <IoIcons.IoIosOpen />,
-              onClick: (event, rowData) =>{setisQAModelOpen(true);setTicketData(rowData);},
+              onClick: (event, rowData) => { 
+                setTicketData(rowData)
+                setisQAModelOpen(true)
+              },
               tooltip: "Ticket view",
             },
           ]}
         />
       )}
-      <Modal size="lg" show={isModelOpen}>
+
+      {userRole == "Block" && <Redirect to="/error" />} 
+
+
+      <Modal size="lg" show={isManagerModelOpen}>
         <Modal.Body>
-          <TicketView cl={() => setisModelOpen(false)} data={ticketData} />
+          <TicketViewNew cl={() => setisManagerModelOpen(false)} data={ticketData} role="Manager"/>
         </Modal.Body>
       </Modal>
       <Modal size="lg" show={isQAModelOpen}>
         <Modal.Body>
-          <QATicketView cl={() => setisQAModelOpen(false)} data={ticketData} />
+          <TicketViewNew cl={() => setisQAModelOpen(false)} data={ticketData} role="QA"/>
         </Modal.Body>
       </Modal>
-      <Modal size="lg" show={isAddSprintOpen}>
+      <Modal size="lg" show={isDevModelOpen}>
+        <Modal.Body>
+          <TicketViewNew cl={() => setisDevModelOpen(false)} data={ticketData} role="Developer"/>
+        </Modal.Body>
+      </Modal>
+      <Modal size="md" show={isAddSprintOpen}>
         <Modal.Body>
           <AddSprintModal cl={() => setisAddSprintOpen(false)} />
         </Modal.Body>
       </Modal>
+
     </div>
-  );
+  )
 }
 
 export default IssueBacklogBMS;

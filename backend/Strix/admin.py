@@ -65,8 +65,10 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('username',)
     filter_horizontal = ()
 
-modelsArray = [models.Project,models.Workstate,models.Ticket,models.Sprint,
-                models.Comment,models.DeveloperTicket,models.QATicket,Permission,models.TicketMedia,models.Pinned]
+modelsArray = [ models.Project,models.Workstate,models.Ticket,models.Sprint,
+                models.Comment,models.DeveloperTicket,models.QATicket,Permission,
+                models.TicketMedia,models.Pinned,models.BugType,models.Priority,models.Severity
+            ]
 
 
 # Register your models here.

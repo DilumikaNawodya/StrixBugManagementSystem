@@ -5,6 +5,7 @@ import ExternalUserForm from "./ExternalUserForm"
 import userdelete from '../../../Assets/delete.svg'
 import { Modal } from 'react-bootstrap';
 import Swal from 'sweetalert2'
+import UserDetailcard from "./UserDetailCard"
 
 
 function UserTableExternal() {
@@ -95,7 +96,8 @@ function UserTableExternal() {
           ]}
           data={externalusers}
           options={{
-            sorting: true
+            sorting: true,
+            actionsColumnIndex: -1
           }}
           actions={[
             {
@@ -112,8 +114,8 @@ function UserTableExternal() {
               onClick: () => addExternalUser()
             },
           ]}
-          options={{
-            actionsColumnIndex: -1
+          detailPanel={rowData=>{
+            return(<UserDetailcard data={rowData} />)
           }}
         />
       </div>

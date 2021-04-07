@@ -3,157 +3,173 @@ import { useReducer, useEffect, useState } from "react";
 import axios from "axios";
 
 export const ticketService = {
-  FetchBugsForBMS,
-  FetchBugsForBSP,
-  Filters,
-  FetchBugsForApprovedBSP,
-};
-/*
-const ACTIONS = {
-  MAKE_REQUEST: "make-request",
-  GET_DATA: "get-data",
-  ERROR: "error",
-};
+    Filters,
+    GetCustomeData,
+    StateChange,
+    FetchBugs,
+    FetchBugsForBSP,
 
-function reducer(state, action) {
-  switch (action.type) {
-    case ACTIONS.MAKE_REQUEST:
-      return { loading: true, bugs: [] };
-    case ACTIONS.GET_DATA:
-      return { ...state, loading: false, bugs: action.payload.bugs };
-    case ACTIONS.ERROR:
-      return { ...state, loading: false, bugs: action.payload.error, bugs: [] };
-    default:
-      return state;
-  }
+    UpdateByManager,
+    UpdateByQA,
+    UpdateByDev,
+
+    GetTicketMedia
 }
-// Bug management system
-function FetchBugsForBMS(pid) {
-  const initialState = {
-    bugs: [],
-    loading: true,
-  };
-
-  const [state, dispatch] = useReducer(reducer, initialState);
-
-  useEffect(() => {
-    API.post("ticketlist/", {
-      pid: pid,
-    })
-      .then((res) => {
-        dispatch({
-          type: ACTIONS.GET_DATA,
-          payload: { bugs: res.data.Tickets },
-        });
-      })
-      .catch((e) => {
-        if (axios.isCancel(e)) return;
-        dispatch({ type: ACTIONS.ERROR, payload: { error: e } });
-      });
-  }, []);
-
-  return state;
-}
-*/
 
 function Filters() {
-  const [state, setState] = useState({
-    filters: [],
-    error: false,
-  });
-
-  useEffect(() => {
-    API.get("filters/")
-      .then(function (response) {
-        setState({
-          filters: response.data,
-          error: false,
-        });
-      })
-      .catch(function (error) {
-        setState({
-          filters: [],
-          error: true,
-        });
-      });
-  }, []);
-  return state;
-}
-
-//Manager's bsp
-function FetchBugsForBSP(pid){
     const [state, setState] = useState({
-        bspList:[],
-        error:false
-    })
+        filters: [],
+        error: false,
+    });
 
-    useEffect(()=>{
-        API.get('/approvalTickets/?pid='+pid)
+    useEffect(() => {
+        API.get("filters/")
             .then(function (response) {
                 setState({
-                    bspList: response.data,
-                    error:false
+                    filters: response.data,
+                    error: false,
+                });
+            })
+            .catch(function (error) {
+                setState({
+                    filters: [],
+                    error: true,
+                });
+            });
+    }, []);
+    return state;
+}
+
+// Get Custome data - Workstates=4, Bugtype=1, Priority level=2, Severity level=3
+
+function GetCustomeData(id){
+    const [state, setState] = useState({
+        customeData: [],
+        error: false,
+    });
+
+    useEffect(() => {
+        API.get("customedatalist/?customeid="+id)
+            .then(function (response) {
+                console.log(response.data)
+                setState({
+                    customeData: response.data,
+                    error: false,
+                });
+            })
+            .catch(function (error) {
+                setState({
+                    customeData: [],
+                    error: true,
+                });
+            });
+    }, []);
+    return state.customData;
+}
+
+function StateChange(rowData, approval, bspstatus) {
+    const request = API.patch("/bspticketlist/" + rowData.id + "/",{
+        approval: approval,
+        bspstatus: bspstatus,
+    },{})
+    return request;
+}
+
+
+function FetchBugs(pid) {
+    const [state, setState] = useState({
+        bmsList: [],
+        error: false
+    })
+
+    useEffect(() => {
+        API.get('/ticketlist/?pid=' + pid)
+            .then(function (response) {
+                setState({
+                    bmsList: response.data,
+                    error: false
                 })
             })
             .catch(function (error) {
                 setState({
-                    bspList:[],
-                    error:true
+                    bmsList: [],
+                    error: true
                 })
             })
-    },[])
+    }, [])
 
     return state
 }
 
-//testBMS
-function FetchBugsForBMS(pid){
-  const [state, setState] = useState({
-      bmsList:[],
-      error:false
-  })
-
-  useEffect(()=>{
-      API.get('/bmstest/?pid='+pid)
-          .then(function (response) {
-              setState({
-                bmsList: response.data,
-                  error:false
-              })
-          })
-          .catch(function (error) {
-              setState({
-                bmsList:[],
-                  error:true
-              })
-          })
-  },[])
-
-  return state
+function UpdateByManager(totaleffort, tid){
+    const request = API.patch('/ticketlist/' + tid + '/?type=1',{
+        totaleffort: totaleffort
+    })
+    return request
 }
 
-//Approved bsp
-function FetchBugsForApprovedBSP(pid){
+function UpdateByQA(fields, tid){
+    const request = API.patch('/ticketlist/' + tid + '/?type=2', fields)
+    return request
+}
+
+function UpdateByDev(dailyeffort, tid){
+    const request = API.patch('/ticketlist/' + tid + '/?type=3',{
+        dailyeffort: dailyeffort
+    })
+    return request
+}
+
+function GetTicketMedia(tid){
     const [state, setState] = useState({
-        approvedBSPList:[],
-        error:false
+        ticketMedia: [],
+        error: false
     })
 
-    useEffect(()=>{
-        API.get('/bsp/?pid='+pid)
+    useEffect(() => {
+        API.get('/ticketmedia/?tid=' + tid)
             .then(function (response) {
                 setState({
-                    approvedBSPList: response.data,
-                    error:false
+                    ticketMedia: response.data,
+                    error: false
                 })
             })
             .catch(function (error) {
                 setState({
-                    approvedBSPList:[],
-                    error:true
+                    ticketMedia: [],
+                    error: true
                 })
             })
-    },[])
+    }, [])
 
     return state
 }
+
+//Approved bsp ( set statusid = 1 to get Approved Tickets, set statusid = 2 to get Pending Tickets)
+
+
+function FetchBugsForBSP(pid, statusid) {
+    const [state, setState] = useState({
+        BSPList: [],
+        error: false
+    })
+
+    useEffect(() => {
+        API.get('/bspticketlist/?pid=' + pid + '&statusid=' + statusid)
+            .then(function (response) {
+                setState({
+                    BSPList: response.data,
+                    error: false
+                })
+            })
+            .catch(function (error) {
+                setState({
+                    BSPList: [],
+                    error: true
+                })
+            })
+    }, [])
+
+    return state
+}
+

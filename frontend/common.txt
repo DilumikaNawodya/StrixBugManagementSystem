@@ -1,0 +1,8 @@
+Users Color Codes
+
+1. Admin - Dark (BST)
+2. manager - Primary (BST)
+3. QA - Info (BST)
+4. Developer - Warning (BST)
+5. Customer - Success (BST)
+6. Block - Danger (BST)

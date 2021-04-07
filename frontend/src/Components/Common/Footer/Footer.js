@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 
 function Footer(){
     return(
-        <footer class="py-4 bg-light mt-auto mt-4">
+        <footer class="py-4 bg-light mt-5">
             <div class="container-fluid">
                 <div class="d-flex align-items-center justify-content-between small">
                     <div class="text-muted">Copyright &copy; Your Website 2020</div>

@@ -21,3 +21,19 @@ def UserValidation(user):
     else:
         return True
 
+def ProjectExists(pid):
+
+    if Project.objects.filter(id=pid).exists():
+        return True
+    else:
+        return False
+
+def CommentExists(cid):
+
+    if Comment.objects.filter(id=cid).exists():
+        return True
+    else:
+        return False
+
+def UserRole(user):
+    return(user.groups.values_list('name',flat=True)[0])

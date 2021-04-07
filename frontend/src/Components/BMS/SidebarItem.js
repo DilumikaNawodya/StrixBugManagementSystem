@@ -2,28 +2,8 @@ import React from "react";
 import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
 import * as BsIcons from "react-icons/bs";
-
-export const SidebarItem = [
-  {
-    title: "Dashboard",
-    path: "/home",
-    icon: <AiIcons.AiFillHome />,
-    cName: "nav-text",
-  },
-  {
-    title: "Issue Backlog",
-    path: "/issuebacklogbms",
-    icon: <BsIcons.BsTable />,
-    cName: "nav-text",
-  },
-  {
-    title: "Sprint Backlog",
-    path: "/sprintbacklog",
-    icon: <FaIcons.FaRev />,
-    cName: "nav-text",
-  },
-];
-
+import { sprintService } from "../../Services/SprintService";
+import { authenticationService } from "../../Services/LoginService";
 
 export const SidebarItemManager = [
   {
@@ -51,10 +31,10 @@ export const SidebarItemManager = [
       cName: 'nav-text'
   },
   {
-    title: "Sprint Backlog",
-    path: "/sprintbacklog",
-    icon: <FaIcons.FaRev />,
-    cName: "nav-text",
+      title: "Sprint Backlog",
+      path: "/sprintbacklog",
+      icon: <FaIcons.FaRev />,
+      cName: "nav-text",
   },
 ]
 
@@ -78,10 +58,10 @@ export const SidebarItemDeveloper = [
       cName: 'nav-text'
   },
   {
-    title: "Sprint Backlog",
-    path: "/sprintbacklog",
-    icon: <FaIcons.FaRev />,
-    cName: "nav-text",
+      title: "Sprint Backlog",
+      path: "/sprintbacklog",
+      icon: <FaIcons.FaRev />,
+      cName: "nav-text",
   },
 ]
 
@@ -105,17 +85,17 @@ export const SidebarItemQA = [
       cName: 'nav-text'
   },
   {
-    title: "Sprint Backlog",
-    path: "/sprintbacklog",
-    icon: <FaIcons.FaRev />,
-    cName: "nav-text",
+      title: "Sprint Backlog",
+      path: "/sprintbacklog",
+      icon: <FaIcons.FaRev />,
+      cName: "nav-text",
   },
 ]
 
 
-export const SidebarItemDropManager = []
-export const SidebarItemDropDeveloper = []
-export const SidebarItemDropQA = []
+export let SidebarItemDropManager = []
+export let SidebarItemDropDeveloper = []
+export let SidebarItemDropQA = []
 
 
 // Below arrays represent the items BMS sidebar home
@@ -127,6 +107,38 @@ export const ManagerHomeSideBar = [
     icon: <FaIcons.FaBuffer />,
     cName: "nav-text",
   },
-];
-export const DeveloperHomeSideBar = [];
-export const QAHomeSideBar = [];
+]
+
+export const DeveloperHomeSideBar = []
+export const QAHomeSideBar = []
+
+
+function SetDropDown(){
+    if(authenticationService.userRole == "Manager"){
+        SidebarItemDropManager = [{
+            title: "Pinned Sprints",
+            icon: <AiIcons.AiOutlinePushpin/>,
+            cName: "nav-text",
+            dropDown: JSON.parse(sprintService.getPinnedSprints())
+        }]
+    }
+    else if(authenticationService.userRole == "QA"){
+        SidebarItemDropQA = [{
+            title: "Pinned Sprints",
+            icon: <AiIcons.AiOutlinePushpin/>,
+            cName: "nav-text",
+            dropDown: JSON.parse(sprintService.getPinnedSprints())
+        }]
+    }
+    else if(authenticationService.userRole == "Developer"){
+        SidebarItemDropDeveloper = [{
+            title: "Pinned Sprints",
+            icon: <AiIcons.AiOutlinePushpin/>,
+            cName: "nav-text",
+            dropDown: JSON.parse(sprintService.getPinnedSprints())
+        }]
+    }
+}
+
+
+export default SetDropDown

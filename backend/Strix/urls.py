@@ -7,16 +7,29 @@ from rest_framework.routers import DefaultRouter
 
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
+# Dilumika
 router.register(r'internaluserlist', views.InternalUserList, basename='InternalUser')
 router.register(r'externaluserlist', views.ExternalUserList, basename='ExternalUser')
 router.register(r'blockeduserlist', views.BlockedUserList, basename='BlockedUser')
 router.register(r'projectlist', views.ProjectList, basename='ProjectList')
-router.register(r'bsp',views.bspTicketList,basename='BspTicketList')
-router.register(r'approvalTickets',views.ApprovalTickets,basename='ApprovalTickets')
-router.register(r'bmstest',views.BMSTicketList,basename='BMSTicketList')
-router.register(r'statusupdate',views.TicketStatusUpdate,basename='TicketStatusUpdate')
-router.register(r'qaupdatebugtype',views.QAUpdateBugType,basename='QAUpdateBugType')
-router.register(r'qaupdateseverity',views.QAUpdateSeverity,basename='QAUpdateSeverity')
+router.register(r'accesslist', views.AccessList, basename='AccessList')
+router.register(r'alluserlist', views.AllUserList, basename='AllUserList')
+router.register(r'commentlist', views.CommentList, basename='CommentList')
+
+
+# Dilshani
+router.register(r'ticketlist',views.TicketList,basename='TicketList')
+router.register(r'bspticketlist',views.BSPTicketList,basename='BSPTicketList')
+router.register(r'ticketmedia',views.TicketMediaList,basename='TicketMediaList')
+router.register(r'customedatalist',views.CustomeDataList,basename='CustomeDataList')
+
+# Dinithi
+router.register(r'sprintlist',views.SprintList,basename='SprintList')
+router.register(r'pinnedsprintlist',views.PinnedSpintList,basename='PinnedSpintList')
+router.register(r'kanbantickets',views.KanbanTicketsList,basename='KanbanTicketsList')
+
+
+router.register(r'test',views.Test,basename='Test')
 
 urlpatterns = [
 
@@ -27,12 +40,8 @@ urlpatterns = [
     path('emailconfirmation/',views.EmailConfirmation.as_view()),
     path('passconfirmation/',views.PasswordConfirmation.as_view()),
     path('resetpassword/',views.ResetPassword.as_view()),
-
-    path('ticketlist/',views.GetTickets.as_view()),
     path('filters/',views.Filters.as_view()),
 
-    path('sprintlist/',views.GetSprints.as_view()),
-    path('createsprint/',views.CreateSprintView.as_view()),
     path('', include(router.urls)),
 ]
 
