@@ -3,6 +3,7 @@ import { userService } from "../../../Services/UserService"
 import MaterialTable from 'material-table'
 import { Modal } from 'react-bootstrap';
 import BlockedUserForm from "./BlockedUserForm";
+import UserDetailcard from "./UserDetailCard";
 
 
 function UserTableBlocked(){
@@ -44,12 +45,13 @@ function UserTableBlocked(){
             {
               title: 'Role',
               field: 'role_color',
-              render: rowData => <span class={"badge badge-" + rowData.role_color}>{rowData.role}</span>
+              render: rowData => <span class={"badge badge-" + rowData.color}>{rowData.role}</span>
             }
           ]}
           data={blockedusers}
           options={{
-            sorting: true
+            sorting: true,
+            actionsColumnIndex: -1
           }}
           actions={[
             {
@@ -57,8 +59,8 @@ function UserTableBlocked(){
               onClick: (event, rowData) => editBlockedlUsers(rowData.id)
             }
           ]}
-          options={{
-              actionsColumnIndex: -1
+          detailPanel={rowData=>{
+            return(<UserDetailcard data={rowData}/>)
           }}
         />
       </div>

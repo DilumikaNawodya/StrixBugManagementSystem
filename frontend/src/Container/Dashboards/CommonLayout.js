@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
-import * as FaIcons from 'react-icons/fa';
-import * as AiIcons from 'react-icons/ai';
 import { IconContext } from 'react-icons';
 import Footer from '../../Components/Common/Footer/Footer';
 import { authenticationService } from '../../Services/LoginService';
 import { Modal } from 'react-bootstrap';
-
 
 function CommonLayout({page, SidebarItem, SidebarItemDrop}){
 
@@ -32,8 +29,6 @@ function CommonLayout({page, SidebarItem, SidebarItemDrop}){
     const modalClose = () => {
         setModal(false)
     }
-
-
 
     return(
     <>

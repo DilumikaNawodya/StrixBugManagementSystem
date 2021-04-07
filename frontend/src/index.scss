@@ -311,7 +311,7 @@ body {
   --todo-bkg: #FFFFFF;
   --text-color: #5F6271;
   --text-unselected-color: #d7d7dc;
-  --control-color: #50E3A4;
+  --control-color: #343a40;
 }
 
 * {
@@ -327,10 +327,10 @@ body {
 
 .todo-container {
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.18);
-  height: 24em; /*490px*/
+  height: 32em; /*490px*/
   padding: 2em;
   position: relative;
-  margin-top: 67px;
+  margin-top: 40px;
 }
 
 .todo-container {
@@ -346,7 +346,7 @@ header {
 header .date {
   display: flex;
   justify-content: space-between;
-  width: 22%;
+  width: auto;
 }
 
 header .date .day-number {
@@ -359,11 +359,13 @@ header .date .day-number {
 /*TODO BODY*/
 main.todo-list {
   margin-top: 1em;
+  padding: 2em;
 }
 
 main.todo-list .tasks-container {
   overflow-y: auto;
   max-height: 260px; /*Scroll uando muestra el scroll*/
+  padding: 10px;
 }
 
 main.todo-list .tasks-container li.task-container {
@@ -402,9 +404,8 @@ button.add-task-btn {
   border-radius: 50%;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.18);
   cursor: pointer;
-  height: 90px;
-  width: 90px;
-  position: absolute;
+  height: 50px;
+  width: 50px;
   bottom: -45px;
   left: calc(72px - 45px);
   outline: none;
@@ -412,9 +413,9 @@ button.add-task-btn {
 }
 
 button.add-task-btn span {
-  font-size: 3em;
+  font-size: 2em;
   font-weight: bold;
-  color: #46BE8B;
+  color: white;
   font-family: none;
 }
 
@@ -427,8 +428,9 @@ button.add-task-btn:active {
 .notice {
   padding: 15px;
   background-color: #fafafa;
-  border-left: 6px solid #7f7f84;
+  border-left: 6px solid;
   margin-bottom: 10px;
+  border-radius: 10px;
   -webkit-box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);
      -moz-box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);
           box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);
@@ -441,27 +443,132 @@ button.add-task-btn:active {
   padding: 35px;
   font-size: large;
 }
+
 .notice-success {
-  border-color: #80D651;
+  border-color: #5cb85c;
 }
 .notice-success>strong {
-  color: #80D651;
+  color: #5cb85c;
 }
+
 .notice-info {
-  border-color: #45ABCD;
+  border-color: #5bc0de;
 }
 .notice-info>strong {
-  color: #45ABCD;
+  color: #5bc0de;
 }
+
 .notice-warning {
-  border-color: #FEAF20;
+  border-color: #f0ad4e;
 }
 .notice-warning>strong {
-  color: #FEAF20;
+  color: #f0ad4e;
 }
+
 .notice-danger {
-  border-color: #d73814;
+  border-color: #d9534f;
 }
 .notice-danger>strong {
-  color: #d73814;
+  color: #d9534f;
+}
+
+.notice-primary {
+  border-color: #0275d8;
+}
+.notice-primary>strong {
+  color: #0275d8;
+}
+
+// Loader
+
+.loader:empty {
+  position: sticky;
+  top: calc(50% - 4em);
+  left: calc(50% - 5em);
+  width: 10em;
+  height: 10em;
+  border: 1.1em solid rgba(0, 0, 0, 0.2);
+  border-left: 1.1em solid #343a40;
+  border-radius: 50%;
+  animation: load8 1.1s infinite linear;
+}
+
+@keyframes load8 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// Comment Section
+
+.card-no-border .card {
+  border: 0px;
+  border-radius: 4px;
+  -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.05);
+  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.05)
+}
+
+.card-body {
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  padding: 1.25rem
+}
+
+.comment-widgets .comment-row:hover {
+  background: rgba(0, 0, 0, 0.02);
+  cursor: pointer;
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important
+}
+
+.comment-widgets .comment-row {
+  border-bottom: 1px solid rgba(120, 130, 140, 0.13);
+  padding: 15px
+}
+
+.comment-text:hover {
+  visibility: hidden
+}
+
+.comment-text:hover {
+  visibility: visible
+}
+
+.label {
+  padding: 3px 10px;
+  line-height: 13px;
+  color: #ffffff;
+  font-weight: 400;
+  border-radius: 4px;
+  font-size: 75%
+}
+
+.round img {
+  border-radius: 100%
+}
+
+.pb-cmnt-textarea {
+  resize: none;
+  padding: 20px;
+  height: 130px;
+  width: 100%;
+  border: 1px solid #F2F2F2;
+}
+
+.swal-wide{
+  width:1900px !important;
+}
+
+.trimTextBMS{
+  display: block;
+  display: -webkit-box;
+  max-width: 400px;
+  height: 75px;
+  line-height: 1.2;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

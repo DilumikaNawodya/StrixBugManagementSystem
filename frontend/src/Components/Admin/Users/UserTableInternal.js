@@ -5,6 +5,7 @@ import userdelete from '../../../Assets/delete.svg'
 import { Modal } from 'react-bootstrap';
 import Swal from 'sweetalert2'
 import InternalUserForm from "./InternalUserForm";
+import UserDetailcard from "./UserDetailCard";
 
 
 function UserTableInternal(){
@@ -94,7 +95,8 @@ function UserTableInternal(){
           ]}
           data={internalusers}
           options={{
-            sorting: true
+            sorting: true,
+            actionsColumnIndex: -1
           }}
           actions={[
             {
@@ -111,8 +113,8 @@ function UserTableInternal(){
               onClick: (event, rowData) => addInternalUser()
             },
           ]}
-          options={{
-              actionsColumnIndex: -1
+          detailPanel={rowData=>{
+            return(<UserDetailcard data={rowData}/>)
           }}
         />
       </div>
