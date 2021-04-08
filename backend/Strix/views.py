@@ -660,6 +660,34 @@ class SprintList(viewsets.ModelViewSet):
         else:
             return Response({"data":"You do not have permission !"},status=404)
 
+class EndSprint(viewsets.ModelViewSet):
+    serializer_class = SprintSerializer
+
+    def update(self, request, pk, *args, **kwargs):
+        Sprint.objects.filter(id=pk).update(enddate=datetime.date.today(), status=False)
+        return Response("Sprint deleted successfully",status=200)
+
+class SprintData(viewsets.ModelViewSet):
+    serializer_class = SprintSerializer
+
+    def get_queryset(self):
+        return Sprint.objects.filter(id=self.request.query_params.get("sid")) 
+
+class AddToSprint(viewsets.ModelViewSet):
+    serializer_class= SprintSerializer
+
+    def update(self, request, pk, *args, **kwargs):
+        createdby = request.user
+        data = json.loads(request.body)
+
+        if UserValidation(createdby):
+            ticketobj = Ticket.objects.filter(id=data["tid"])
+            sprintobj = Sprint.objects.get(id=pk)
+            sprintobj.ticketlist.add(*ticketobj)
+            return Response("Ticket added to sprint successfully", status=200)
+        else:
+            return Response({"data":"You do not have permission !"},status=404)
+
 class PinnedSpintList(viewsets.ModelViewSet):
 
     serializer_class = PinnedSprintSerialzer

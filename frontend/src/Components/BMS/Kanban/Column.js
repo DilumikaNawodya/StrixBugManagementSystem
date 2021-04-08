@@ -7,15 +7,22 @@ import { authenticationService } from "../../../Services/LoginService";
 const Container = styled.div`
   margin: 8px;
   border: 1px solid lightgrey;
-  border-radius: 2px;
-  width: 20%;
-
+  border-radius: 10px;
+  width: 25%;
+  box-shadow: 1px 1px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
 `;
 
 const Title = styled.h3`
   padding: 8px;
+  background-color: #01161e;
+  color: lightgrey;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+  text-align: center;
 `;
 
 const BugList = styled.div`

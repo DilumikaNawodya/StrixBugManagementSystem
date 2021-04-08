@@ -27,7 +27,9 @@ router.register(r'customedatalist',views.CustomeDataList,basename='CustomeDataLi
 router.register(r'sprintlist',views.SprintList,basename='SprintList')
 router.register(r'pinnedsprintlist',views.PinnedSpintList,basename='PinnedSpintList')
 router.register(r'kanbantickets',views.KanbanTicketsList,basename='KanbanTicketsList')
-
+router.register(r'endsprint', views.EndSprint, basename='EndSprint')
+router.register(r'sprintdata', views.SprintData, basename='SprintData')
+router.register(r'addtosprint', views.AddToSprint, basename="AddToSprint")
 
 router.register(r'test',views.Test,basename='Test')
 

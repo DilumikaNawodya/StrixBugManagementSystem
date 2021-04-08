@@ -1,4 +1,4 @@
-import React, { useState, useEffect,  } from "react";
+import React, { useState, useEffect } from "react";
 import Column from "./Column";
 import { DragDropContext } from "react-beautiful-dnd";
 import styled from "styled-components";
@@ -13,45 +13,44 @@ const Container = styled.div`
 `;
 
 const Kanban = () => {
+  const { sid } = useParams();
 
-  const {sid} = useParams()
-
-  const initialData = SetKanbanData(sid)
-  const [state, setState] = useState(initialData)
+  const initialData = SetKanbanData(sid);
+  const [state, setState] = useState(initialData);
+  const sprintData = sprintService.GetSprintData(sid).sprintdata;
   const [dropDetails, setDropDetails] = useState({
-    destid: '',
-    tid: ''
-  })
+    destid: "",
+    tid: "",
+  });
 
-  useEffect(() =>{
-    setState(initialData)
-  },[initialData])
-  
-  function SetDrop(){
-    sprintService.UpdateWorkstate(dropDetails)
+  useEffect(() => {
+    setState(initialData);
+  }, [initialData]);
+
+  function SetDrop() {
+    sprintService.UpdateWorkstate(dropDetails);
   }
 
   const [isModalOpen, setisModalOpen] = useState(false);
-  
-  function onDragEnd(result){
+
+  function onDragEnd(result) {
     const { destination, source, draggableId } = result;
 
     if (!destination) {
       return;
     }
 
-    if(destination.droppableId === "column-4"){
+    if (destination.droppableId === "column-4") {
       setDropDetails({
         destid: destination.droppableId,
-        tid: draggableId
-      })
-    }else{
+        tid: draggableId,
+      });
+    } else {
       sprintService.UpdateWorkstate({
         destid: destination.droppableId,
-        tid: draggableId
-      })
+        tid: draggableId,
+      });
     }
-    
 
     if (
       destination.droppableId === source.droppableId &&
@@ -115,23 +114,52 @@ const Kanban = () => {
       },
     };
     setState(newState);
-  };
+  }
 
   return (
     <div>
       {" "}
+      <div class="card border border-dark p-0">
+        <div class="card-body">
+          <p class="card-text">
+            {sprintData.map((e) => {
+              return (
+                <div className="row">
+                  <div className="col">
+                    <h4>{e.name}</h4>
+                  </div>
+                  <div className="col">
+                    <p className="mt-2">End Date: {e.enddate}</p>
+                  </div>
+                  <div className="col">
+                    <button
+                      class="btn btn-sm btn-dark float-right"
+                      onClick={() => sprintService.EndSprint(sid)}
+                    >
+                      End Sprint
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </p>
+        </div>
+      </div>
       <DragDropContext onDragEnd={onDragEnd}>
         <Container>
           {state.columnOrder.map((columnID) => {
-            let column = state.columns[columnID]
-            const tasks = column.taskIds.map((taskId) => state.tasks[taskId])
-            return <Column key={column.id} column={column} tasks={tasks} />
+            let column = state.columns[columnID];
+            const tasks = column.taskIds.map((taskId) => state.tasks[taskId]);
+            return <Column key={column.id} column={column} tasks={tasks} />;
           })}
         </Container>
       </DragDropContext>
       <Modal size="md" show={isModalOpen}>
         <Modal.Body>
-          <WarningModal cl={() => setisModalOpen(false)} submit={() => SetDrop()} />
+          <WarningModal
+            cl={() => setisModalOpen(false)}
+            submit={() => SetDrop()}
+          />
         </Modal.Body>
       </Modal>
     </div>
