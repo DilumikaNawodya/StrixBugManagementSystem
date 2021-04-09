@@ -1,6 +1,5 @@
-import React, {useState,useEffect} from 'react'
-import { Card ,Button, Collapse,Badge, Tabs, Tab} from 'react-bootstrap'
-import { BrowserRouter, Link, Route, Switch, NavLink } from 'react-router-dom';
+import React, {useState} from 'react'
+import { Collapse,Badge, Tabs, Tab} from 'react-bootstrap'
 import {GrTableAdd} from 'react-icons/gr'
 import {MdVerifiedUser} from 'react-icons/md'
 import AlldataTable from './AllDataTable/AlldataTable'

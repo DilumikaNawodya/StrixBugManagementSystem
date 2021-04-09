@@ -63,7 +63,7 @@ function FilreredData() {
     
       // load options using API call
       const loadOptions = (inputValue) => {
-        return fetch(`http://127.0.0.1:8000/api/Dev_Users?userId=${inputValue}`)
+        return fetch(`http://127.0.0.1:8000/Dev_Users?userId=${inputValue}`)
         .then(res => res.json());
       };
     // set value for default selection
@@ -75,7 +75,7 @@ function FilreredData() {
     useEffect(() => {
       const getData = async () =>{
           const response = await fetch(
-              "http://127.0.0.1:8000/api/Dev_Table/"
+              "http://127.0.0.1:8000/Dev_Table/"
           );
           const res = await response.json();
           console.log(res)
@@ -102,7 +102,7 @@ function FilreredData() {
           'Accept': 'application/json',
          
       };
-      API.post('/api/Dev_timesheet/', postdata, { headers })
+      API.post('/Dev_timesheet/', postdata, { headers })
           .then(function(response){
             setFinal(response.data.data)
             if(response.data.data.length ==0){
@@ -175,7 +175,7 @@ function FilreredData() {
       useEffect(() => {
         const getData = async () =>{
             const response = await fetch(
-                " http://127.0.0.1:8000/api/Dev_Users/"
+                " http://127.0.0.1:8000/Dev_Users/"
             );
             const res = await response.json();
             console.log(res)
@@ -188,7 +188,7 @@ function FilreredData() {
       useEffect(() => {
         const getData = async () =>{
             const response = await fetch(
-                "http://127.0.0.1:8000/api/Projects/"
+                "http://127.0.0.1:8000/Projects/"
             );
             const res = await response.json();
             console.log(res)

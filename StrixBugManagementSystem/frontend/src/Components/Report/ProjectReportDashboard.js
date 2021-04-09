@@ -1,18 +1,11 @@
 import React ,{useState, useEffect} from 'react';
-import { Card, Badge,Button, Row, Col,Dropdown, Tabs, Tab,Collapse } from 'react-bootstrap';
-import { PropTypes } from 'react'
+import { Card, Badge, Row, Tabs, Tab, Collapse } from 'react-bootstrap';
 import BugSumNum from '../../Services/Reports/BugSummary/BugSumNum';
-import DevPerformance from '../../Services/Reports/DeveloperPerf'
-import { useForm, Controller } from "react-hook-form";
-import { Pie,Bar } from 'react-chartjs-2';
-import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import {HiOutlineDocumentReport} from 'react-icons/hi'
 import {AiOutlineBarChart} from 'react-icons/ai'
 import {IoBugSharp} from 'react-icons/io5'
 import {VscDebugAlt} from 'react-icons/vsc'
-import API from '../../Services/Base';
-import moment from 'moment'
 import Month_BugDev from './Charts/Month_BugDev';
 import DevPerformanceFiltering from './Charts/DevPerformance_filters/DevPerformanceFiltering';
 import Dev_Performance_default from './Charts/DevPerformance_filters/Dev_Performance_default';

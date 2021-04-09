@@ -13,7 +13,7 @@ function Month_BugDev() {
             'Content-Type': 'application/json',
             'Accept': 'application/json', 
         };
-        API.post('/api/MonthBugDevelopment/', {}, { headers })
+        API.post('/MonthBugDevelopment/', {}, { headers })
             .then(response => setMonthBugs(response))
             .catch((error) => console.log(error));
     }

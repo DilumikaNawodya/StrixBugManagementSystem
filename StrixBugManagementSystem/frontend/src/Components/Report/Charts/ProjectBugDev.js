@@ -11,7 +11,7 @@ export default function ProjectBugDev() {
             'Content-Type': 'application/json',
             'Accept': 'application/json', 
         };
-        API.post('/api/ProjectBugDevelopment/', {}, { headers })
+        API.post('/ProjectBugDevelopment/', {}, { headers })
             .then(response => setProjectBugs(response))
             .catch((error) => console.log(error));
     }

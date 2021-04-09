@@ -42,7 +42,7 @@ export default function DevPerformanceFiltering() {
               'Accept': 'application/json',
             
           };
-          API.post('/api/DeveloperPerformance/', article, { headers })
+          API.post('/DeveloperPerformance/', article, { headers })
               .then(response => setTemp(response))
               .catch((error) => console.log(error));
       },[])
@@ -70,7 +70,7 @@ export default function DevPerformanceFiltering() {
                   'Accept': 'application/json',
                  
               };
-              API.post('/api/DeveloperPerformance/', article, { headers })
+              API.post('/DeveloperPerformance/', article, { headers })
               .then(function(response){
 
                 setTest(response)
@@ -85,7 +85,7 @@ export default function DevPerformanceFiltering() {
       useEffect(() => {
         const getData = async () =>{
             const response = await fetch(
-                "http://127.0.0.1:8000/api/Projects/"
+                "http://127.0.0.1:8000/Projects/"
             );
             const res = await response.json();
               setProject(res)      

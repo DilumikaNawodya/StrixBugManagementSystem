@@ -18,7 +18,7 @@ function AlldataTable() {
     useEffect(() => {
     const getData = async () =>{
         const response = await fetch(
-            "http://127.0.0.1:8000/api/Dev_timesheet/"
+            "http://127.0.0.1:8000/Dev_timesheet/"
         );
         const res = await response.json();
         console.log(res)

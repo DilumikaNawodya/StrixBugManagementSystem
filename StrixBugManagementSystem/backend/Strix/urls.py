@@ -29,9 +29,6 @@ router.register(r'pinnedsprintlist',views.PinnedSpintList,basename='PinnedSpintL
 router.register(r'kanbantickets',views.KanbanTicketsList,basename='KanbanTicketsList')
 
 
-router.register(r'test',views.Test,basename='Test')
-
-
 # Chandeepa
 
 router.register('User',views.UserViewset)
