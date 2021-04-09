@@ -134,6 +134,13 @@ function getCurrentProject(){
     return currentProjectSubject
 }
 
+export async function GetProjetDetails(projectid){
+   
+    const response = await API.get('getProject/?id='+projectid)
+    const arrr=response.data; 
+    return(arrr)
+}
+
 function GetAllUserList(pid){
 
     const [state, setState] = useState({

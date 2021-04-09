@@ -16,6 +16,9 @@ import ProjectReportDashboard from "../../Components/Report/ProjectReportDashboa
 import BSPlist from '../../Components/BSP/ManagerBSP';
 import BSPlistApproved from "../../Components/BSP/ApprovedBSP";
 import TimesheetDashboard from "../../Components/Report/Developer_Timesheet/DevTimesheetDash";
+import SprintDashboard from '../../Components/Report/SprintSummary/SprintDashboard'
+import MonthlyBugSummary from '../../Components/Report/MonthlyBugSummary'
+
 
 
 function DashboardManager() {
@@ -31,10 +34,10 @@ function DashboardManager() {
           <CommonLayout page={<TimesheetDashboard/>} SidebarItem={ManagerReportSideBar} SidebarItemDrop={[]}/>
         </Route>
         <Route exact path="/sprint_summary">
-          <CommonLayout page={<></>} SidebarItem={ManagerReportSideBar} SidebarItemDrop={[]}/>
+          <CommonLayout page={<SprintDashboard/>} SidebarItem={ManagerReportSideBar} SidebarItemDrop={[]}/>
         </Route>
         <Route exact path="/monthly_bug_summary">
-          <CommonLayout page={<></>} SidebarItem={ManagerReportSideBar} SidebarItemDrop={[]}/>
+          <CommonLayout page={<MonthlyBugSummary/>} SidebarItem={ManagerReportSideBar} SidebarItemDrop={[]}/>
         </Route>
         <Route exact path="/kanbanboard/:sid">
           <CommonLayout page={<Kanban />} SidebarItem={SidebarItemManager} SidebarItemDrop={SidebarItemDropManager}/>

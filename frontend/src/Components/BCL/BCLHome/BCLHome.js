@@ -10,8 +10,11 @@ function BCLHome(props){
 
     const history = useHistory()
     const state = projectService.GetProjectList()
-
-    localStorage.removeItem("projectID")
+    projectService.removeCurrentProject()
+    function handleProject(pid){
+        projectService.setCurrentProject(pid)
+        history.push('/issuebacklogbcl')
+    }
     
     return (
         <>
@@ -24,9 +27,9 @@ function BCLHome(props){
                                 <h1>{project.projectname}</h1>
                                 <p>{project.description}</p>
                             </div>
-                            <NavLink to={"/Customer/IssueBacklogBCL/" + project.id}>
+                            <button class="btn btn-sm btn-white" onClick={() => handleProject(project.id)}>
                                 <i class="fas fa-external-link-alt"></i>
-                            </NavLink>
+                            </button>
                         </div>
                     </div>
                     ))}
