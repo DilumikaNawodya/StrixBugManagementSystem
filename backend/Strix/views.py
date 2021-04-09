@@ -1280,3 +1280,102 @@ class MonthBugDevelopementViewset(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         queryset_temp = Ticket.objects.all().values('date__year','date__month').annotate(total_bugs = Count('id'), in_progress = Count('workstate', filter=Q(workstate__id__in=[2, 3])), resolved = Count('workstate', filter=Q(workstate__id=4)))
         return Response({"data": queryset_temp}, status=200) 
+
+############################################YR###############################################################################
+
+
+class ProjectViewSet(viewsets.ModelViewSet):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+        filter_value = self.request.query_params.get('id', None)
+        if filter_value is not None:
+            queryset = queryset.filter(id=filter_value)
+        return queryset
+
+
+class TicketMediaViewset(viewsets.ModelViewSet):
+    queryset = TicketMedia.objects.all()
+    serializer_class = MediaSerializer
+
+class TicketViewSet(viewsets.ModelViewSet):
+    queryset = Ticket.objects.all()
+    serializer_class = TicketSerializer
+
+    def get_queryset(self):  # filter by id query
+        queryset = self.queryset
+        filter_value = self.request.query_params.get('project', None)
+        if filter_value is not None:
+            queryset = queryset.filter(project=filter_value)
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        ticket_media = request.FILES.getlist('ticketMedia')
+
+        data = request.POST
+
+        ticket_current = Ticket.objects.create(
+            issuename=data['issuename'],
+            issuedescription=data['issuedescription'],
+            bugtype=BugType.objects.get(id=data['bugtype']),
+            priority=Priority.objects.get(id=data['priority']),
+            severity=Severity.objects.get(id=data['severity']),
+            bspstatus=False,
+            approval=False,
+            totaleffort=data['totaleffort'],
+            review=False,
+            project=Project.objects.get(id=data['project']),
+            workstate=Workstate.objects.get(id=data['workstate']),
+            externaluser=User.objects.get(id=data['externaluser'])
+        )
+
+        ticket_current.save()
+
+        # print(data['ticketMedia'])
+        # print(request.FILES.getlist('ticketMedia'))
+        for media in ticket_media:
+            MediaInstance = TicketMedia.objects.create(
+                issuename=ticket_current,
+                files=media
+            )
+
+            MediaInstance.save()
+
+        return Response({"data": "success"}, status=200)
+
+
+# Sprint summary View
+
+
+class SprintSummary(viewsets.ModelViewSet):
+    queryset = Sprint.objects.all()
+    serializer_class = SprintSummarySerializer
+
+    def get_queryset(self):  # filter by id query
+        queryset = self.queryset
+        filter_value = self.request.query_params.get('id', None)
+        if filter_value is not None:
+            queryset = queryset.filter(id=filter_value)
+        return queryset
+
+    def get_queryset(self):  # filter by id query
+        queryset = self.queryset
+        filter_value = self.request.query_params.get('project', None)
+        if filter_value is not None:
+            queryset = queryset.filter(project=filter_value)
+        return queryset
+
+
+class BugPerMonth(viewsets.ModelViewSet):
+    queryset = Ticket.objects.all()
+    serializer_class = TicketSerializer
+    
+    def get_queryset(self):  # filter by date
+        queryset = self.queryset
+        filter_value1 = self.request.query_params.get('date1', None)
+        filter_value2 = self.request.query_params.get('date2', None)
+        if filter_value1 and filter_value2 is not None:
+            queryset = queryset.filter(date__gte=filter_value1,date__lte=filter_value2)
+        return queryset

@@ -5,6 +5,37 @@ from . import views
 from rest_framework.routers import DefaultRouter
 
 
+
+getTickets= views.TicketViewSet.as_view({
+    'get': 'list',
+    'post':'create',
+    
+})
+getaATicket=views.TicketViewSet.as_view({
+    'get': 'retrieve',
+})
+
+getProject=views.ProjectViewSet.as_view({
+    'get': 'list',
+})
+
+getTicketMedia=views.TicketMediaViewset.as_view({
+    'get': 'list',
+    'post':'create',
+})
+
+getUser=views.UserViewset.as_view({
+    'get': 'list',
+})
+getSprintSummary=views.SprintSummary.as_view({
+    'get': 'list',
+})
+getBugPerMonth=views.BugPerMonth.as_view({
+    'get': 'list',
+})
+
+
+
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
 # Dilumika
@@ -59,6 +90,19 @@ urlpatterns = [
     path('filters/',views.Filters.as_view()),
 
     path('', include(router.urls)),
+
+    #yashith
+    path('getTicket/',getTickets,name="get_Tickets"),
+    path('getTicket/<str:pk>',getaATicket,name="get_Ticket"),
+    path('getProject/',getProject,name="get_project_Details"),
+    path('getTicketMedia/',getTicketMedia,name="get_ticket_media"),
+    path('getUsers/',getUser,name="get_users"),
+    path('getSprintSummary/',getSprintSummary,name="get_Sprint_Sum"),
+    path('getBugPerMonth/',getBugPerMonth,name="get_Sprint_Sum")
 ]
+
+
+
+
 
 
