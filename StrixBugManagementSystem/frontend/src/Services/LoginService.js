@@ -1,0 +1,71 @@
+import { BehaviorSubject } from 'rxjs';
+import API from './Base';
+import { projectService } from './ProjectService';
+
+const currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('currentUser')));
+
+export const authenticationService = {
+    login,
+    logout,
+    EmailConfirmation,
+    PasswordConfirmation,
+    SetPassword,
+    currentUser: currentUserSubject.asObservable(),
+    get userRole () { return currentUserSubject.value.Role },
+    get userID () { return currentUserSubject.value.id },
+    get userName () { return currentUserSubject.value.Name },
+    get currentUserValue () { return currentUserSubject.value }
+};
+
+function login(email,password){
+    const request = API.post('login/',{
+        email: email,
+        password: password
+    },{})
+    request
+        .then(function(response){
+            localStorage.setItem('currentUser', JSON.stringify(response.data))
+            API.defaults.headers.common['Authorization'] = 'Token ' + response.data.Token
+            currentUserSubject.next(response.data)
+        })
+    return request
+}
+
+
+function logout() {
+    API.post('logout/',{})
+    .then(function(response){
+        if(response){
+            localStorage.removeItem('currentUser')
+            projectService.removeCurrentProject()
+            currentUserSubject.next(null)
+        }
+    })
+    .catch(function(error){
+        console.log(error)
+    })
+}
+
+function EmailConfirmation(email){
+    const request = API.post('emailconfirmation/',{
+        email: email
+    })
+    return request
+}
+
+function PasswordConfirmation(uid,token){
+    const request = API.post('passconfirmation/',{
+        uid: uid,
+        token: token
+    })
+    return request
+}
+
+function SetPassword(password,retypedPass,confirm){
+    const request = API.post('resetpassword/',{
+        password: password,
+        retypedPass: retypedPass,
+        confirm: confirm
+    })
+    return request
+}
