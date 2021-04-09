@@ -21,7 +21,12 @@ from django.contrib.auth.tokens import default_token_generator
 from .MailService import *
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.models import Group
-from django.db.models import Q
+
+from django.db.models import Avg, Count, Sum, Q
+from django.db.models.functions import TruncMonth
+from django.contrib.postgres.aggregates.general import ArrayAgg
+from datetime import date,datetime
+from dateutil.relativedelta import relativedelta
 
 # Login
 class Login(APIView):
@@ -1080,3 +1085,198 @@ class Test(viewsets.ModelViewSet):
         # print(queryset_temp.ticket_set.all())
 
         return Response(queryset_temp, status=200)
+
+
+
+#================================================
+#--------------Chandeepa------------------------
+
+class UserViewset(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class =  UserSerializer 
+
+class DevViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.filter(groups=3)
+    serializer_class = DevUserSerializer
+
+class DevTicketsViewSet(viewsets.ModelViewSet):
+    queryset = DeveloperTicket.objects.all()
+    serializer_class = UserDevTicketSerializer
+
+class BugSummaryStatViewSet(viewsets.ModelViewSet):
+    queryset = Ticket.objects.all()
+    serializer_class = BugSummaryStatSerializer
+
+
+class ViewProjectViewsets(viewsets.ModelViewSet):
+    queryset = Project.objects.all()
+    serializer_class = ViewProjectsSerializer
+
+class DeveloperPerformance(viewsets.ModelViewSet):
+    serializer_class = DeveloperPerformanceSerializer
+
+    def create(self, request, *args, **kwargs):
+
+        body = json.loads(request.body)
+
+        project = body["projectid"]
+        start_date = body["to"]
+        end_date = body["from"]
+        status = body["status"]
+
+        if status == 2:
+            if(start_date is None and end_date is None and project=="None"):
+                start_date = date.today() - relativedelta(months=12)
+                end_date = date.today()
+                pro_tickets = Ticket.objects.all()
+                
+            else:
+                if(project != "All" and project != "None"):
+                    pro_tickets = Ticket.objects.filter(project=project)        
+                else:
+                    pro_tickets = Ticket.objects.all()
+
+                if(start_date is not None):
+                    start_date = start_date[0:10]
+                else:
+                    start_date = "1970-01-01"
+
+                if(end_date is not None):
+                    end_date = end_date[0:10]
+                else:
+                    end_date = date.today()
+
+            dev_tickets = DeveloperTicket.objects.filter( date__range=[start_date,end_date],  ticket__in=pro_tickets)
+            month_tickets = dev_tickets.values('date__year','date__month').annotate(Avg('dailyeffort'), ticket_list=ArrayAgg('ticket_id'))
+
+            for month in month_tickets:
+                total_assigned = 0
+                resolved = 0
+                in_progress = 0
+                
+                for ticket in month['ticket_list']:
+                    temp_workstate = Ticket.objects.get(id=ticket).workstate.id
+
+                    if(temp_workstate==2 or temp_workstate==3 or temp_workstate==4):
+                        total_assigned += 1
+                    if(temp_workstate==4):
+                        resolved += 1
+                    if(temp_workstate==2 or temp_workstate==3):
+                        in_progress += 1
+
+                month["total_assigned"] = total_assigned
+                month["resolved"] = resolved
+                month["in_progress"] = in_progress
+    
+            return Response({"data":month_tickets}, status=200)
+
+        else:
+            
+            today = date.today()
+            dev_tickets = DeveloperTicket.objects.filter( date__range=[today -relativedelta(months=12) ,today] )
+            month_tickets = dev_tickets.values('date__year','date__month').annotate(Avg('dailyeffort'), ticket_list=ArrayAgg('ticket_id'))
+            
+            for month in month_tickets:
+                total_assigned = 0
+                resolved = 0
+                in_progress = 0
+                notdone = 0
+                for ticket in month['ticket_list']:
+                    temp_workstate =Ticket.objects.get(id=ticket).workstate.id
+
+                    if(temp_workstate==2 or temp_workstate==3 or temp_workstate==4):
+                        total_assigned += 1
+                    if(temp_workstate==4):
+                        resolved += 1
+                    if(temp_workstate==2 or temp_workstate==3):
+                        in_progress += 1
+
+                month["total_assigned"] = total_assigned
+                month["resolved"] = resolved
+                month["in_progress"] = in_progress
+    
+            return Response({"data":month_tickets}, status=200)
+
+# Developer and Project  Timesheet Viewset
+class ProjectDevTimeSheet(viewsets.ModelViewSet):
+    serializer_class = ProjectDevTimeSerializer
+
+    def get_queryset(self):
+        return DeveloperTicket.objects.all()
+
+    def create(self, request, *args, **kwargs):
+            data = json.loads(request.body)
+
+            projectid = data['projectid']
+            devid = data['devid']
+            start_date = data['from']
+            end_date = data['to']
+
+            if(len(devid) != 0):
+                if(start_date is None and end_date is None and projectid == "None"):
+                    start_date = "1970-01-01" 
+                    end_date = date.today()
+                    selected_tickets = DeveloperTicket.objects.filter(user__in=devid)
+                    
+                else:
+                    if( projectid== "All" or projectid == "None"):
+                        selected_tickets = DeveloperTicket.objects.filter(user__in=devid)       
+                    else:
+                        selected_tickets =DeveloperTicket.objects.filter(ticket__project=projectid,user__in=devid )
+
+                    if(start_date is not None):
+                        start_date = start_date[0:10]
+                    else:
+                        start_date = "1970-01-01"
+
+                    if(end_date is not None):
+                        end_date = end_date[0:10]
+                    else:
+                        end_date = date.today()
+                
+            else:
+                if(start_date is None and end_date is None and projectid is "None" or projectid is "All"):
+                    start_date = "1970-01-01" 
+                    end_date = date.today()
+                    selected_tickets = DeveloperTicket.objects.all()
+
+                else:
+                    if( projectid== "All" or projectid == "None"):
+                        selected_tickets = DeveloperTicket.objects.all()    
+                    else:
+                        selected_tickets = DeveloperTicket.objects.filter(ticket__project=projectid)
+
+                    if(start_date is not None):
+                        start_date = start_date[0:10]
+                    else:
+                        start_date = "1970-01-01"
+
+                    if(end_date is not None):
+                        end_date = end_date[0:10]
+                    else:
+                        end_date = date.today()
+
+            
+            selected_tickets = selected_tickets.filter(date__range=[start_date, end_date])
+            serialized_data = ProjectDevTimeSerializer(selected_tickets, many=True).data
+        
+            return Response({"data": serialized_data}, 200)
+
+
+
+class ProjectBugDevelopmentViewSet(viewsets.ModelViewSet):
+    serializer_class = ProjectBugDevelopmentSerializer
+    queryset = Ticket.objects.all()
+   
+    def create(self, request, *args, **kwargs):
+        queryset_temp = Ticket.objects.all().values('project__projectname').annotate(total_bugs=Count('id'), in_progress = Count('workstate', filter=Q(workstate__id__in=[2, 3])), resolved = Count('workstate', filter=Q(workstate__id=4)),open = Count('workstate', filter=Q(workstate__id=1)))  
+        return Response({"data": queryset_temp}, status=200)
+
+
+class MonthBugDevelopementViewset(viewsets.ModelViewSet):
+    serializer_class =  MonthBugDevelopmentSerializer
+    queryset = Ticket.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        queryset_temp = Ticket.objects.all().values('date__year','date__month').annotate(total_bugs = Count('id'), in_progress = Count('workstate', filter=Q(workstate__id__in=[2, 3])), resolved = Count('workstate', filter=Q(workstate__id=4)))
+        return Response({"data": queryset_temp}, status=200) 

@@ -365,3 +365,93 @@ class KanbanTestSerializerSecond(serializers.ModelSerializer):
         return {
             instance.workstate.id:[str(instance.id)]   
         }
+
+
+
+#===================================================
+#------------------Chandeepa-----------------------
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields ='__all__'
+
+
+class DevUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields =('id', 'username')
+
+
+
+
+class UserDevTicketSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username')
+    firstname = serializers.CharField(source='user.first_name')
+    issuename =  serializers.CharField(source='ticket.issuename')
+    project_id = serializers.IntegerField(source='ticket.project_id')
+ 
+    class Meta:
+        model = DeveloperTicket
+        fields =('user_id','project_id','username','firstname','date','dailyeffort','ticket_id','issuename')
+
+#--------Bug Summary-------------
+
+class BugSummaryStatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields =('id','workstate_id','project_id')
+
+
+
+class ViewProjectsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields =('id','projectname')
+
+
+class DeveloperPerformanceSerializer(serializers.ModelSerializer):
+    workstate_id = serializers.IntegerField(source='ticket.workstate_id')
+    date = serializers.DateField(format='%B')
+    project_id = serializers.IntegerField(source='ticket.project_id')
+
+    class Meta:
+        model = DeveloperTicket
+        fields =('user_id','date','dailyeffort','workstate_id','project_id')
+
+
+class ProjectDevTimeSerializer(serializers.ModelSerializer):
+
+    project_name = serializers.SerializerMethodField()
+    developer_name = serializers.SerializerMethodField()
+    issue_title = serializers.SerializerMethodField()
+
+    def get_project_name(self, obj):
+        return obj.ticket.project.projectname
+
+    def get_developer_name(self, obj):
+        return obj.user.username
+
+    def get_issue_title(self, obj):
+        return obj.ticket.issuename
+
+    class Meta:
+        model = DeveloperTicket
+        fields = ['id','developer_name','project_name', 'issue_title','date','dailyeffort','ticket']
+
+
+class ProjectBugDevelopmentSerializer(serializers.ModelSerializer):
+    project_name = serializers.SerializerMethodField()
+  
+    def get_project_name(self, obj):
+        return obj.project.projectname
+
+    class Meta:
+        model = Ticket
+        fields = ['id','project_id','project_name', 'workstate_id']
+
+class MonthBugDevelopmentSerializer(serializers.ModelSerializer):
+   
+    class Meta:
+        model =  Ticket
+        fields = ['id','issuename', 'date','workstate_id']

@@ -5,6 +5,8 @@ import CommonLayout from "./CommonLayout";
 import SetDropDown, {
   ManagerHomeSideBar,
   SidebarItemDropManager,
+  ManagerReportSideBar,
+  ManagerReportSideBarDrop,
   SidebarItemManager
 } from "../../Components/BMS/SidebarItem";
 import IssueBacklogBMS from "../../Components/BMS/IssueBacklog/IssueBacklogBMS";
@@ -13,6 +15,7 @@ import Kanban from "../../Components/BMS/Kanban/Kanban";
 import ProjectReportDashboard from "../../Components/Report/ProjectReportDashboard";
 import BSPlist from '../../Components/BSP/ManagerBSP';
 import BSPlistApproved from "../../Components/BSP/ApprovedBSP";
+import TimesheetDashboard from "../../Components/Report/Developer_Timesheet/DevTimesheetDash";
 
 
 function DashboardManager() {
@@ -22,7 +25,16 @@ function DashboardManager() {
   return (
     <Switch>
         <Route exact path="/reports">
-          <CommonLayout page={<ProjectReportDashboard />} SidebarItem={SidebarItemManager} SidebarItemDrop={SidebarItemDropManager}/>
+          <CommonLayout page={<ProjectReportDashboard />} SidebarItem={ManagerReportSideBar} SidebarItemDrop={[]}/>
+        </Route>
+        <Route exact path="/timesheet">
+          <CommonLayout page={<TimesheetDashboard/>} SidebarItem={ManagerReportSideBar} SidebarItemDrop={[]}/>
+        </Route>
+        <Route exact path="/sprint_summary">
+          <CommonLayout page={<></>} SidebarItem={ManagerReportSideBar} SidebarItemDrop={[]}/>
+        </Route>
+        <Route exact path="/monthly_bug_summary">
+          <CommonLayout page={<></>} SidebarItem={ManagerReportSideBar} SidebarItemDrop={[]}/>
         </Route>
         <Route exact path="/kanbanboard/:sid">
           <CommonLayout page={<Kanban />} SidebarItem={SidebarItemManager} SidebarItemDrop={SidebarItemDropManager}/>
@@ -40,8 +52,9 @@ function DashboardManager() {
           <CommonLayout page={<BSPlistApproved/>} SidebarItem={SidebarItemManager} SidebarItemDrop={SidebarItemDropManager}/>
         </Route>
         <Route exact path={["/", "/home"]}>
-          <CommonLayout page={<BMSHome />} SidebarItem={ManagerHomeSideBar} SidebarItemDrop={[]}/>
+          <CommonLayout page={<BMSHome />} SidebarItem={[]} SidebarItemDrop={ManagerReportSideBarDrop}/>
         </Route>
+        
     </Switch>
   );
 }

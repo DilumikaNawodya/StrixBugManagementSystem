@@ -2,6 +2,8 @@ import React from "react";
 import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
 import * as BsIcons from "react-icons/bs";
+import {BsFileEarmarkSpreadsheet} from 'react-icons/bs'
+import {SiSprint} from 'react-icons/si'
 import { sprintService } from "../../Services/SprintService";
 import { authenticationService } from "../../Services/LoginService";
 
@@ -93,24 +95,12 @@ export const SidebarItemQA = [
 ]
 
 
+
+// Manager, Developer and QA - Sidebar Dropdown (Except Report)
+
 export let SidebarItemDropManager = []
 export let SidebarItemDropDeveloper = []
 export let SidebarItemDropQA = []
-
-
-// Below arrays represent the items BMS sidebar home
-
-export const ManagerHomeSideBar = [
-  {
-    title: "Project Reports",
-    path: "/reports",
-    icon: <FaIcons.FaBuffer />,
-    cName: "nav-text",
-  },
-]
-
-export const DeveloperHomeSideBar = []
-export const QAHomeSideBar = []
 
 
 function SetDropDown(){
@@ -142,3 +132,76 @@ function SetDropDown(){
 
 
 export default SetDropDown
+
+
+// Only for manager Manager Home sidebardrop and Report sidebar
+
+export const ManagerReportSideBarDrop = [
+    {
+      title: "Project Reports",
+      icon: <AiIcons.AiOutlinePushpin/>,
+      cName: "nav-text",
+      dropDown: [
+          {
+              name: 'Report Dashboard',
+              path: '/reports',
+              icon: <FaIcons.FaChartLine/>,
+              cName: "nav-text"
+          },
+          {
+              name: 'Timesheet Developer/Project',
+              path: '/timesheet',
+              icon: <BsFileEarmarkSpreadsheet/>,
+              cName: "nav-text"
+          },
+          
+          {
+              name: 'Sprint Summary',
+              path: '/sprint_summary',
+              icon: <SiSprint/>,
+              cName: "nav-text"
+          },
+          {
+              name: 'Monthly Bug Summary',
+              path: '/monthly_bug_summary',
+              icon: <AiIcons.AiOutlineBug/>,
+              cName: "nav-text"
+          }
+      ]
+    },
+  ]
+  
+  export const ManagerReportSideBar = [
+   
+    {
+        title: 'Home',
+        path: '/home',
+        icon: <AiIcons.AiFillHome />,
+        cName: "nav-text"
+    },  
+    {
+          title: 'Report Dashboard',
+          path: '/reports',
+          icon: <FaIcons.FaChartLine/>,
+          cName: "nav-text"
+      },
+      {
+          title: 'Timesheet Developer/Project',
+          path: '/timesheet',
+          icon: <BsFileEarmarkSpreadsheet/>,
+          cName: "nav-text"
+      },
+      
+      {
+          title: 'Sprint Summary',
+          path: '/sprint_summary',
+          icon: <SiSprint/>,
+          cName: "nav-text"
+      },
+      {
+          title: 'Monthly Bug Summary',
+          path: '/monthly_bug_summary',
+          icon: <AiIcons.AiOutlineBug/>,
+          cName: "nav-text"
+      }
+  ]

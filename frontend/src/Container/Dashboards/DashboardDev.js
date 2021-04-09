@@ -2,7 +2,7 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import BMSHome from '../../Components/BMS/BMSHome/BMSHome';
 import CommonLayout from './CommonLayout';
-import SetDropDown, { DeveloperHomeSideBar, SidebarItemDeveloper, SidebarItemDropDeveloper } from '../../Components/BMS/SidebarItem';
+import SetDropDown, { SidebarItemDeveloper, SidebarItemDropDeveloper } from '../../Components/BMS/SidebarItem';
 import IssueBacklogBMS from '../../Components/BMS/IssueBacklog/IssueBacklogBMS';
 import BSPlistApproved from '../../Components/BSP/ApprovedBSP';
 import SprintBacklog from '../../Components/BMS/SprintBacklog/SprintBacklog';
@@ -27,7 +27,7 @@ function DashboardDev() {
           <CommonLayout page={<Kanban />} SidebarItem={SidebarItemDeveloper} SidebarItemDrop={SidebarItemDropDeveloper}/>
         </Route>
         <Route exact path={["/", "/home"]}>
-          <CommonLayout page={<BMSHome/>} SidebarItem={DeveloperHomeSideBar} SidebarItemDrop={[]}/>
+          <CommonLayout page={<BMSHome/>} SidebarItem={[]} SidebarItemDrop={[]}/>
         </Route>
     </Switch>
   )

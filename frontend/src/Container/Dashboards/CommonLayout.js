@@ -29,7 +29,7 @@ function CommonLayout({page, SidebarItem, SidebarItemDrop}){
     const modalClose = () => {
         setModal(false)
     }
-
+  
     return(
     <>
         <div class={StyleClass}>
@@ -67,6 +67,7 @@ function CommonLayout({page, SidebarItem, SidebarItemDrop}){
                                 {SidebarItemDrop.map((item, index) => {
                                 return(
                                     <div>
+
                                         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target={"#collapse"+index} aria-expanded="false" aria-controls={index}>
                                             <div class="sb-nav-link-icon">{item.icon}</div>
                                                 {item.title}

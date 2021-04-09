@@ -2,7 +2,7 @@ import React from 'react';
 import BMSHome from '../../Components/BMS/BMSHome/BMSHome';
 import { Switch, Route } from 'react-router-dom';
 import CommonLayout from './CommonLayout';
-import SetDropDown, { QAHomeSideBar, SidebarItemQA, SidebarItemDropQA } from '../../Components/BMS/SidebarItem';
+import SetDropDown, {SidebarItemQA, SidebarItemDropQA } from '../../Components/BMS/SidebarItem';
 import IssueBacklogBMS from '../../Components/BMS/IssueBacklog/IssueBacklogBMS';
 import BSPlistApproved from '../../Components/BSP/ApprovedBSP';
 import SprintBacklog from '../../Components/BMS/SprintBacklog/SprintBacklog';
@@ -29,7 +29,7 @@ function DashboardQA() {
           <CommonLayout page={<Kanban />} SidebarItem={SidebarItemQA}SidebarItemDrop={SidebarItemDropQA}/>
         </Route>
         <Route exact path={["/", "/home"]}>
-          <CommonLayout page={<BMSHome/>} SidebarItem={QAHomeSideBar} SidebarItemDrop={[]}/>
+          <CommonLayout page={<BMSHome/>} SidebarItem={[]} SidebarItemDrop={[]}/>
         </Route>
     </Switch>
   )

@@ -33,6 +33,20 @@ router.register(r'addtosprint', views.AddToSprint, basename="AddToSprint")
 
 router.register(r'test',views.Test,basename='Test')
 
+
+# Chandeepa
+
+router.register('User',views.UserViewset)
+router.register('Dev_Users',views.DevViewSet)
+router.register('Dev_Table',views.DevTicketsViewSet)
+router.register('Projects',views.ViewProjectViewsets)
+router.register('Dev_timesheet', views.ProjectDevTimeSheet,basename='Dev_timesheet')
+router.register('BugSummary', views.BugSummaryStatViewSet)
+router.register('DeveloperPerformance', views.DeveloperPerformance, basename='DeveloperPerformance')
+router.register('ProjectBugDevelopment',views.ProjectBugDevelopmentViewSet, basename='ProjectBugDevelopment')
+router.register('MonthBugDevelopment',views.MonthBugDevelopementViewset, basename='MonthBugDevelopment')
+
+
 urlpatterns = [
 
     # Login and Forgot password
