@@ -8,7 +8,6 @@ import CommonLayout from './CommonLayout';
 import { AdminHomeSideBar, SidebarItem, SidebarItemDrop } from '../../Components/Admin/SidebarItem';
 import ProjectList from '../../Components/Admin/Projects/ProjectList';
 import AccessControl from '../../Components/Admin/Projects/AccessControl';
-import UserTableBlocked from '../../Components/Admin/Users/BlockedUser';
 
 function DashboardAdmin() {
 
@@ -20,10 +19,6 @@ function DashboardAdmin() {
 
         <Route exact path="/internalusers">
           <CommonLayout page={<UserTableInternal/>} SidebarItem={SidebarItem} SidebarItemDrop={SidebarItemDrop}/>
-        </Route>
-
-        <Route exact path="/blockedusers">
-          <CommonLayout page={<UserTableBlocked/>} SidebarItem={SidebarItem} SidebarItemDrop={SidebarItemDrop}/>
         </Route>
 
         <Route exact path="/projects">

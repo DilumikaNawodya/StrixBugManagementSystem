@@ -12,6 +12,8 @@ function UserTableExternal() {
 
   const { externalusers } = userService.GetExternalUserList()
 
+  console.log(externalusers)
+
   const [showAddUser, setShowAddUser] = useState(false)
   const [showDeleteUser, setShowDeleteUser] = useState(false)
   const [showEditUser, setShowEditUser] = useState(false)

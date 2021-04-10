@@ -1,9 +1,13 @@
 from rest_framework import serializers
 from .models import * 
-
 from django.utils import timezone
-to_tz = timezone.get_default_timezone()
 from collections import OrderedDict
+
+#===================================================
+#------------------Dilumika-----------------------
+#===================================================
+
+to_tz = timezone.get_default_timezone()
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -13,34 +17,40 @@ class UserSerializer(serializers.ModelSerializer):
     project_count = serializers.SerializerMethodField()
 
     def get_role(self, obj):
-        id = obj.groups.get().id
-        if id == 1:
-            return "Admin"
-        elif id == 2:
-            return "Manager"
-        elif id == 3:
-            return "Developer"
-        elif id == 4:
-            return "QA"
-        elif id == 5:
-            return "Customer"
-        else:
+        if obj.is_blocked:
             return "Block"
+        else:
+            id = obj.groups.get().id
+            if id == 1:
+                return "Admin"
+            elif id == 2:
+                return "Manager"
+            elif id == 3:
+                return "Developer"
+            elif id == 4:
+                return "QA"
+            elif id == 5:
+                return "Customer"
+            else:
+                return "Block"
 
     def get_color(self, obj):
-        id = obj.groups.get().id
-        if id == 1:
-            return "dark"
-        elif id == 2:
-            return "primary"
-        elif id == 3:
-            return "warning"
-        elif id == 4:
-            return "info"
-        elif id == 5:
-            return "success"
-        else:
+        if obj.is_blocked:
             return "danger"
+        else:
+            id = obj.groups.get().id
+            if id == 1:
+                return "dark"
+            elif id == 2:
+                return "primary"
+            elif id == 3:
+                return "warning"
+            elif id == 4:
+                return "info"
+            elif id == 5:
+                return "success"
+            else:
+                return "danger"
 
     def get_ticket_count(self, obj):
         return Ticket.objects.filter(externaluser=obj.id).count()
@@ -51,50 +61,6 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'first_name', 'last_name', 'email', 'date_joined', 'role', 'color', 'ticket_count', 'project_count']
-
-
-class BlockedUserSerializer(serializers.ModelSerializer):
-
-
-    role = serializers.SerializerMethodField()
-    color = serializers.SerializerMethodField()
-    prev_role = serializers.SerializerMethodField()
-    prev_role_color = serializers.SerializerMethodField()
-    ticket_count = serializers.SerializerMethodField()
-    project_count = serializers.SerializerMethodField()
-
-    def get_role(self, obj):
-        return "Block"
-    
-    def get_color(self, obj):
-        return "danger"
-    
-    def get_prev_role(self, obj):
-        name = obj.username
-        return name.split('-')[0]
-
-    def get_prev_role_color(self, obj):
-        name = obj.username.split('-')[0]
-        if name == "Admin":
-            return "dark"
-        elif name == "Manager":
-            return "primary"
-        elif name == "Developer":
-            return "warning"
-        elif name == "QA":
-            return "info"
-        elif name == "Customer":
-            return "success"
-
-    def get_ticket_count(self, obj):
-        return Ticket.objects.filter(externaluser=obj.id).count()
-
-    def get_project_count(self, obj):
-        return Project.objects.filter(userlist=obj.id).count()
-
-    class Meta:
-        model = User
-        fields = ['id', 'first_name', 'last_name', 'email', 'date_joined', 'role', 'color', 'prev_role', 'prev_role_color', 'groups', 'ticket_count', 'project_count']
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -135,7 +101,9 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ['id', 'message', 'ticket', 'commentmedia', 'datetime', 'commented_user']
 
-##################################################################################
+#===================================================
+#------------------Dilshani-----------------------
+#===================================================
 
 
 class BugTypeSerializer(serializers.ModelSerializer):
@@ -192,7 +160,7 @@ class MediaSerializer(serializers.ModelSerializer):
         model = TicketMedia
         fields = '__all__'
 
-class TicketSerializer(serializers.ModelSerializer):
+class BMSTicketSerializer(serializers.ModelSerializer):
 
     BugType = BugTypeSerializer(source="bugtype")
     Workstate = WorkStateSerializer(source="workstate")
@@ -219,7 +187,9 @@ class TicketSerializer(serializers.ModelSerializer):
         ]
 
 
-###########################################################################
+#===================================================
+#------------------Dinithi-----------------------
+#===================================================
 
 class SprintSerializer(serializers.ModelSerializer):
 
@@ -245,36 +215,6 @@ class PinnedSprintSerialzer(serializers.ModelSerializer):
         model = Pinned
         fields= ['sprint_id', 'name', 'path']
 
-
-###########################################################################
-
-class DeveloperPerformanceSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = DeveloperTicket
-        fields = '__all__'
-
-class ProjectDevTimeSerializer(serializers.ModelSerializer):
-
-    project_name = serializers.SerializerMethodField()
-    developer_name = serializers.SerializerMethodField()
-    issue_title = serializers.SerializerMethodField()
-
-    def get_project_name(self, obj):
-        return obj.ticket.project.projectname
-
-    def get_developer_name(self, obj):
-        return obj.user.username
-
-    def get_issue_title(self, obj):
-        return obj.ticket.issuename
-
-    class Meta:
-        model = DeveloperTicket
-        fields = ['id','developer_name','project_name', 'issue_title','date','dailyeffort','ticket']
-
-
-############################################################################
 
 class CustomKanbanTasksSerializerFirst(serializers.ListSerializer):
 
@@ -370,8 +310,9 @@ class KanbanTestSerializerSecond(serializers.ModelSerializer):
 
 #===================================================
 #------------------Chandeepa-----------------------
+#===================================================
 
-class UserSerializer(serializers.ModelSerializer):
+class UserReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields ='__all__'
@@ -455,3 +396,106 @@ class MonthBugDevelopmentSerializer(serializers.ModelSerializer):
     class Meta:
         model =  Ticket
         fields = ['id','issuename', 'date','workstate_id']
+
+
+
+#######################################################YR#####################################
+class MediaSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = TicketMedia
+        fields = "__all__"
+
+class UserSerializerBCL((serializers.ModelSerializer)):
+    fullname = serializers.SerializerMethodField('full_name')
+
+    def full_name(self, obj):
+        name = obj.first_name + " " + obj.last_name
+        return name
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'fullname']
+
+
+class TicketSerializer(serializers.Serializer):
+    id=serializers.IntegerField()
+    issuename=serializers.CharField()
+    issuedescription=serializers.CharField()
+    date = serializers.DateField()
+    project=serializers.SerializerMethodField()
+    workstate=serializers.SerializerMethodField()
+    ticketMedia = MediaSerializer(source='ticketmedia_set', many=True)
+    createdby = UserSerializerBCL(read_only=True, source='externaluser')
+    workstatetext = serializers.StringRelatedField(source='workstate')
+    priority = serializers.SerializerMethodField()
+    severity=serializers.SerializerMethodField()
+    bugtype=serializers.SerializerMethodField()
+    workstatetext= serializers.SerializerMethodField()
+
+    def get_priority(self,obj):
+        return(obj.priority.priority)
+    def get_severity(self,obj):
+        return(obj.severity.severity)
+    def get_bugtype(self,obj):
+        return(obj.bugtype.bugtype)
+    def get_workstatetext(self,obj):
+        return(obj.workstate.workstatename)
+    def get_project(self,obj):
+        return(obj.project.id)
+    def get_workstate(self,obj):
+        return(obj.workstate.id)
+    
+
+    def create(self, validated_data):
+        ticketMedia = validated_data.pop('ticketMedia')
+        ticket = Ticket.objects.create(**validated_data)
+        for media in ticketMedia:
+            TicketMedia.objects.create(**media, issuename=ticket)
+        return ticket
+    
+        
+class SprintSummarySerializer(serializers.Serializer):
+
+    finished = serializers.SerializerMethodField()
+    total = serializers.SerializerMethodField()
+    active = serializers.SerializerMethodField()
+    estimated_hours = serializers.SerializerMethodField()
+    actual_hours = serializers.SerializerMethodField()
+    ticketlist=TicketSerializer(many=True,read_only=True)
+
+    def get_finished(self, obj):
+        y = 0
+        for x in obj.ticketlist.all():
+            if(x.workstate.id == 4 ):
+                y += 1
+        return (y)
+
+    def get_total(self, obj):
+        return(obj.ticketlist.all().count())
+
+    def get_active(self, obj):
+        y = 0
+        for x in obj.ticketlist.all():
+            if(x.workstate.id != 4):
+                y += 1
+        return(y)
+
+    def get_estimated_hours(self, obj):
+        enddate = obj.intialenddate
+        startdate = obj.startdate
+        return((enddate-startdate)/3600)
+
+    def get_actual_hours(self, obj):
+        startdate = obj.startdate
+        enddate = obj.enddate
+        if (enddate is not None and (enddate-startdate) is not None ):
+            return((enddate-startdate)/3600)
+        else:
+            return('Sprint is not finished')
+
+    name=serializers.CharField(max_length=50)
+    startdate = serializers.DateField(read_only=True)
+    intialenddate = serializers.DateField(read_only=True)
+    enddate=serializers.DateField(read_only=True)
+    id=serializers.IntegerField(read_only=True)

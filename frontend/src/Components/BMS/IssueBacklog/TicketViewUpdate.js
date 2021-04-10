@@ -254,7 +254,8 @@ function TicketView(props) {
                         <option value={1}>Critical</option>
                         <option value={2}>High</option>
                         <option value={3}>Medium</option>
-                        <option value={4}>Low</option>
+                        <option value={4}>Low</option> 
+                        
                       </Field>
                     </div>
 

@@ -37,11 +37,8 @@ function Auth(props){
             <Switch>
                 <Route exact path="/forgotpassword" component={ForgotPassword} />
                 <Route exact path="/passconfirmation/:uid/:token/" component={PasswordConfirmation} />
-
                 <Route exact path="/error" component={error} />
-                
                 <Route exact path="/login" component={Login} />
-
                 <PrivateRoute path="/" roles={[state.role]}/>
             </Switch>
         </Router>

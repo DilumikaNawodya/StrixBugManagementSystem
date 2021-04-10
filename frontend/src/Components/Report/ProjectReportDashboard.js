@@ -39,7 +39,7 @@ function ProjectReportDashboard(){
 
     return(
   
-        <div class="container mb-5">
+        <div>
            
             <div className="row" style={{ paddingTop: 5 }}>
                 <div className="col-md-6">

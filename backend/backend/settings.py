@@ -97,19 +97,19 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-''' This is original database for the backend ElephantSQL
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'luwluqey',
-        'USER': 'luwluqey',
-        'PASSWORD': 'SpsIPljYUMmAGRDMIH7OL5ktkZhxXcJx',
-        'HOST': 'lallah.db.elephantsql.com',
-        'PORT': '5432'
-    }
-}
+# This is original database for the backend ElephantSQL
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'luwluqey',
+#         'USER': 'luwluqey',
+#         'PASSWORD': 'SpsIPljYUMmAGRDMIH7OL5ktkZhxXcJx',
+#         'HOST': 'lallah.db.elephantsql.com',
+#         'PORT': '5432'
+#     }
+# }
 
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

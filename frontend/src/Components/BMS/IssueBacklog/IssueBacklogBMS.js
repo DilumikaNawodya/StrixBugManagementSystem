@@ -37,13 +37,15 @@ function IssueBacklogBMS() {
     });
   }, []);
 
+
+  const { bmsList } = ticketService.FetchBugs(pid);
+  
   let ticketlist = [];
   const { sprints } = sprintService.GetSprintList(pid);
   for (var i = 0; i < sprints.length; i++) {
     ticketlist = ticketlist.concat(sprints[i].ticketlist);
   }
 
-  const { bmsList } = ticketService.FetchBugs(pid);
   const { filters } = ticketService.Filters();
 
   const columns = [

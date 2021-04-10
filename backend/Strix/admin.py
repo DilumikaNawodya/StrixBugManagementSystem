@@ -50,7 +50,7 @@ class UserAdmin(BaseUserAdmin):
     list_display = ('username','email', 'is_superuser')
     list_filter = ('username','email', 'is_superuser')
     fieldsets = (
-        (None, {'fields': ('email', 'password','username','first_name','last_name','is_staff','is_superuser','is_active',)}),
+        (None, {'fields': ('email', 'password','username','first_name','last_name','is_staff','is_superuser','is_active','is_blocked',)}),
         ('Role / Permission', {'fields': ('groups','user_permissions',)}),
         ('Creation', {'fields': ('createdby',)}),
     )
@@ -58,7 +58,7 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password1','password2','username','first_name','last_name','is_staff','is_superuser','is_active','groups','user_permissions','createdby',)}
+            'fields': ('email', 'password1','password2','username','first_name','last_name','is_staff','is_superuser','is_active', 'is_blocked', 'groups','user_permissions','createdby',)}
         ),
     )
     search_fields = ('username',)

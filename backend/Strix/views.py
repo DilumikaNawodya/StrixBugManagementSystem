@@ -28,6 +28,11 @@ from django.contrib.postgres.aggregates.general import ArrayAgg
 from datetime import date,datetime
 from dateutil.relativedelta import relativedelta
 
+
+#===================================================
+#------------------Dilumika-----------------------
+#===================================================
+
 # Login
 class Login(APIView):
 
@@ -63,7 +68,6 @@ class Login(APIView):
 class Logout(APIView):
 
     def post(self,request):
-        print(request.user)
         if request.user.is_anonymous:
             return Response(False,status=404)
         else:
@@ -190,21 +194,12 @@ class InternalUserList(viewsets.ModelViewSet):
             body = json.loads(request.body)
 
             email = body["email"]
-            role = body["role"]
             firstname = body["firstname"]
             lastname = body["lastname"]
 
             UserInstance = User.objects.get(id=pk)
             UserInstance.first_name = firstname
             UserInstance.last_name = lastname
-            if role!="Block":
-                UserInstance.username = role + '-' + firstname
-            UserInstance.email = email
-
-            group_name = UserInstance.groups.get()
-            if role != group_name:
-                UserInstance.groups.remove(Group.objects.get(name=group_name))
-                UserInstance.groups.add(Group.objects.get(name=role))  
             UserInstance.save()
             return Response({"data":"Successfully Updated !"},status=200)
         else:
@@ -260,7 +255,6 @@ class ExternalUserList(viewsets.ModelViewSet):
             return Response({"data":"You do not have permission to update users !"},status=404)
 
 
-
     def update(self, request, pk, *args, **kwargs):
         createdby = request.user
 
@@ -268,7 +262,6 @@ class ExternalUserList(viewsets.ModelViewSet):
             body = json.loads(request.body)
 
             email = body["email"]
-            role = body["role"]
             firstname = body["firstname"]
             lastname = body["lastname"]
 
@@ -276,11 +269,6 @@ class ExternalUserList(viewsets.ModelViewSet):
             UserInstance.first_name = firstname
             UserInstance.last_name = lastname
             UserInstance.email = email
-
-            group_name = UserInstance.groups.get()
-            if role != group_name:
-                UserInstance.groups.remove(Group.objects.get(name=group_name))
-                UserInstance.groups.add(Group.objects.get(name=role))  
             UserInstance.save()
             return Response({"data":"Successfully Updated !"},status=200)
         else:
@@ -303,24 +291,11 @@ class ExternalUserList(viewsets.ModelViewSet):
 
 # Blocked Users
 class BlockedUserList(viewsets.ModelViewSet):
-    serializer_class = BlockedUserSerializer
-
-    def get_queryset(self):
-        return User.objects.filter(groups=6, is_active=True)
-
     def update(self, request, pk, *args, **kwargs):
         createdby = request.user
-
         if UserValidation(createdby) and UserRole(createdby) == "Admin":
-            body = json.loads(request.body)
-            role = body["role"]
-
             UserInstance = User.objects.get(id=pk)
-
-            group_name = UserInstance.groups.get()
-            if role != group_name:
-                UserInstance.groups.remove(Group.objects.get(name=group_name))
-                UserInstance.groups.add(Group.objects.get(name=role))  
+            UserInstance.is_blocked = not UserInstance.is_blocked
             UserInstance.save()
             return Response({"data":"Successfully Updated !"},status=200)
         else:
@@ -508,7 +483,9 @@ class CommentList(viewsets.ModelViewSet):
             return Response({"data":"You do not have permission to delete comment !"},status=404)
 
 
-###############################################################################################
+#===================================================
+#------------------Dilshani-----------------------
+#===================================================
 
 
 class Filters(APIView):
@@ -553,7 +530,7 @@ class Filters(APIView):
 
 class TicketList(viewsets.ModelViewSet):
 
-    serializer_class = TicketSerializer
+    serializer_class = BMSTicketSerializer
     
     def get_queryset(self):
         return Ticket.objects.filter(project=self.request.query_params.get("pid"))
@@ -598,7 +575,7 @@ class TicketList(viewsets.ModelViewSet):
 
 
 class BSPTicketList(viewsets.ModelViewSet):
-    serializer_class = TicketSerializer
+    serializer_class = BMSTicketSerializer
 
     def get_queryset(self):
 
@@ -637,7 +614,31 @@ class TicketMediaList(viewsets.ModelViewSet):
     def get_queryset(self):
         return TicketMedia.objects.filter(issuename=self.request.query_params.get("tid"))
 
-#################################################################################################
+class CustomeDataList(viewsets.ModelViewSet):
+
+    def get_queryset(self):
+        if "1" == self.request.query_params.get("customeid"):
+            return BugType.objects.all()
+        elif "2" == self.request.query_params.get("customeid"):
+            return Priority.objects.all()
+        elif "3" == self.request.query_params.get("customeid"):
+            return Severity.objects.all()
+        elif "4" == self.request.query_params.get("customeid"):
+            return Workstate.objects.all()
+
+    def get_serializer_class(self):
+        if "1" == self.request.query_params.get("customeid"):
+            return BugTypeSerializer
+        elif "2" == self.request.query_params.get("customeid"):
+            return PrioritySerializer
+        elif "3" == self.request.query_params.get("customeid"):
+            return SeveritySerializer
+        elif "4" == self.request.query_params.get("customeid"):
+            return WorkStateSerializer
+
+#===================================================
+#------------------Dinithi-----------------------
+#===================================================
 
 class SprintList(viewsets.ModelViewSet):
 
@@ -750,350 +751,14 @@ class KanbanTicketsList(viewsets.ModelViewSet):
         else:
             return Response({}, status=404)
 
-#################################################################################################
 
-# class GetTickets(APIView):
-
-#     def post(self,request):
-
-#         body = json.loads(request.body)
-
-#         tickets = Ticket.objects.filter(project_id=body["pid"])
-        
-#         Tickets = []
-
-#         for ticket in tickets:
-
-#             data = {
-#                 "id": ticket.id,
-#                 "issuename": ticket.issuename,
-#                 "issuedescription": ticket.issuedescription,
-#                 "date": ticket.date,
-#                 "bugtype": ticket.bugtype,
-#                 "priority": ticket.priority,
-#                 "severity": ticket.severity,
-#                 "bspstatus": "Included" if ticket.bspstatus else "Not Included",
-#                 "approval": "Approved" if ticket.approval else "Rejected",
-#                 "totaleffort": ticket.totaleffort,
-#                 "project": Project.objects.get(id=ticket.project_id).projectname,
-#                 "workstate": Workstate.objects.get(id=ticket.workstate_id).workstatename,
-#                 "externaluser_id": ticket.externaluser_id,
-#                 "review": "Reviewed" if ticket.review else "Not Reviewed"
-#             }
-
-#             Tickets.append(data)
-
-
-#         return Response({"Tickets":Tickets},status=200)
-
-
-
-
-
-##############################################################################################
-
-
-
-
-
-# class DeveloperPerformance(viewsets.ModelViewSet):
-#     serializer_class = DeveloperPerformanceSerializer
-
-#     def get_queryset(self):
-#         return(DeveloperTicket.objects.filter(date__month=2))
-
-#     # def create(self, request, *args, **kwargs):
-
-#     #     body = json.loads(request.body)
-
-#     #     project = body["projectid"]
-#     #     start_date = body["to"]
-#     #     end_date = body["from"]
-
-#     #     years = range(int(start_date.split('-')[0]), int(end_date.split('-')[0]) + 1)
-
-#     #     if(project):
-#     #         pro_tickets = Ticket.objects.filter(project=project)        
-#     #     else:
-#     #         pro_tickets = Ticket.objects.all()
-
-#     #     result = {}
-
-#     #     for year in years:
-#     #         dev_tickets = DeveloperTicket.objects.filter(date__year=year, date__range=[start_date, end_date], ticket__in=pro_tickets)
-#     #         month_tickets = dev_tickets.values('date__year', 'date__month').annotate(Avg('dailyeffort'), ticket_list=ArrayAgg('ticket_id'))
-
-#     #         for month in month_tickets:
-#     #             total_assigned = 0
-#     #             resolved = 0
-#     #             in_progress = 0
-#     #             for ticket in month['ticket_list']:
-#     #                 temp_workstate = Ticket.objects.get(id=ticket).workstate.id
-
-#     #                 if(temp_workstate==2 or temp_workstate==3 or temp_workstate==4):
-#     #                     total_assigned += 1
-#     #                 if(temp_workstate==4):
-#     #                     resolved += 1
-#     #                 if(temp_workstate==2 or temp_workstate==3):
-#     #                     in_progress += 1
-
-#     #             month["total_assigned"] = total_assigned
-#     #             month["resolved"] = resolved
-#     #             month["in_progress"] = in_progress
-
-#     #         result[year] = month_tickets
-
-#     #     return Response({"data":result}, status=200)
-
-#     def create(self, request, *args, **kwargs):
-
-#         body = json.loads(request.body)
-
-#         project = body["projectid"]
-#         start_date = body["to"]
-#         end_date = body["from"]
-
-#         pro_tickets = Ticket.objects.filter(project=project)        
-#         dev_tickets = DeveloperTicket.objects.filter(date__range=[start_date,end_date], ticket__in=pro_tickets)
-#         month_tickets = dev_tickets.values('date__year','date__month').annotate(Avg('dailyeffort'), ticket__list=ArrayAgg('ticket_id'))
-
-#         for month in month_tickets:
-#             total_assigned = 0
-#             resolved = 0
-#             in_progress = 0
-#             notdone = 0
-#             for ticket in month['ticket__list']:
-#                 temp_workstate = Ticket.objects.get(id=ticket).workstate.id
-
-#                 if(temp_workstate==2 or temp_workstate==3 or temp_workstate==4):
-#                     total_assigned += 1
-#                 if(temp_workstate==4):
-#                     resolved += 1
-#                 if(temp_workstate==2 or temp_workstate==3):
-#                     in_progress += 1
-
-#             month["total_assigned"] = total_assigned
-#             month["resolved"] = resolved
-#             month["in_progress"] = in_progress
-
-
-#         return Response({"data":month_tickets}, status=200)
-
-
-# class Test(viewsets.ModelViewSet):
-
-#     serializer_class = TicketSerializer
-
-#     def create(self, request, *args, **kwargs):
-
-#         data = json.loads(request.body)
-
-#         ticket_current = Ticket.objects.create(
-#             issuename = data['issuename'],
-#             issuedescription = data['issuedescription'],
-#             bugtype = data['bugtype'],
-#             priority = data['priority'],
-#             severity = data['severity'],
-#             bspstatus = False,
-#             approval = False,
-#             totaleffort = data['totaleffort'],
-#             review = False,
-#             project = Project.objects.get(id=data['project']),
-#             workstate = Workstate.objects.get(id=data['workstate']),
-#             externaluser = User.objects.get(id=data['externaluser'])
-#         )
-
-#         ticket_current.save()
-        
-        
-
-#         ticket_media = data['ticketMedia']
-        
-#         for media in ticket_media:
-#             MediaInstance = TicketMedia.objects.create(
-#                 issuename = ticket_current,
-#                 files = media
-#             )
-
-#             MediaInstance.save()
-
-#         serializer = TicketSerializer(ticket_current)
-#         return Response({"data":serializer.data}, status=200)
-
-
-
-# class TicketBspChange(viewsets.ModelViewSet):
-#     serializer_class = TicketSerializer
-
-#     def get_queryset(self):
-#         return Ticket.objects.all()
-
-#     def update(self, request, pk, *args, **kwargs):
-#         createdby = request.user
-#         if not UserValidation(createdby):
-#             return Response({"data":"You do not have permission to change status !"},status=404)
-#         else:
-#             data = json.loads(request.body)
-#             approval = data['approval']
-#             bspstatus = data['bspstatus']
-        
-#             selected_ticket = Ticket.objects.get(id=pk)
-
-#             selected_ticket.approval = approval
-#             selected_ticket.bspstatus = bspstatus
-
-#             selected_ticket.save()
-
-#             return Response({"data":"Succefully Chnaged !"},status=200)
-
-
-'''
-{
-    projectid: 5,
-    devid: 2,
-    to: 2020-10-11,
-    from: 2021-04-15
-}
-Columns should be [Project, Date, Developer (name), Issue Id, Issue Title, Effort)
-'''
-
-
-
-# class ProjectDevTimeSheet(viewsets.ModelViewSet):
-#     serializer_class = ProjectDevTimeSerializer
-
-#     def get_queryset(self):
-#         return DeveloperTicket.objects.all()
-
-#     def create(self, request, *args, **kwargs):
-#         created_by = request.user
-#         if UserValidation(created_by):
-
-#             data = json.loads(request.body)
-
-#             projectid = data['projectid']
-#             devid = data['devid']
-#             start_date = data['to']
-#             end_date = data['from']
-            
-#             selected_tickets = DeveloperTicket.objects.filter(ticket__project=projectid, user=devid, date__range=[start_date, end_date])
-
-#             serialized_data = ProjectDevTimeSerializer(selected_tickets, many=True).data
-
-#             return Response({"data": serialized_data}, 200)
-
-#         else:
-#             return Response({"data":"You do not have permission !"},status=404)
-
-
-
-
-
-# class bspTicketList(viewsets.ModelViewSet):
-#     serializer_class = TicketSerializer
-    
-
-#     def get_queryset(self):
-#         return Ticket.objects.filter(project=self.request.query_params.get("pid"),bspstatus=True)
-
-
-# class ApprovalTickets(viewsets.ModelViewSet):
-#     serializer_class = TicketSerializer
-    
-
-#     def get_queryset(self):
-#         return Ticket.objects.filter(project=self.request.query_params.get("pid"),approval=True)
-         
-        
-# class BMSTicketList(viewsets.ModelViewSet):
-#     serializer_class = TicketSerializer
-    
-
-#     def get_queryset(self):
-#         return Ticket.objects.filter(project=self.request.query_params.get("pid")).order_by("id")
-        
-
-
-# class TicketStatusUpdate(viewsets.ModelViewSet):
-#     serializer_class = TicketSerializer
-
-#     def get_queryset(self):
-#         return Ticket.objects.all()
-
-#     def update(self, request, pk, *args, **kwargs):
-#         createdby = request.user                             #get current user
-        
-        
-#         data = json.loads(request.body)        #python cannot read json data. convert into dictionaryType
-#         approval = data['approval']
-#         bspstatus = data['bspstatus']
-        
-#         selected_ticket = Ticket.objects.get(id=pk)
-
-#         selected_ticket.approval = approval
-#         selected_ticket.bspstatus = bspstatus
-
-#         selected_ticket.save()
-
-#         return Response({"data":"Succefully Chnaged !"},status=200)
-
-        
-#             #return Response({"data":"You do not have permission to change status !"},status=404)     #validate user in Uservalidation in mixing.py 
-    
-
-
-
-    
-#################################################################################################
-
-
-
-##################################################################################################
-
-class CustomeDataList(viewsets.ModelViewSet):
-
-    def get_queryset(self):
-        if "1" == self.request.query_params.get("customeid"):
-            return BugType.objects.all()
-        elif "2" == self.request.query_params.get("customeid"):
-            return Priority.objects.all()
-        elif "3" == self.request.query_params.get("customeid"):
-            return Severity.objects.all()
-        elif "4" == self.request.query_params.get("customeid"):
-            return Workstate.objects.all()
-
-    def get_serializer_class(self):
-        if "1" == self.request.query_params.get("customeid"):
-            return BugTypeSerializer
-        elif "2" == self.request.query_params.get("customeid"):
-            return PrioritySerializer
-        elif "3" == self.request.query_params.get("customeid"):
-            return SeveritySerializer
-        elif "4" == self.request.query_params.get("customeid"):
-            return WorkStateSerializer
-
-
-
-            
-class Test(viewsets.ModelViewSet):
-
-    serializer_class = UserSerializer
-
-    def create(self, request, *args, **kwargs):
-        
-        queryset_temp = Ticket.objects.filter(externaluser=6).count()
-        # print(queryset_temp.ticket_set.all())
-
-        return Response(queryset_temp, status=200)
-
-
-
-#================================================
-#--------------Chandeepa------------------------
+#===================================================
+#------------------Chandeepa-----------------------
+#===================================================
 
 class UserViewset(viewsets.ModelViewSet):
     queryset = User.objects.all()
-    serializer_class =  UserSerializer 
+    serializer_class =  UserReportSerializer 
 
 class DevViewSet(viewsets.ModelViewSet):
     queryset = User.objects.filter(groups=3)
@@ -1280,3 +945,104 @@ class MonthBugDevelopementViewset(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         queryset_temp = Ticket.objects.all().values('date__year','date__month').annotate(total_bugs = Count('id'), in_progress = Count('workstate', filter=Q(workstate__id__in=[2, 3])), resolved = Count('workstate', filter=Q(workstate__id=4)))
         return Response({"data": queryset_temp}, status=200) 
+
+
+#===================================================
+#------------------Yashith-----------------------
+#===================================================
+
+class ProjectViewSet(viewsets.ModelViewSet):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+        filter_value = self.request.query_params.get('id', None)
+        if filter_value is not None:
+            queryset = queryset.filter(id=filter_value)
+        return queryset
+
+
+class TicketMediaViewset(viewsets.ModelViewSet):
+    queryset = TicketMedia.objects.all()
+    serializer_class = MediaSerializer
+
+class TicketViewSet(viewsets.ModelViewSet):
+    queryset = Ticket.objects.all()
+    serializer_class = TicketSerializer
+
+    def get_queryset(self):  # filter by id query
+        queryset = self.queryset
+        filter_value = self.request.query_params.get('project', None)
+        if filter_value is not None:
+            queryset = queryset.filter(project=filter_value)
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        ticket_media = request.FILES.getlist('ticketMedia')
+
+        data = request.POST
+
+        ticket_current = Ticket.objects.create(
+            issuename=data['issuename'],
+            issuedescription=data['issuedescription'],
+            bugtype=BugType.objects.get(id=data['bugtype']),
+            priority=Priority.objects.get(id=data['priority']),
+            severity=Severity.objects.get(id=data['severity']),
+            bspstatus=False,
+            approval=False,
+            totaleffort=data['totaleffort'],
+            review=False,
+            project=Project.objects.get(id=data['project']),
+            workstate=Workstate.objects.get(id=data['workstate']),
+            externaluser=User.objects.get(id=data['externaluser'])
+        )
+
+        ticket_current.save()
+
+        # print(data['ticketMedia'])
+        # print(request.FILES.getlist('ticketMedia'))
+        for media in ticket_media:
+            MediaInstance = TicketMedia.objects.create(
+                issuename=ticket_current,
+                files=media
+            )
+
+            MediaInstance.save()
+
+        return Response({"data": "success"}, status=200)
+
+
+# Sprint summary View
+
+
+class SprintSummary(viewsets.ModelViewSet):
+    queryset = Sprint.objects.all()
+    serializer_class = SprintSummarySerializer
+
+    def get_queryset(self):  # filter by id query
+        queryset = self.queryset
+        filter_value = self.request.query_params.get('id', None)
+        if filter_value is not None:
+            queryset = queryset.filter(id=filter_value)
+        return queryset
+
+    def get_queryset(self):  # filter by id query
+        queryset = self.queryset
+        filter_value = self.request.query_params.get('project', None)
+        if filter_value is not None:
+            queryset = queryset.filter(project=filter_value)
+        return queryset
+
+
+class BugPerMonth(viewsets.ModelViewSet):
+    queryset = Ticket.objects.all()
+    serializer_class = TicketSerializer
+    
+    def get_queryset(self):  # filter by date
+        queryset = self.queryset
+        filter_value1 = self.request.query_params.get('date1', None)
+        filter_value2 = self.request.query_params.get('date2', None)
+        if filter_value1 and filter_value2 is not None:
+            queryset = queryset.filter(date__gte=filter_value1,date__lte=filter_value2)
+        return queryset

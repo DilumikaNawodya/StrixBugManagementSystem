@@ -9,6 +9,7 @@ from .managers import CustomUserManager
 class User(AbstractUser):
 	unique_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 	createdby = models.ForeignKey('self',default=None,null=True,on_delete=models.DO_NOTHING)
+	is_blocked = models.BooleanField(default=False)
 
 	objects = CustomUserManager()
 
