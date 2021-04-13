@@ -1,9 +1,10 @@
 import React, { useState, useEffect, } from 'react';
-import { Row, Col, Button, Card, Modal, Badge } from 'react-bootstrap';
+import { Table, Row, Col, Button, Card, NavLink, Form, FormControl, Modal, Badge } from 'react-bootstrap';
 import IssueForm from '../IssueBacklog/CreateIssue/IssueForm'
 import Issuecard from '../IssueBacklog/IssueTable/Issuecard'
 // import './table.css';
 import { render } from '@testing-library/react';
+import { BrowserRouter as Router, Route, Link, Switch, useLocation, useParams } from "react-router-dom";
 import './IssueBacklogBCL.scss'
 import getTickets from '../../../Services/TicketService';
 import { GetProjetDetails, projectService } from '../../../Services/ProjectService';
@@ -117,8 +118,7 @@ function IssueBacklogBCL() {
     for (var i = 0; i < buglist.length; i++) {
       if (buglist[i].id === e) {
         render(<Issuecard
-          id={buglist[i].id}
-          name={pdetails[0].projectname}
+          name={buglist[i].issuename}
           priority={buglist[i].priority}
           type={buglist[i].bugtype}
           summary={buglist[i].issuedescription}
@@ -127,7 +127,8 @@ function IssueBacklogBCL() {
           reporter={buglist[i].createdby.fullname}
           created={buglist[i].date}
           status={buglist[i].workstatetext}
-          attachment={buglist[i].ticketMedia} />);
+          attachment={buglist[i].ticketMedia}
+          severity_icon={severitytype(buglist[i].severity)} />);
       }
     }
 
@@ -145,32 +146,32 @@ function IssueBacklogBCL() {
     for (let i = 0; i < list.length; i++) {
       switch (list[i].priority) {
         case "Urgent":
-            list[i].priorityid = 1;
-            break;
+          list[i].priorityid = 1;
+          break;
         case "High":
-            list[i].priorityid = 2;
-            break;
+          list[i].priorityid = 2;
+          break;
         case "Medium":
-            list[i].priorityid = 3;
-            break;
+          list[i].priorityid = 3;
+          break;
         case "Low":
-            list[i].priorityid = 4;
-            break;
-    }
-    switch (list[i].severity) {
+          list[i].priorityid = 4;
+          break;
+      }
+      switch (list[i].severity) {
         case "Critical":
-            list[i].severityid = 1;
-            break;
+          list[i].severityid = 1;
+          break;
         case "High":
-            list[i].severityid = 2;
-            break;
+          list[i].severityid = 2;
+          break;
         case "Medium":
-            list[i].severityid = 3;
-            break;
+          list[i].severityid = 3;
+          break;
         case "Low":
-            list[i].severityid = 4;
-            break;
-    }
+          list[i].severityid = 4;
+          break;
+      }
     }
   }
   //*********************************
@@ -180,7 +181,7 @@ function IssueBacklogBCL() {
 
   const pid = projectService.getCurrentProject()
 
-  
+
   async function fetchtickets() {
     setisLoading(true)
     let a = await getTickets(pid)
@@ -203,7 +204,7 @@ function IssueBacklogBCL() {
 
     return () => { isMounted = false }
   }, [])
-  
+
   return (
     <div>
       <link
@@ -214,7 +215,7 @@ function IssueBacklogBCL() {
         <div className="ml-2 mt-2 col-md-9">
           <Col className="">
             <Row className="">
-              <Card className="project_card">
+              {/* <Card className="project_card">
                 <Card.Header className="pchead">
                   <Card.Title>{pdetails[0].projectname}</Card.Title>
                 </Card.Header>
@@ -223,7 +224,19 @@ function IssueBacklogBCL() {
                     {pdetails[0].description}
                   </Card.Text>
                 </Card.Body>
-              </Card>
+              </Card> */}
+              <Col>
+                <h1>{pdetails[0].projectname}</h1>
+              </Col>
+
+            </Row>
+            <Row>
+              <Col>
+                <h5>{pdetails[0].description}</h5>
+              </Col>
+            </Row>
+            <Row>
+              <Col><hr style={{ color: 'lightgray', marginTop: '0.5em' }} /></Col>
             </Row>
             <Row className="mt-2 mb-2" >
               <div className="d-flex p-2 bd-highlight">

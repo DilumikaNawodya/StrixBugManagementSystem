@@ -154,14 +154,14 @@ function IsseForm(props,) {
             <Form onSubmit={formik.handleSubmit}>
 
                 <Form.Group>
-                    <Form.Label>Title</Form.Label>
+                    <Form.Label><b>Title</b></Form.Label>
                     <Form.Control type="text" name="title" onChange={formik.handleChange} onBlur={formik.handleBlur}
                         value={formik.values.title}></Form.Control>
                     {formik.errors.title && formik.touched.title ? <Form.Text style={warningstyle}>{formik.errors.title}</Form.Text> : null}
                 </Form.Group>
 
                 <Form.Group >
-                    <Form.Label>Priority</Form.Label>
+                    <Form.Label><b>Priority</b></Form.Label>
                     <Form.Control as="select" name="priority" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.priority} >{/*set error handler*/}
                         <option value="">Select priority</option>
                         {prioritylist.map((priority) => <option value={priority.id} label={priority.priority} key={priority} />)}
@@ -170,7 +170,7 @@ function IsseForm(props,) {
                 </Form.Group>
 
                 <Form.Group >
-                    <Form.Label>BugType</Form.Label>
+                    <Form.Label><b>BugType</b></Form.Label>
                     <Form.Control as="select" name="bugtype" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.bugtype}>{/*set error handler*/}
                         <option value="">Select Type</option>
 
@@ -181,7 +181,7 @@ function IsseForm(props,) {
                 </Form.Group>
 
                 <Form.Group >
-                    <Form.Label>Severity</Form.Label>
+                    <Form.Label><b>Severity</b></Form.Label>
                     <Form.Control as="select" name="severity" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.severity}>{/*set error handler*/}
                         <option value="">Select severity</option>
                         {severitylist.map((severity) => <option value={severity.id} label={severity.severity} key={severity} />)}
@@ -192,13 +192,13 @@ function IsseForm(props,) {
 
                 {/* summary of the bug */}
                 <Form.Group>
-                    <Form.Label>Summary</Form.Label>
+                    <Form.Label><b>Description</b></Form.Label>
                     <Form.Control as="textarea" rows={4} placeholder="summary of the bug" name="summary" onChange={formik.handleChange} onBlur={formik.handleBlur}
                         value={formik.values.summary}></Form.Control>
                     {formik.errors.summary && formik.touched.summary ? <Form.Text style={warningstyle}>{formik.errors.summary}</Form.Text> : null}
                 </Form.Group>
                 <Form.Group>
-                    <Form.Label>Attachments</Form.Label>
+                    <Form.Label><b>Attachments</b></Form.Label>
                     <div style={{ display: "flex" }}>
 
                         <div style={{ width: "50%" }}>
