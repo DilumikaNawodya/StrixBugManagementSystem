@@ -241,9 +241,9 @@ function IssueBacklogBCL() {
             <Row className="mt-2 mb-2" >
               <div className="d-flex p-2 bd-highlight">
                 <Col md={12}>
-                  <Button className="mr-sm-2" variant="info" data-toggle="tooltip" title="Go to issues"
+                  <Button className="mr-sm-2" variant="success" data-toggle="tooltip" title="Go to issues"
                     onClick={() => setisModelOpen(true)}>
-                    Add Issue</Button>
+                    <b>Add Issue</b></Button>
                   <Modal size="lg" show={isModelOpen}>
                     <Modal.Body>
                       <IssueForm cl={() => setisModelOpen(false)} project={pid} reload={() => fetchtickets()} />

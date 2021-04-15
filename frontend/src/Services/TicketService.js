@@ -1,6 +1,7 @@
 import API from "./Base";
 import { useReducer, useEffect, useState } from "react";
 import axios from "axios";
+import Swal from 'sweetalert2'
 
 export const ticketService = {
   Filters,
@@ -219,8 +220,40 @@ export default async function getTickets(pid) {
   return (arrr);
 }
 
-export async function createTicket(data) {
-  await API.post('getTicket/', data);
+export async function 
+createTicket(data) {
+  try {
+    let a = await API.post('getTicket/', data)
+    if(a.status===200){
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'New issue created successfully',
+        showConfirmButton: true,
+        // timer: 1500
+      })
+    }
+    else{
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: 'Error occurred',
+        showConfirmButton: true,
+        // timer: 1500
+      })
+    }
+
+  } catch (error) {
+
+    Swal.fire({
+      position: 'top-end',
+      icon: 'error',
+      title: 'Error occurred',
+      showConfirmButton: true,
+      // timer: 1500
+    })
+  }
+  
 }
 
 export async function getMonthlyBugSummary(year, month) {

@@ -83,7 +83,7 @@ function IsseForm(props,) {
             create_Ticket(form_data);
             // console.log(values.ticketMedia[0])
             // console.log(values.ticketMedia[1])
-            console.log(values);
+            // console.log(values);
             props.cl();
         },
 

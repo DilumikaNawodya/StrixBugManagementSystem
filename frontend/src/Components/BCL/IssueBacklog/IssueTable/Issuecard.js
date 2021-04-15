@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Container, Badge, Col, Row, Button, Modal,Image } from 'react-bootstrap'
-import Comment from './Comment'
+
 
 function Attachments({ attach }) {
     if (attach != null) {
