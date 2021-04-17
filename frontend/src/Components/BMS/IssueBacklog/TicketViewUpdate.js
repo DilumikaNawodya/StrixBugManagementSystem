@@ -6,7 +6,7 @@ import { ticketService } from "../../../Services/TicketService";
 import Swal from "sweetalert2";
 
 function TicketView(props) {
-  const [totalEffort, setTotalEffort] = useState("");
+  const [totalEffort, setTotalEffort] = useState(props.data.totaleffort);
   const [dailyEffort, setdailyEffort] = useState("");
   const [mediaModal, setMediaModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
@@ -159,7 +159,7 @@ function TicketView(props) {
                   placeholder="Add Total Effort Here"
                   class="form-control"
                   name="totaleffort"
-                  value={props.data.totaleffort}
+                  value={totalEffort}
                   onChange={(event) => {
                     setTotalEffort(event.currentTarget.value);
                   }}
@@ -254,8 +254,7 @@ function TicketView(props) {
                         <option value={1}>Critical</option>
                         <option value={2}>High</option>
                         <option value={3}>Medium</option>
-                        <option value={4}>Low</option> 
-                        
+                        <option value={4}>Low</option>
                       </Field>
                     </div>
 
