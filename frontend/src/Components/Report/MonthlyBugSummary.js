@@ -103,6 +103,7 @@ function MonthlyBugSummary() {
   }
   function handleMonth(e) {
     setmonth(e.target.value)
+    
 
   }
 

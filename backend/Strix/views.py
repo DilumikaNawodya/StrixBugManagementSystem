@@ -1044,5 +1044,6 @@ class BugPerMonth(viewsets.ModelViewSet):
         filter_value1 = self.request.query_params.get('date1', None)
         filter_value2 = self.request.query_params.get('date2', None)
         if filter_value1 and filter_value2 is not None:
-            queryset = queryset.filter(date__gte=filter_value1,date__lte=filter_value2)
+            # queryset = queryset.filter(date__gte=filter_value1,date__lte=filter_value2)
+            queryset = queryset.filter(date__month=filter_value1,date__year=filter_value2)
         return queryset

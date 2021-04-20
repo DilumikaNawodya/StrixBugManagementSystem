@@ -261,6 +261,7 @@ export async function getMonthlyBugSummary(year, month) {
   var yyyy=date.getUTCFullYear();
   var mm= date.getUTCMonth();
   var dd=date.getUTCDate();
-  var data = await API.get('getBugPerMonth/?date1='+year+'-'+month+'-01&date2='+yyyy+'-'+mm+'-'+dd)
+  // var data = await API.get('getBugPerMonth/?date1='+year+'-'+month+'-01&date2='+yyyy+'-'+mm+'-'+dd)
+  var data = await API.get('getBugPerMonth/?date1='+month+'&date2='+year)
   return(data.data)
 }
