@@ -6,7 +6,8 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import Tooltip from '@material-ui/core/Tooltip';
 import { getMonthlyBugSummary } from '../../Services/TicketService'
 import { FormGroup, Chip } from '@material-ui/core';
-import {IoBugSharp} from 'react-icons/io5'
+import {IoBugSharp,} from 'react-icons/io5'
+import {FaCalendarDay} from 'react-icons/fa'
 
 
 
@@ -136,7 +137,7 @@ function MonthlyBugSummary() {
 
         <div className="row" style={{ paddingTop: 5 }}>
           <div className="col-md-6">
-            <Card.Title><h2> <IoBugSharp size={45} />{' '}<b>Monthly Bug Summary</b></h2></Card.Title>
+            <Card.Title><h2> <FaCalendarDay size={45} />{' '}<b>Monthly Bug Summary</b></h2></Card.Title>
           </div>
           <div className="col-md-6">
             <div className="p-2 mb-1">
@@ -202,7 +203,7 @@ function MonthlyBugSummary() {
                       <Button type='submit'>Filter</Button>
                     </div>
                   </Form>
-                  <div style={{ paddingTop: '50px', display: 'flex' }}>
+                  <div style={{ paddingTop: '50px',display:'flex', justifyContent:'flex-end',width:'80%'}}>
                     <h5><Badge variant='primary' className="m-3">Total :  {count.total}</Badge></h5>
                     <h5><Badge variant='success' className="m-3">Closed :   {count.closed}</Badge></h5>
                     <h5><Badge variant='danger' className="m-3">Open :   {count.open}</Badge> </h5>

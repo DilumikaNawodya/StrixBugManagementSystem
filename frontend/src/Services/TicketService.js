@@ -226,7 +226,7 @@ createTicket(data) {
     let a = await API.post('getTicket/', data)
     if(a.status===200){
       Swal.fire({
-        position: 'top-end',
+        position: 'center',
         icon: 'success',
         title: 'New issue created successfully',
         showConfirmButton: true,
@@ -235,7 +235,7 @@ createTicket(data) {
     }
     else{
       Swal.fire({
-        position: 'top-end',
+        position: 'center',
         icon: 'error',
         title: 'Error occurred',
         showConfirmButton: true,
@@ -246,7 +246,7 @@ createTicket(data) {
   } catch (error) {
 
     Swal.fire({
-      position: 'top-end',
+      position: 'center',
       icon: 'error',
       title: 'Error occurred',
       showConfirmButton: true,

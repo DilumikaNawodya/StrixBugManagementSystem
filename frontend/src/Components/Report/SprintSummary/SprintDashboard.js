@@ -6,7 +6,7 @@ import MaterialTable from 'material-table'
 import Tooltip from '@material-ui/core/Tooltip';
 import getSprintSummary from '../../../Services/Reports/SprintSummaryService'
 import SprintModal from './SprintSummaryModal';
-import {IoBugSharp} from 'react-icons/io5'
+import {SiSprint} from 'react-icons/si'
 
 
 
@@ -106,7 +106,7 @@ function SprintDashboard() {
             <div>
                 <div className="row" style={{ paddingTop: 5 }}>
                     <div className="col-md-6">
-                        <Card.Title><h2> <IoBugSharp size={45} />{' '}<b>Sprint Summary</b></h2></Card.Title>
+                        <Card.Title><h2> <SiSprint size={45} />{' '}<b>Sprint Summary</b></h2></Card.Title>
                     </div>
                     <div className="col-md-6">
                         <div className="p-2 mb-1">
@@ -145,7 +145,7 @@ function SprintDashboard() {
             <div>
                 <div className="row" style={{ paddingTop: 5 }}>
                     <div className="col-md-6">
-                        <Card.Title><h2> <IoBugSharp size={45} />{' '}<b>Monthly Bug Summary</b></h2></Card.Title>
+                        <Card.Title><h2> <SiSprint size={45} />{' '}<b>Monthly Bug Summary</b></h2></Card.Title>
                     </div>
                     <div className="col-md-6">
                         <div className="p-2 mb-1">
