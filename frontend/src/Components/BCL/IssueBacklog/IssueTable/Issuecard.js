@@ -147,7 +147,7 @@ function IssueCard(props) {
                                 </Col>
                                 <Col>
                                     <h6 style={{ color: 'gray', marginBottom: '5px' }}>Severity :  </h6>
-                                    <h5 style={{paddingLeft:'10px'}}><span>{props.severity} {props.severity_icon}</span></h5>
+                                    <h5 style={{paddingLeft:'10px'}}><Badge variant={props.svariant}>{props.severity}</Badge></h5>
                                 </Col>
                             </Row>
                             <Row className='mt-5'>

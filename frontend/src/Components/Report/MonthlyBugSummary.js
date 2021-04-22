@@ -1,6 +1,7 @@
 import React, { useState, useEffect, } from 'react';
 import { Table, Row, Col, Button, Card, NavLink, Form, FormControl, Modal, Badge, ProgressBar } from 'react-bootstrap';
 import MaterialTable, { MTable, MTableToolbar } from 'material-table'
+import { render } from '@testing-library/react';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -8,7 +9,7 @@ import { getMonthlyBugSummary } from '../../Services/TicketService'
 import { FormGroup, Chip } from '@material-ui/core';
 import {IoBugSharp,} from 'react-icons/io5'
 import {FaCalendarDay} from 'react-icons/fa'
-
+import Issuecard from '../BCL//IssueBacklog/IssueTable/Issuecard'
 
 
 
@@ -53,6 +54,26 @@ function MonthlyBugSummary() {
       }
     }
   }
+  function tableticket(e) {
+    for (var i = 0; i < buglist.length; i++) {
+      if (buglist[i].id === e) {
+        render(<Issuecard
+          name={buglist[i].issuename}
+          priority={buglist[i].priority}
+          type={buglist[i].bugtype}
+          summary={buglist[i].issuedescription}
+          variant={bagetype(buglist[i].priority)}
+          severity={buglist[i].severity}
+          svariant={severitytype(buglist[i].severity)}
+          reporter={buglist[i].createdby.fullname}
+          created={buglist[i].date}
+          status={buglist[i].workstatetext}
+          attachment={buglist[i].ticketMedia}
+          severity_icon={severitytype(buglist[i].severity)} />);
+      }
+    }
+
+  }
 
   async function getBugs(year, month) {
     setbuglist([])
@@ -88,13 +109,13 @@ function MonthlyBugSummary() {
 
     switch (severity) {
       case 'Critical':
-        return (<Tooltip title="Critical"><ArrowUpwardIcon style={{ color: "#dc3545" }} /></Tooltip>);
+        return 'danger';
       case 'High':
-        return (<Tooltip title="High"><ArrowUpwardIcon style={{ color: "#ffc107" }} /></Tooltip>);
+        return 'warning';
       case 'Medium':
-        return (<Tooltip title="Medium"><ArrowDownwardIcon style={{ color: "#007bff" }} /></Tooltip>);
+        return 'primary'
       case 'Low':
-        return (<Tooltip title="Low"><ArrowDownwardIcon style={{ color: "#28a745" }} /></Tooltip>);
+        return 'success'
     }
   }
 
@@ -155,13 +176,14 @@ function MonthlyBugSummary() {
           { title: 'Title', field: 'issuename' },
           { title: "Date", field: "date" },
           { title: 'Priority', field: 'priority', render: rowData => <Badge variant={bagetype(rowData.priority)}>{rowData.priority}</Badge>, customSort: (a, b) => a.priorityid - b.priorityid },
-          { title: 'Severity', field: 'severity', render: rowData => severitytype(rowData.severity), customSort: (a, b) => a.severityid - b.severityid }
+          { title: 'Severity', field: 'severity', render: rowData => <Badge variant={severitytype(rowData.severity)}>{rowData.severity}</Badge>, customSort: (a, b) => a.severityid - b.severityid }
 
 
         ]}
         isLoading={isloading}
         data={buglist}
         title='Monthly Bug Summary'
+        onRowClick={(event, rowData) => { tableticket(rowData.id) }}
         components={
           {
             Toolbar: props => (

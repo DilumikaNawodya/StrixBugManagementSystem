@@ -33,13 +33,13 @@ function severitytype(severity) {
 
   switch (severity) {
     case 'Critical':
-      return (<Tooltip title="Critical"><ArrowUpwardIcon style={{ color: "#dc3545" }} /></Tooltip>);
+      return 'danger';
     case 'High':
-      return (<Tooltip title="High"><ArrowUpwardIcon style={{ color: "#ffc107" }} /></Tooltip>);
+      return 'warning';
     case 'Medium':
-      return (<Tooltip title="Medium"><ArrowDownwardIcon style={{ color: "#007bff" }} /></Tooltip>);
+      return 'primary'
     case 'Low':
-      return (<Tooltip title="Low"><ArrowDownwardIcon style={{ color: "#28a745" }} /></Tooltip>);
+      return 'success'
   }
 }
 
@@ -124,6 +124,7 @@ function IssueBacklogBCL() {
           summary={buglist[i].issuedescription}
           variant={bagetype(buglist[i].priority)}
           severity={buglist[i].severity}
+          svariant={severitytype(buglist[i].severity)}
           reporter={buglist[i].createdby.fullname}
           created={buglist[i].date}
           status={buglist[i].workstatetext}
@@ -212,7 +213,7 @@ function IssueBacklogBCL() {
         href="https://fonts.googleapis.com/icon?family=Material+Icons"
       />
       <Row >
-        <div className="ml-2 mt-2 col-md-9">
+        <div className="ml-2 mt-2 col-md-12">
           <Col className="">
             <Row className="">
               {/* <Card className="project_card">
@@ -255,15 +256,15 @@ function IssueBacklogBCL() {
               </div>
             </Row>
             <Row>
-              <Card style={{ minWidth: '100%' }}>
-                <div style={{ minWidth: '100%' }}>
+              
+                <Col md-12>
                   <MaterialTable
                     columns={[
                       { title: 'Id', field: 'id' },
                       { title: 'Title', field: 'issuename' },
                       { title: "Date", field: "date", },
                       { title: 'Priority', field: 'priority', render: rowData => <Badge variant={bagetype(rowData.priority)}>{rowData.priority}</Badge>, customSort: (a, b) => a.priorityid - b.priorityid },
-                      { title: 'Severity', field: 'severity', render: rowData => severitytype(rowData.severity), customSort: (a, b) => a.severityid - b.severityid }
+                      { title: 'Severity', field: 'severity', render: rowData => <Badge variant={severitytype(rowData.severity)}>{rowData.severity}</Badge>, customSort: (a, b) => a.severityid - b.severityid }
 
                     ]}
                     data={buglist}
@@ -272,8 +273,8 @@ function IssueBacklogBCL() {
                     onRowClick={(event, rowData) => { tableticket(rowData.id) }}
                   />
 
-                </div>
-              </Card>
+                </Col>
+              
             </Row>
           </Col>
         </div>
