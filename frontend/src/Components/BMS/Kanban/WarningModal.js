@@ -13,6 +13,7 @@ function WarningModal(props) {
   return (
     <div>
       <div class="modal-body text-lg-center">
+
         <div class="row">
           <div class="col"></div>
           <IconContext.Provider value={{ color: "red" }}>
@@ -21,24 +22,31 @@ function WarningModal(props) {
 
           <div class="col"></div>
         </div>
+
         <Center class="row">
           <h1>Are you sure?</h1>
         </Center>
+
         <Center class="row">
           <h6>If you proceed, the bug will be marked as completed.</h6>
         </Center>
+
         <div class="row mt-3">
+
           <div class="col">
-            <Button type="button" variant="danger" onClick={props.cl}>
+            <Button type="button" variant="danger" onClick={props.submit}>
               Confirm
             </Button>
           </div>
+
           <div class="col">
             <Button type="button" onClick={props.cl}>
               Cancel
             </Button>
           </div>
+
         </div>
+        
       </div>
     </div>
   );

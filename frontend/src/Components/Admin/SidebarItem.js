@@ -23,12 +23,6 @@ export const SidebarItem = [
     cName: 'nav-text'
   },
   {
-    title: 'Blocked Users',
-    path: '/blockedusers',
-    icon: <BiIcons.BiUserX />,
-    cName: 'nav-text'
-  },
-  {
     title: 'Projects',
     path: '/projects',
     icon: <FaIcons.FaRegEdit />,

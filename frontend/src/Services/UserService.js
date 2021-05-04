@@ -14,7 +14,6 @@ export const userService = {
     DeleteExternalUser,
     UpdateExternalUser,
 
-    GetBlockedUserList,
     UpdateBlockedUser
 }
 
@@ -70,7 +69,6 @@ function DeleteExternalUser(uid){
 function UpdateExternalUser(uid, fields){
     const request = API.patch('externaluserlist/' + uid + '/', {
         email: fields.email,
-        role: fields.role,
         firstname: fields.first_name,
         lastname: fields.last_name
     },{})
@@ -129,7 +127,6 @@ function DeleteInternalUser(uid){
 function UpdateInternalUser(uid, fields){
     const request = API.patch('internaluserlist/' + uid + '/', {
         email: fields.email,
-        role: fields.role,
         firstname: fields.first_name,
         lastname: fields.last_name
     },{})
@@ -138,33 +135,7 @@ function UpdateInternalUser(uid, fields){
 
 // Blocked Users
 
-function GetBlockedUserList(){
-    const [state, setState] = useState({
-        blockedusers:[],
-        error:false
-    })
-
-    useEffect(()=>{
-        API.get('blockeduserlist/')
-            .then(function (response) {
-                setState({
-                    blockedusers: response.data,
-                    error:false
-                })
-            })
-            .catch(function (error) {
-                setState({
-                    blockedusers:[],
-                    error:true
-                })
-            })
-    },[])
-    return state
-}
-
 function UpdateBlockedUser(uid, fields){
-    const request = API.patch('blockeduserlist/' + uid + '/', {
-        role: fields.role,
-    },{})
+    const request = API.patch('blockeduserlist/' + uid + '/', {},{})
     return request
 }

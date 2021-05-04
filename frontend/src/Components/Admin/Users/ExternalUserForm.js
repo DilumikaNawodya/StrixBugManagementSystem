@@ -14,7 +14,6 @@ function ExternalUserForm({ uid }) {
         first_name: '',
         last_name: '',
         email: '',
-        role: 'Customer',
         password: '',
         confirmPassword: ''
     };
@@ -27,8 +26,6 @@ function ExternalUserForm({ uid }) {
         email: Yup.string()
             .email('Email is invalid')
             .required('Email is required'),
-        role: Yup.string()
-            .required('Role is required'),
         password: Yup.string()
             .concat(isAddMode ? Yup.string().required('Password is required') : null)
             .min(6, 'Password must be at least 6 characters'),
@@ -109,7 +106,7 @@ function ExternalUserForm({ uid }) {
     useEffect(() => {
         if (!isAddMode) {
             userService.GetExternalUser(uid).then(user => {
-                const fields = ['first_name', 'last_name', 'email', 'role'];
+                const fields = ['first_name', 'last_name', 'email'];
                 fields.forEach(field => formikRef.current.setFieldValue(field, user.data[field], false))
                 setUser(user.data)
             })
@@ -156,17 +153,6 @@ function ExternalUserForm({ uid }) {
                                     <ErrorMessage name="email" component="div" className="invalid-feedback" />
                                 </div>
                             </div>
-
-                            {!isAddMode && <div className="form-row">
-                                <div className="form-group col-12">
-                                    <label>Role</label>
-                                    <Field name="role" as="select" className={'form-control' + (errors.role && touched.role ? ' is-invalid' : '')}>
-                                        <option value="Customer">Customer</option>
-                                        <option value="Block">Block</option>
-                                    </Field>
-                                    <ErrorMessage name="role" component="div" className="invalid-feedback" />
-                                </div>
-                            </div>}
 
                             {isAddMode && <div className="form-row">
                                 <div className="form-group col">

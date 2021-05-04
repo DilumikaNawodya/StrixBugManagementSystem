@@ -30,7 +30,6 @@ function Auth(props){
         history.push('/login');
     }
 
-    console.log(state.role)
 
     return (
         
@@ -38,13 +37,8 @@ function Auth(props){
             <Switch>
                 <Route exact path="/forgotpassword" component={ForgotPassword} />
                 <Route exact path="/passconfirmation/:uid/:token/" component={PasswordConfirmation} />
-
                 <Route exact path="/error" component={error} />
-                
                 <Route exact path="/login" component={Login} />
-            
-                {/* <Route exact path="/test" component={AddEdit} /> */}
-
                 <PrivateRoute path="/" roles={[state.role]}/>
             </Switch>
         </Router>

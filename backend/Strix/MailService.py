@@ -13,8 +13,6 @@ class EmailSend():
 
         body = 'http://localhost:3000/passconfirmation/'+ context['uid'] +'/'+ context['token'] +'/'
 
-        print(body)
-
         email_message = EmailMultiAlternatives(subject, body, from_email, [to_email])
         email_message.send()
 

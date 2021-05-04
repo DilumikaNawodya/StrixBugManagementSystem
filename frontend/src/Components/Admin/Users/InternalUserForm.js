@@ -109,7 +109,7 @@ function InternalUserForm({ uid }) {
     useEffect(() => {
         if (!isAddMode) {
             userService.GetInternalUser(uid).then(user => {
-                const fields = ['first_name', 'last_name', 'email', 'role'];
+                const fields = ['first_name', 'last_name', 'email'];
                 fields.forEach(field => formikRef.current.setFieldValue(field, user.data[field], false))
                 setUser(user.data)
             })
@@ -157,7 +157,7 @@ function InternalUserForm({ uid }) {
                                 </div>
                             </div>
 
-                            <div className="form-row">
+                            {isAddMode && <div className="form-row">
                                 <div className="form-group col-12">
                                     <label>Role</label>
                                     <Field name="role" as="select" className={'form-control' + (errors.role && touched.role ? ' is-invalid' : '')}>
@@ -169,7 +169,7 @@ function InternalUserForm({ uid }) {
                                     </Field>
                                     <ErrorMessage name="role" component="div" className="invalid-feedback" />
                                 </div>
-                            </div>
+                            </div>}
 
                             {isAddMode && <div className="form-row">
                                 <div className="form-group col">

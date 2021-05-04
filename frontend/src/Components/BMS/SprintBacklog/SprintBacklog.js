@@ -1,76 +1,69 @@
-import React, { useState } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { projectService } from "../../../Services/ProjectService";
 import { sprintService } from "../../../Services/SprintService";
 import Badge from "react-bootstrap/Badge";
-import { BehaviorSubject } from "rxjs";
 import { Fragment } from "react";
+import * as AiIcons from "react-icons/ai";
 import MaterialTable from "material-table";
 
-const projectID = new BehaviorSubject(
-  JSON.parse(localStorage.getItem("projectID"))
-);
-
 function SprintBacklog() {
-  const [params, setParams] = useState({});
-  const history = useHistory();
 
-  {
-    /*  const handleInput = (e) => {
-    const param = e.target.name;
-    const value = e.target.value;
-    setParams((prevParams) => {
-      return { ...prevParams, [param]: value };
-    });
-  };*/
+  const history = useHistory()
+
+  const [projectName, setProjectName] = useState(null)
+  const pid = projectService.getCurrentProject()
+
+  useEffect(() => {
+    projectService.GetProject(pid)
+      .then(function (response) {
+        setProjectName(response.data.projectname)
+      })
+  }, [])
+
+  const { sprints } = sprintService.GetSprintList(pid)
+  const pinnedSprints = JSON.parse(sprintService.getPinnedSprints())
+
+  const launchKanban = (sid) => {
+    history.push("/kanbanboard/"+sid)
   }
-  const [state, setState] = useState(null);
-  const pid = projectService.getCurrentProject();
-  projectService.GetProject(pid).then(function (response) {
-    setState(response.data.projectname);
-  });
 
-  const { sprints, loading, error } = sprintService.GetSprintList(
-    params,
-    projectID.value
-  );
 
-  const launchKanban = () => {
-    history.push("/kanbanboard");
-  };
+  function handlePin(id){
+    sprintService.ChangePin(id)
+  }
 
-  const pinnedSprint = () => {
-    console.log("pinned");
-  };
+  const data = [
+    {
+      title: "Sprint ID",
+      field: "id",
+      editable: "never",
+    },
+    {
+      title: "Sprint Name",
+      field: "name",
+      editable: "onUpdate",
+    },
+    {
+      title: "Status",
+      field: "status",
+      editable: "onUpdate",
+      render: (rowData) => (
+        <Badge variant={rowData.status ? "success" : "danger"}>
+          {rowData.status ? "Active" : "Inactive"}
+        </Badge>
+      ),
+    },
+  ]
+
 
   return (
     <Fragment>
       <div class="mt-4 mr-4 ml-4 mb-4">
         <MaterialTable
-          title={state}
-          columns={[
-            {
-              title: "Sprint ID",
-              field: "id",
-              editable: "never",
-            },
-            {
-              title: "Sprint Name",
-              field: "name",
-              editable: "onUpdate",
-            },
-            {
-              title: "Status",
-              field: "status",
-              editable: "onUpdate",
-              render: (rowData) => (
-                <Badge variant={rowData.status ? "success" : "danger"}>
-                  {rowData.status ? "Active" : "Inactive"}
-                </Badge>
-              ),
-            },
-          ]}
+          title={projectName}
           data={sprints}
+          columns={data}
           options={{
             sorting: true,
           }}
@@ -78,19 +71,19 @@ function SprintBacklog() {
             actionsColumnIndex: -1,
           }}
           actions={[
-            {
-              icon: () => <i class="fas fa-external-link-alt"></i>,
-              onClick: () => launchKanban(),
-            },
-            {
-              icon: (rowData) => (
-                <i
-                  class="fas fa-thumbtack"
-                  style={{ color: rowData.status ? "black" : "lightgrey" }}
-                ></i>
-              ),
-              onClick: (event) => pinnedSprint(),
-            },
+            (rowData) => (
+              {
+                icon: () => pinnedSprints.some(sprint => sprint.sprint_id == rowData.id) ? <AiIcons.AiFillPushpin/> : <AiIcons.AiOutlinePushpin/>,
+                onClick: (event) => handlePin(rowData.id),
+                disabled: rowData.status == false,
+              }
+            ),
+            (rowData) => (
+              {
+                icon: () => <i class="fas fa-external-link-alt"></i>,
+                onClick: () => launchKanban(rowData.id),
+              }
+            )
           ]}
         />
       </div>

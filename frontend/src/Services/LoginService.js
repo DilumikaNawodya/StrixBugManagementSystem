@@ -12,11 +12,12 @@ export const authenticationService = {
     SetPassword,
     currentUser: currentUserSubject.asObservable(),
     get userRole () { return currentUserSubject.value.Role },
+    get userID () { return currentUserSubject.value.id },
+    get userName () { return currentUserSubject.value.Name },
     get currentUserValue () { return currentUserSubject.value }
 };
 
 function login(email,password){
-    console.log(email,password)
     const request = API.post('login/',{
         email: email,
         password: password

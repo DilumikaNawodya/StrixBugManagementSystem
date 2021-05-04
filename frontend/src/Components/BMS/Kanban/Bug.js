@@ -1,13 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
-import { Badge, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Modal, Badge, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { BsClock, BsExclamationTriangle } from "react-icons/bs";
+import TicketView from "../IssueBacklog/TicketViewUpdate";
+import { ticketService } from "../../../Services/TicketService";
+import { projectService } from "../../../Services/ProjectService";
+import { authenticationService } from "../../../Services/LoginService";
 
 const Container = styled.div`
   border: 1px solid lightgrey;
   border-radius: 2px;
   padding: 8px;
+  min-height: 75px;
   margin-bottom: 8px;
   box-shadow: 1px 1px rgba(0, 0, 0, 0.1);
   background-color: ${(props) =>
@@ -19,6 +24,32 @@ const Container = styled.div`
 `;
 
 const Bug = (props) => {
+  var userRole = "Block";
+  if (authenticationService.currentUserValue != null) {
+    userRole = authenticationService.userRole;
+  }
+
+  const [isManagerModelOpen, setisManagerModelOpen] = useState(false);
+  const [isQAModelOpen, setisQAModelOpen] = useState(false);
+  const [isDevModelOpen, setisDevModelOpen] = useState(false);
+
+  const [issue, setIssue] = useState();
+
+  async function OpenTicket() {
+    let issueData = await ticketService.FetchOneBug(
+      projectService.getCurrentProject(),
+      props.task.id
+    );
+    setIssue(issueData);
+    if (userRole == "Manager") {
+      setisManagerModelOpen(true);
+    } else if (userRole == "QA") {
+      setisQAModelOpen(true);
+    } else if (userRole == "Developer") {
+      setisDevModelOpen(true);
+    }
+  }
+
   return (
     <div style={{}}>
       <Draggable draggableId={props.task.id} index={props.index}>
@@ -28,6 +59,7 @@ const Bug = (props) => {
             {...provided.dragHandleProps}
             ref={provided.innerRef}
             isDragging={snapshot.isDragging}
+            onClick={() => OpenTicket()}
           >
             {props.task.content}
             <br />
@@ -71,6 +103,34 @@ const Bug = (props) => {
           </Container>
         )}
       </Draggable>
+
+      <Modal size="lg" show={isManagerModelOpen}>
+        <Modal.Body>
+          <TicketView
+            cl={() => setisManagerModelOpen(false)}
+            data={issue}
+            role="Manager"
+          />
+        </Modal.Body>
+      </Modal>
+      <Modal size="lg" show={isQAModelOpen}>
+        <Modal.Body>
+          <TicketView
+            cl={() => setisQAModelOpen(false)}
+            data={issue}
+            role="QA"
+          />
+        </Modal.Body>
+      </Modal>
+      <Modal size="lg" show={isDevModelOpen}>
+        <Modal.Body>
+          <TicketView
+            cl={() => setisDevModelOpen(false)}
+            data={issue}
+            role="Developer"
+          />
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

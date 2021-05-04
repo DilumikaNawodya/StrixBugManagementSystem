@@ -1,46 +1,56 @@
 import React from "react";
 import { Form, Button } from "react-bootstrap";
-import { BehaviorSubject } from "rxjs";
 import { sprintService } from "../../../Services/SprintService";
+import Swal from 'sweetalert2'
+import { projectService } from "../../../Services/ProjectService";
 
-const currentUserSubject = new BehaviorSubject(
-  JSON.parse(localStorage.getItem("currentUser"))
-);
 
 function AddSprintModal(props) {
+
+  function onSubmit(e){
+    e.preventDefault()
+    sprintService.CreateSprint(e.target.name.value, e.target.enddate.value, projectService.getCurrentProject())
+    .then(function (response) {
+      Swal.fire({
+          position: 'middle',
+          icon: 'success',
+          title: response.data.data,
+          showConfirmButton: true,
+          timer: 5000
+      }).then(function () {
+          window.location.reload(true)
+      })
+    })
+    .catch(function (error) {
+        Swal.fire({
+            position: 'middle',
+            icon: 'warning',
+            title: error.response.data.data,
+            showConfirmButton: true,
+            timer: 5000
+        }).then(function () {
+            window.location.reload(true)
+        })
+    })
+  }
+
+
+
   return (
     <div>
-      <div class="modal-header">
-        <h6 class="modal-title text-light">Add Sprint</h6>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          onClick={props.cl}
-        >
-          &times;
-        </button>
-      </div>
-      <div class="mt-3 mb-3">
-        <Form>
-          <Form.Control
-            type="text"
-            name="name"
-            placeholder="Enter Name"
-          ></Form.Control>
+      <div class="contact-form">
+        <h3 style={{marginTop: "-1.75em"}}>Add Sprint</h3>
+        <Form onSubmit={onSubmit}>
+          <Form.Control type="text" name="name" placeholder="Enter Sprint Name"></Form.Control>
+          <Form.Control type="number" className="mt-2" name="enddate" placeholder="Enter Sprint Dates (In days)"></Form.Control>
+          <Button type="submit" className="pull-right btnContact mt-4">
+            Add
+          </Button>
+          <Button type="button" className="pull-right btnContact mt-2" onClick={props.cl}>
+            Cancel
+          </Button>
         </Form>
       </div>
-
-      <Button
-        type="submit"
-        style={{ marginRight: "20px" }}
-        onClick={sprintService.CreateSprint(currentUserSubject.Token)}
-      >
-        Add
-      </Button>
-      <Button type="button" onClick={props.cl}>
-        Cancel
-      </Button>
     </div>
   );
 }

@@ -1,18 +1,24 @@
 import React from 'react';
-import { NavLink, Redirect, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { projectService } from '../../../Services/ProjectService';
+import { sprintService } from '../../../Services/SprintService';
 import Preloader from '../../Common/Preloader/Preloader';
-import  './BMSHome.scss'
+
 
 function BMSHome(props){
 
     const history = useHistory()
     const state = projectService.GetProjectList()
     projectService.removeCurrentProject()
+    sprintService.removePinnedSprints()
 
-    const handleProject = (pid) => {
+    function handleProject(pid){
         projectService.setCurrentProject(pid)
-        history.push('/issuebacklogbms')
+        sprintService.GetPinnedSprintsList(pid)
+        .then(function(response){
+            sprintService.setPinnedSprints(response.data)
+            history.push('/issuebacklogbms')
+        })
     }
 
 

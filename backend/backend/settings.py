@@ -97,26 +97,27 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-''' This is original database for the backend ElephantSQL
+# This is original database for the backend ElephantSQL
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'luwluqey',
+#         'USER': 'luwluqey',
+#         'PASSWORD': 'SpsIPljYUMmAGRDMIH7OL5ktkZhxXcJx',
+#         'HOST': 'lallah.db.elephantsql.com',
+#         'PORT': '5432'
+#     }
+# }
+
+'''
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'luwluqey',
-        'USER': 'luwluqey',
-        'PASSWORD': 'SpsIPljYUMmAGRDMIH7OL5ktkZhxXcJx',
-        'HOST': 'lallah.db.elephantsql.com',
-        'PORT': '5432'
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
 '''
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
 
 DATABASES = {
     'default': {
@@ -128,6 +129,18 @@ DATABASES = {
         'PORT': '5432'
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'd282e4plhdas55',
+#         'USER': 'ckjejiofmdjhdq',
+#         'PASSWORD': 'afbba44dd381955f1b61ecba190c196482b1e581653803d6dcd4fb827b38bd14',
+#         'HOST': 'ec2-18-204-101-137.compute-1.amazonaws.com',
+#         'PORT': '5432'
+#     }
+# }
+
 
 
 # Password validation
@@ -154,7 +167,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Colombo'
 
 USE_I18N = True
 
