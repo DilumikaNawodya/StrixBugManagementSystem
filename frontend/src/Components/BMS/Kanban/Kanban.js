@@ -7,6 +7,7 @@ import { Modal } from "react-bootstrap";
 import SetKanbanData from "./Data";
 import { sprintService } from "../../../Services/SprintService";
 import { useParams } from "react-router";
+import Swal from 'sweetalert2'
 
 const Container = styled.div`
   display: flex;
@@ -28,7 +29,10 @@ const Kanban = () => {
   }, [initialData]);
 
   function SetDrop() {
-    sprintService.UpdateWorkstate(dropDetails);
+    sprintService.UpdateWorkstate(dropDetails)
+    .then(function(){
+      window.location.reload(true)
+    })
   }
 
   const [isModalOpen, setisModalOpen] = useState(false);
@@ -134,7 +138,31 @@ const Kanban = () => {
                   <div className="col">
                     <button
                       class="btn btn-sm btn-dark float-right"
-                      onClick={() => sprintService.EndSprint(sid)}
+                      onClick={
+                        () => sprintService.EndSprint(sid)
+                        .then(function (response) {
+                          Swal.fire({
+                              position: 'middle',
+                              icon: 'success',
+                              title: "Successfully ended",
+                              showConfirmButton: true,
+                              timer: 5000
+                          }).then(function () {
+                              window.location.reload(true)
+                          })
+                        })
+                        .catch(function (error) {
+                            Swal.fire({
+                                position: 'middle',
+                                icon: 'warning',
+                                title: "Cannot end sprint",
+                                showConfirmButton: true,
+                                timer: 5000
+                            }).then(function () {
+                                window.location.reload(true)
+                            })
+                        })
+                      }
                     >
                       End Sprint
                     </button>
@@ -157,7 +185,7 @@ const Kanban = () => {
       <Modal size="md" show={isModalOpen}>
         <Modal.Body>
           <WarningModal
-            cl={() => setisModalOpen(false)}
+            cl={() => window.location.reload(true)}
             submit={() => SetDrop()}
           />
         </Modal.Body>

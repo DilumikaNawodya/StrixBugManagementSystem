@@ -142,7 +142,6 @@ function MonthlyBugSummary() {
         if (bug.workstate == 4) {
           closed++
         }
-        total++
       })
     }
     let open = total - closed

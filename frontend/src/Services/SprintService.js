@@ -58,7 +58,8 @@ function CreateSprint(sprintname, enddate, project) {
 }
 
 function EndSprint(sid) {
-  API.patch("endsprint/" + sid + "/");
+  const request = API.patch("endsprint/" + sid + "/");
+  return request
 }
 
 function GetSprintData(sid) {
@@ -123,9 +124,10 @@ function GetKanbanTasks(sid, type) {
 }
 
 function UpdateWorkstate(dropdetails) {
-  API.patch("/kanbantickets/" + dropdetails.tid + "/", {
+  const request = API.patch("/kanbantickets/" + dropdetails.tid + "/", {
     destid: dropdetails.destid,
   });
+  return request
 }
 
 /////////////////////////////////////////////////////

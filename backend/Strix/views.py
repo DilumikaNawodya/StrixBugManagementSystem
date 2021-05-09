@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from django.http import JsonResponse
 from rest_framework import viewsets
 import json
-import datetime
 from django.core import serializers
 from django.db.models import Avg
 from django.contrib.postgres.aggregates.general import ArrayAgg
@@ -25,7 +24,7 @@ from django.contrib.auth.models import Group
 from django.db.models import Avg, Count, Sum, Q
 from django.db.models.functions import TruncMonth
 from django.contrib.postgres.aggregates.general import ArrayAgg
-from datetime import date,datetime
+from datetime import date,datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 
@@ -416,7 +415,7 @@ class AllUserList(viewsets.ModelViewSet):
         pid = self.request.query_params.get('pid')[0]
         projectlist = Project.objects.get(id=pid, adminid=user,  is_deleted=False)
 
-        return(User.objects.filter(~Q(id__in=projectlist.userlist.all())))
+        return(User.objects.filter(~Q(id__in=projectlist.userlist.all()), is_active=True))
 
 
 class CommentList(viewsets.ModelViewSet):
@@ -436,7 +435,11 @@ class CommentList(viewsets.ModelViewSet):
 
             message = request.POST['message']
             tid = request.POST['tid']
-            image = request.FILES['commentmedia']
+
+            if request.FILES:
+                image = request.FILES['commentmedia']
+            else:
+                image = None
             
             commentinstance = Comment.objects.create(
                 message = message,
@@ -456,7 +459,11 @@ class CommentList(viewsets.ModelViewSet):
         if UserValidation(createdby):
 
             message = request.POST['message']
-            image = request.FILES['commentmedia']
+
+            if request.FILES:
+                image = request.FILES['commentmedia']
+            else:
+                image = None
             
             commentinstance = Comment.objects.get(id=pk)
             commentinstance.message = message
@@ -659,8 +666,8 @@ class SprintList(viewsets.ModelViewSet):
                 createdby=createdby
             )
 
-            new.intialenddate = datetime.datetime.now() + datetime.timedelta(days=int(data['enddate']))
-            new.enddate = datetime.datetime.now() + datetime.timedelta(days=int(data['enddate']))
+            new.intialenddate = datetime.now() + timedelta(days=int(data['enddate']))
+            new.enddate = datetime.now() + timedelta(days=int(data['enddate']))
             new.save()
             return Response({"data":"Succefully Created !"},status=200)
         else:
@@ -670,7 +677,7 @@ class EndSprint(viewsets.ModelViewSet):
     serializer_class = SprintSerializer
 
     def update(self, request, pk, *args, **kwargs):
-        Sprint.objects.filter(id=pk).update(enddate=datetime.date.today(), status=False)
+        Sprint.objects.filter(id=pk).update(enddate=date.today(), status=False)
         return Response("Sprint deleted successfully",status=200)
 
 class SprintData(viewsets.ModelViewSet):
