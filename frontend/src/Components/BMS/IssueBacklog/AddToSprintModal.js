@@ -8,12 +8,16 @@ function AddToSprintModal(props) {
   const { sprints } = sprintService.GetSprintList(pid);
 
   const initialValues = {
-    sprintSelect: 1,
+    sprintSelect: '',
   };
 
   function onSubmit(fields) {
-    // console.log(fields.sprintSelect);
-    sprintService.AddToSprint(fields.sprintSelect, props.data.id);
+    if(fields.sprintSelect != ''){
+      sprintService.AddToSprint(fields.sprintSelect, props.data.id)
+      .then(function(response){
+        window.location.reload(true)
+      })
+    }
   }
 
   return (
@@ -39,7 +43,8 @@ function AddToSprintModal(props) {
                     name="sprintSelect"
                     as="select"
                     className="form-control"
-                  >
+                  > 
+                    <option value=''>Select Sprint</option>
                     {sprints.map((e) => {
                       if (e.status === true) {
                         return <option value={e.id}>{e.name}</option>;

@@ -92,7 +92,14 @@ AUTHENTICATION_BACKENDS = (
         'django.contrib.auth.backends.ModelBackend',
     )
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Email Backend
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'strixbms@gmail.com'
+EMAIL_HOST_PASSWORD = 'H@rdwe11'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -138,6 +145,16 @@ DATABASES = {
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'Strix_DB',
+#         'USER': 'postgres',
+#         'PASSWORD': '*****',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 
 
 # Password validation

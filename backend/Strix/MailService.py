@@ -2,7 +2,9 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from .models import *
 from django.core.mail import EmailMultiAlternatives
-
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.conf import settings
 
 class EmailSend():
 
@@ -13,7 +15,16 @@ class EmailSend():
 
         body = 'http://localhost:3000/passconfirmation/'+ context['uid'] +'/'+ context['token'] +'/'
 
-        email_message = EmailMultiAlternatives(subject, body, from_email, [to_email])
+        html_content = render_to_string('email_template.html', {'content': body})
+        text_content = strip_tags(html_content)
+
+        email_message = EmailMultiAlternatives(
+            subject, 
+            text_content, 
+            settings.EMAIL_HOST_USER, 
+            [to_email]
+        )
+        email_message.attach_alternative(html_content, 'text/html')
         email_message.send()
 
         return True

@@ -28,7 +28,7 @@ function AccessControl(){
     }
 
     const handleSelectUndo = (id) => {
-        document.getElementById("btn-select"+id).innerHTML = "<i class='fas fa-trash-alt'></i>"
+        document.getElementById("btn-select"+id).innerHTML = "<i class='fas fa-plus-square'></i>"
         var Btn = document.getElementById("btn-select"+id)
         Btn.disabled = false
         setSelect(select => select.filter(item => item !== id))

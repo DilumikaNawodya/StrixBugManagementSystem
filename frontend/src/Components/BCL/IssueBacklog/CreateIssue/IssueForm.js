@@ -5,7 +5,7 @@ import getTickets, { createTicket } from '../../../../Services/TicketService';
 import { authenticationService } from '../../../../Services/LoginService';
 import { light } from '@material-ui/core/styles/createPalette';
 
-function IsseForm(props,) {
+function IsseForm(props) {
 
 
     const [selectedFile, setselectedFile] = useState();
@@ -71,7 +71,7 @@ function IsseForm(props,) {
             form_data.append('severity', values.severity)
             form_data.append('project', props.project)
             form_data.append('workstate', 1)
-            form_data.append('externaluser', authenticationService.userId)
+            form_data.append('externaluser', authenticationService.userID)
             form_data.append('totaleffort', 0)
             // form_data.append('ticketMedia', values.ticketMedia)
 
@@ -80,7 +80,7 @@ function IsseForm(props,) {
                     form_data.append('ticketMedia', values.ticketMedia[i])
                 }
             }
-            
+
             create_Ticket(form_data);
             // console.log(values.ticketMedia[0])
             // console.log(values.ticketMedia[1])
@@ -143,7 +143,7 @@ function IsseForm(props,) {
     }
 
     // const prioritylist = ['low', 'medium', 'high', 'urgent'];
-    const prioritylist=[{priority:"Low",id:1},{priority:"Medium",id:2},{priority:"High",id:3},{priority:"Urgent",id:4},]
+    const prioritylist=[{priority:"Low",id:4},{priority:"Medium",id:3},{priority:"High",id:2},{priority:"Urgent",id:1},]
     // const typelist = ['Functional', 'Performance', 'Usability', 'Compatibility', 'Security'];
     const typelist=[{type:"Functional",id:1},{type:"Performance",id:2},{type:"Usability",id:3},{type:"Compatibility",id:4},{type:"Security",id:5},]
     // const severitylist = ['critical', 'high', 'medium', 'low']
