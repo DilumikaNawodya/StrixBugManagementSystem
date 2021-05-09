@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useFormik,} from 'formik';
 import { Container, Row, Form, Button, Col, Card } from 'react-bootstrap';
 import getTickets, { createTicket } from '../../../../Services/TicketService';
+import { authenticationService } from '../../../../Services/LoginService';
 import { light } from '@material-ui/core/styles/createPalette';
 
 function IsseForm(props,) {
@@ -69,9 +70,9 @@ function IsseForm(props,) {
             form_data.append('bugtype', values.bugtype)
             form_data.append('severity', values.severity)
             form_data.append('project', props.project)
-            form_data.append('workstate', 2)
-            form_data.append('externaluser', 15)
-            form_data.append('totaleffort', 10)
+            form_data.append('workstate', 1)
+            form_data.append('externaluser', authenticationService.userId)
+            form_data.append('totaleffort', 0)
             // form_data.append('ticketMedia', values.ticketMedia)
 
             if(values.ticketMedia!=null){

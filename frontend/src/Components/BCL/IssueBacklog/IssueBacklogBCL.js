@@ -118,6 +118,7 @@ function IssueBacklogBCL() {
     for (var i = 0; i < buglist.length; i++) {
       if (buglist[i].id === e) {
         render(<Issuecard
+          id={buglist[i].id}
           name={buglist[i].issuename}
           priority={buglist[i].priority}
           type={buglist[i].bugtype}

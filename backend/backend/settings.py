@@ -109,7 +109,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 #     }
 # }
 
-'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -117,18 +116,16 @@ DATABASES = {
     }
 }
 
-'''
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'd8srd2smtqkkia',
-        'USER': 'mufchzhqbnhunn',
-        'PASSWORD': '953a1eebde811bd625b4b47abce5fc0a7044e8e130bec5cff6b9626e30f3d4bf',
-        'HOST': 'ec2-54-246-67-245.eu-west-1.compute.amazonaws.com',
-        'PORT': '5432'
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'd8srd2smtqkkia',
+#         'USER': 'mufchzhqbnhunn',
+#         'PASSWORD': '953a1eebde811bd625b4b47abce5fc0a7044e8e130bec5cff6b9626e30f3d4bf',
+#         'HOST': 'ec2-54-246-67-245.eu-west-1.compute.amazonaws.com',
+#         'PORT': '5432'
+#     }
+# } 
 
 # DATABASES = {
 #     'default': {
