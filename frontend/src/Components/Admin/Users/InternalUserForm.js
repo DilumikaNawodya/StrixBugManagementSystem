@@ -28,7 +28,7 @@ function InternalUserForm({ uid }) {
             .email('Email is invalid')
             .required('Email is required'),
         role: Yup.string()
-            .required('Role is required'),
+            .concat(isAddMode ? Yup.string().required('Role is required') : null),
         password: Yup.string()
             .concat(isAddMode ? Yup.string().required('Password is required') : null)
             .min(6, 'Password must be at least 6 characters'),

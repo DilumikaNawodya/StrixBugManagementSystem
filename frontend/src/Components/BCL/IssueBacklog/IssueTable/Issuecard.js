@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Container, Badge, Col, Row, Button, Modal,Image } from 'react-bootstrap'
+import CommentSection from '../../../Common/Comment/CommentSection';
 
 
 function Attachments({ attach }) {
@@ -184,7 +185,7 @@ function IssueCard(props) {
                             <Row className='mt-4'>
                                 <Col className='col-2'><h6><b>Comments</b></h6> </Col>
                                 <Col><hr style={{ color: 'lightgray', marginTop: '0.5em' }} /></Col>
-
+                                <CommentSection tid={props.id} />
                             </Row>
                         </Col>
                     </Row>
