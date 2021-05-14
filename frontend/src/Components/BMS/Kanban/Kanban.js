@@ -40,8 +40,6 @@ const Kanban = () => {
     });
   }
 
-  function DisplayEndSprint() {}
-
   const [isModalOpen, setisModalOpen] = useState(false);
 
   function onDragEnd(result) {
