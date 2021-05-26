@@ -14,9 +14,6 @@ function Dev_Performance_default() {
   const [avgEffort, setAvgEffort] = useState([]);
   const [project, setProject] = useState([])
 
-
-
-
   let yr = []
   let currentyear = new Date().getFullYear();
 
@@ -24,7 +21,7 @@ function Dev_Performance_default() {
     yr.push({ "year": x })
   }
 
-  const getData = async () => {
+  const getData_1 = async () => {
     const article = {
       "status": 1,
       "projectid": "None",
@@ -41,20 +38,17 @@ function Dev_Performance_default() {
       .catch((error) => console.log(error));
   }
   useEffect(() => {
-    getData();
+    getData_1();
   }, []);
 
-
+  async function getData_2(){
+    const response = await API.get("/Projects/");
+    const res = await response.data;
+    setProject(res)
+  }
 
   useEffect(() => {
-    const getData = async () => {
-      const response = await fetch(
-        "http://127.0.0.1:8000/Projects/"
-      );
-      const res = await response.json();
-      setProject(res)
-    }
-    getData();
+    getData_2();
   }, []);
 
 
@@ -244,7 +238,6 @@ function Dev_Performance_default() {
   return (
     <div>
       <Row style={{ marginBottom: 10 }}>
-
         <div className="col-md-6 col-sm-12 col-xs-12">
           <Card style={{ backgroundColor: "rgb(244, 244, 244)" }}>
             <div style={{ margin: 10 }} >
@@ -269,10 +262,8 @@ function Dev_Performance_default() {
             <Bar data={test} options={options2} />
           </Card>
         </div>
-
       </Row>
-
-
+      
     </div>
   )
 }

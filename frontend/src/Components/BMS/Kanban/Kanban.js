@@ -9,6 +9,9 @@ import { sprintService } from "../../../Services/SprintService";
 import { authenticationService } from "../../../Services/LoginService";
 import { useParams } from "react-router";
 import Swal from "sweetalert2";
+import { Hruler } from "../Kanban/Column"
+import Preloader from "../../Common/Preloader/Preloader";
+import Error from "../../Common/Errors/Error";
 
 const Container = styled.div`
   display: flex;
@@ -24,7 +27,7 @@ const Kanban = () => {
 
   const initialData = SetKanbanData(sid);
   const [state, setState] = useState(initialData);
-  const sprintData = sprintService.GetSprintData(sid).sprintdata;
+  const { sprintdata, loading, error, message } = sprintService.GetSprintData(sid)
   const [dropDetails, setDropDetails] = useState({
     destid: "",
     tid: "",
@@ -128,47 +131,56 @@ const Kanban = () => {
   return (
     <div>
       {" "}
-      <div class="card border border-dark p-0">
+      {!error && <div class="p-0">
         <div class="card-body">
           <p class="card-text">
-            {sprintData.map((e) => {
+            {sprintdata.map((e) => {
               return (
                 <div className="row">
                   <div className="col">
-                    <h4>{e.name}</h4>
-                  </div>
-                  <div className="col">
+                    <h2 class="mt-2">{e.name}</h2>
                     <p className="mt-2">End Date: {e.enddate}</p>
                   </div>
                   {userRole === "Manager" && (
                     <div className="col">
                       <button
-                        class="btn btn-sm btn-dark float-right"
+                        class="btn btn-sm btn-dark float-right mt-2"
                         onClick={() =>
-                          sprintService
-                            .EndSprint(sid)
-                            .then(function (response) {
-                              Swal.fire({
-                                position: "middle",
-                                icon: "success",
-                                title: "Successfully ended",
-                                showConfirmButton: true,
-                                timer: 5000,
-                              }).then(function () {
-                                window.location.reload(true);
-                              });
-                            })
-                            .catch(function (error) {
-                              Swal.fire({
-                                position: "middle",
-                                icon: "warning",
-                                title: "Cannot end sprint",
-                                showConfirmButton: true,
-                                timer: 5000,
-                              }).then(function () {
-                                window.location.reload(true);
-                              });
-                            })
+                          Swal.fire({
+                            title: 'Are you sure?',
+                            text: "You are about End Sprint",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes'
+                          }).then((result) => {
+                            if (result.isConfirmed) {
+                              sprintService.EndSprint(sid)
+                                .then(function (response) {
+                                  Swal.fire({
+                                    position: "middle",
+                                    icon: "success",
+                                    title: "Successfully ended",
+                                    showConfirmButton: true,
+                                    timer: 5000,
+                                  }).then(function () {
+                                    window.location.reload(true);
+                                  });
+                                })
+                                .catch(function (error) {
+                                  Swal.fire({
+                                    position: "middle",
+                                    icon: "warning",
+                                    title: "Cannot end sprint",
+                                    showConfirmButton: true,
+                                    timer: 5000,
+                                  }).then(function () {
+                                    window.location.reload(true);
+                                  });
+                                })
+                            }
+                          })
                         }
                       >
                         End Sprint
@@ -180,8 +192,9 @@ const Kanban = () => {
             })}
           </p>
         </div>
-      </div>
-      <DragDropContext onDragEnd={onDragEnd}>
+      </div>}
+      {!error && <Hruler />}
+      {!error && <DragDropContext onDragEnd={onDragEnd}>
         <Container>
           {state.columnOrder.map((columnID) => {
             let column = state.columns[columnID];
@@ -189,7 +202,7 @@ const Kanban = () => {
             return <Column key={column.id} column={column} tasks={tasks} />;
           })}
         </Container>
-      </DragDropContext>
+      </DragDropContext>}
       <Modal size="md" show={isModalOpen}>
         <Modal.Body>
           <WarningModal
@@ -198,6 +211,20 @@ const Kanban = () => {
           />
         </Modal.Body>
       </Modal>
+
+      { loading && <div>
+
+        <Preloader />
+
+      </div>}
+
+      { error && <div>
+
+        {
+          <Error message={message} />
+        }
+
+      </div>}
     </div>
   );
 };

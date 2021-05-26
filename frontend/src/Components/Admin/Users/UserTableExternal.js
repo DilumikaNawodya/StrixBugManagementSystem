@@ -6,13 +6,13 @@ import userdelete from '../../../Assets/delete.svg'
 import { Modal } from 'react-bootstrap';
 import Swal from 'sweetalert2'
 import UserDetailcard from "./UserDetailCard"
+import Preloader from "../../Common/Preloader/Preloader"
+import Error from "../../Common/Errors/Error"
 
 
 function UserTableExternal() {
 
-  const { externalusers } = userService.GetExternalUserList()
-
-  console.log(externalusers)
+  const { externalusers, error, loading, message } = userService.GetExternalUserList()
 
   const [showAddUser, setShowAddUser] = useState(false)
   const [showDeleteUser, setShowDeleteUser] = useState(false)
@@ -36,7 +36,7 @@ function UserTableExternal() {
     settempDeleteID(id)
     deleteUserModal()
   }
-  
+
   const deleteUserConfirm = () => {
     deleteUserModal()
 
@@ -79,7 +79,7 @@ function UserTableExternal() {
 
   return (
     <>
-      <div class="container-fluid mt-4">
+      {!error && <div class="container-fluid mt-4">
         <MaterialTable
           title="External Users"
           columns={[
@@ -116,15 +116,15 @@ function UserTableExternal() {
               onClick: () => addExternalUser()
             },
           ]}
-          detailPanel={rowData=>{
-            return(<UserDetailcard data={rowData} />)
+          detailPanel={rowData => {
+            return (<UserDetailcard data={rowData} />)
           }}
         />
-      </div>
+      </div>}
 
       <Modal show={showAddUser}>
         <Modal.Body class="container">
-          <ExternalUserForm uid={0}/>
+          <ExternalUserForm uid={0} />
           <button type="button" className="btnContact mb-4" onClick={addExternalUser}>Cancel</button>
         </Modal.Body>
       </Modal>
@@ -144,10 +144,24 @@ function UserTableExternal() {
 
       <Modal show={showEditUser}>
         <Modal.Body class="container">
-          <ExternalUserForm uid={tempEditID}/>
+          <ExternalUserForm uid={tempEditID} />
           <button type="button" className="btnContact mb-4" onClick={editUserModal}>Cancel</button>
         </Modal.Body>
       </Modal>
+
+      { loading && <div>
+
+        <Preloader />
+
+      </div>}
+
+      { error && <div>
+
+        {
+          <Error message={message} />
+        }
+
+      </div>}
 
     </>
   )

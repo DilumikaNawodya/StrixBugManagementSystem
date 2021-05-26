@@ -9,13 +9,12 @@ import { Modal } from 'react-bootstrap';
 function Login(props){
 
     const [loginError,setLoginError] = useState(false)
-
     const handleClose = () => setLoginError(false)
     const handleShow = () => setLoginError(true)
 
     useEffect(() => {
         if (authenticationService.currentUserValue) { 
-            props.history.push('/');
+            props.history.push('/login');
         }
     },[])
 

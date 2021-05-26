@@ -3,10 +3,12 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { commentService } from '../../../Services/CommentService'
 import { authenticationService } from '../../../Services/LoginService';
 import Swal from 'sweetalert2'
+import Preloader from '../Preloader/Preloader';
+import Error from '../Errors/Error';
 
 function CommentSection({ tid }) {
 
-    const { comments } = commentService.GetCommentList(tid)
+    const { comments, loading, error, message } = commentService.GetCommentList(tid)
     const formikRef = useRef()
     const comment = {
         message: '',
@@ -19,7 +21,7 @@ function CommentSection({ tid }) {
 
 
     function onSubmit(fields, { setStatus, setSubmitting }) {
-        if(update != 0){
+        if (update != 0) {
             let formdata = new FormData()
             formdata.append('message', fields.message)
             formdata.append('commentmedia', fields.commentmedia)
@@ -28,10 +30,10 @@ function CommentSection({ tid }) {
                 .then(function (response) {
                     window.location.reload(true)
                 })
-                .catach(function (error) {
+                .catch(function (error) {
                     window.location.reload(true)
                 })
-        }else{
+        } else {
             let formdata = new FormData()
             formdata.append('message', fields.message)
             formdata.append('tid', tid)
@@ -41,13 +43,13 @@ function CommentSection({ tid }) {
                 .then(function (response) {
                     window.location.reload(true)
                 })
-                .catach(function (error) {
+                .catch(function (error) {
                     window.location.reload(true)
                 })
         }
     }
 
-    function onUpdate(id){
+    function onUpdate(id) {
         setUpdate(id)
         commentService.GetComment(tid, id).then(comment => {
             formikRef.current.setFieldValue("message", comment.data["message"], false)
@@ -57,30 +59,42 @@ function CommentSection({ tid }) {
         })
     }
 
-    function onDelete(id){
-        commentService.DeleteComment(id)
-            .then(function (response) {
-                Swal.fire({
-                    position: 'middle',
-                    icon: 'success',
-                    title: response.data.data,
-                    showConfirmButton: true,
-                    timer: 5000
-                }).then(function () {
-                    window.location.reload(true)
-                })
-            })
-            .catch(function (error) {
-                Swal.fire({
-                    position: 'middle',
-                    icon: 'warning',
-                    title: error.response.data.data,
-                    showConfirmButton: true,
-                    timer: 5000
-                }).then(function () {
-                    window.location.reload(true)
-                })
-            })
+    function onDelete(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to change a critical detail",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                commentService.DeleteComment(id)
+                    .then(function (response) {
+                        Swal.fire({
+                            position: 'middle',
+                            icon: 'success',
+                            title: response.data.data,
+                            showConfirmButton: true,
+                            timer: 5000
+                        }).then(function () {
+                            window.location.reload(true)
+                        })
+                    })
+                    .catch(function (error) {
+                        Swal.fire({
+                            position: 'middle',
+                            icon: 'warning',
+                            title: error.response.data.data,
+                            showConfirmButton: true,
+                            timer: 5000
+                        }).then(function () {
+                            window.location.reload(true)
+                        })
+                    })
+            }
+        })
     }
 
 
@@ -102,7 +116,7 @@ function CommentSection({ tid }) {
                     <div class="card">
                         <div class="comment-widgets m-b-20">
 
-                            {comments.map((item, index) => {
+                            {!error && comments.map((item, index) => {
                                 return (
                                     <div class="d-flex flex-row comment-row">
                                         <div class="p-2"><span class="round"><img src="https://img.icons8.com/bubbles/100/000000/user.png" alt="user" width="50" /></span></div>
@@ -125,7 +139,7 @@ function CommentSection({ tid }) {
                                 )
                             })}
 
-                            <Formik innerRef={formikRef} initialValues={comment} onSubmit={onSubmit}>
+                            {!error && <Formik innerRef={formikRef} initialValues={comment} onSubmit={onSubmit}>
                                 {({ isSubmitting, setFieldValue }) => {
 
                                     return (
@@ -159,7 +173,7 @@ function CommentSection({ tid }) {
                                         </Form>
                                     )
                                 }}
-                            </Formik>
+                            </Formik>}
                         </div>
                     </div>
                 </div>

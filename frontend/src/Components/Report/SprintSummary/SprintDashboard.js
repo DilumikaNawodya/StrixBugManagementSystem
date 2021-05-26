@@ -6,14 +6,18 @@ import MaterialTable from 'material-table'
 import Tooltip from '@material-ui/core/Tooltip';
 import getSprintSummary from '../../../Services/Reports/SprintSummaryService'
 import SprintModal from './SprintSummaryModal';
-import {SiSprint} from 'react-icons/si'
-
+import { SiSprint } from 'react-icons/si'
+import Error from '../../Common/Errors/Error';
+import Preloader from '../../Common/Preloader/Preloader';
 
 
 function SprintDashboard() {
 
     const [isModelOpen, setisModelOpen] = useState(false);
-    const [isLoading, setisLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(false)
+    const [message, setMessage] = useState("")
+
     const initial = {
         "id": '',
         "finished": '',
@@ -66,18 +70,21 @@ function SprintDashboard() {
     }
 
     async function getSprints() {
-        setisLoading(true)
-        let b = await getSprintSummary();
-        assignsort(b)
-        setsprintlist(b)
-        setisLoading(false)
+        try {
+            let b = await getSprintSummary();
+            assignsort(b)
+            setsprintlist(b)
+            setLoading(false)
+        } catch (error) {
+            setLoading(false)
+            setError(true)
+            setMessage(error.response.data.detail)
+        }
     }
 
     useEffect(() => {
-
         let isMounted = true; // cleanup mounting warning
         getSprints();
-
         return () => { isMounted = false }
     }, [])
 
@@ -104,7 +111,7 @@ function SprintDashboard() {
     if (sprintlist != null) {
         return (
             <div>
-                <div className="row" style={{ paddingTop: 5 }}>
+                {!error && <div className="row" style={{ paddingTop: 5 }}>
                     <div className="col-md-6">
                         <Card.Title><h2> <SiSprint size={45} />{' '}<b>Sprint Summary</b></h2></Card.Title>
                     </div>
@@ -113,12 +120,12 @@ function SprintDashboard() {
 
                         </div>
                     </div>
-                </div>
-                <link
+                </div>}
+                {!error && <link
                     rel="stylesheet"
                     href="https://fonts.googleapis.com/icon?family=Material+Icons"
-                />
-                <MaterialTable
+                />}
+                {!error && <MaterialTable
                     columns={
                         [{ title: 'Id', field: 'id' },
                         { title: 'Sprint', field: 'name' },
@@ -134,8 +141,19 @@ function SprintDashboard() {
                     data={sprintlist}
                     title="sprints"
                     onRowClick={(event, rowData) => { sprintdetails(rowData.id) }}
-                    isLoading={isLoading}
-                />
+                />}
+
+                { loading && <div>
+
+                    <Preloader />
+
+                </div>}
+
+                { error && <div>
+
+                    <Error message={message} />
+
+                </div>}
 
             </div>
         )
@@ -143,7 +161,7 @@ function SprintDashboard() {
     else {
         return (
             <div>
-                <div className="row" style={{ paddingTop: 5 }}>
+                {!error && <div className="row" style={{ paddingTop: 5 }}>
                     <div className="col-md-6">
                         <Card.Title><h2> <SiSprint size={45} />{' '}<b>Monthly Bug Summary</b></h2></Card.Title>
                     </div>
@@ -152,12 +170,12 @@ function SprintDashboard() {
 
                         </div>
                     </div>
-                </div>
-                <link
+                </div>}
+                {!error && <link
                     rel="stylesheet"
                     href="https://fonts.googleapis.com/icon?family=Material+Icons"
-                />
-                <MaterialTable
+                />}
+                {!error && <MaterialTable
                     columns={
                         [{ title: 'Id' },
                         { title: 'Sprint' },
@@ -166,7 +184,19 @@ function SprintDashboard() {
                     }
                     data={sprintlist}
                     title="sprints"
-                />
+                />}
+
+                { loading && <div>
+
+                    <Preloader />
+
+                </div>}
+
+                { error && <div>
+
+                    <Error message={message} />
+
+                </div>}
 
             </div>
         )

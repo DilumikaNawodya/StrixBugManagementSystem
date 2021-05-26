@@ -12,6 +12,9 @@ import * as IoIcons from "react-icons/io";
 import TicketView from "./TicketViewUpdate";
 import Swal from "sweetalert2";
 import { sprintService } from "../../../Services/SprintService";
+import Preloader from "../../Common/Preloader/Preloader";
+import Error from "../../Common/Errors/Error";
+
 
 function IssueBacklogBMS() {
   var userRole = "Block";
@@ -38,8 +41,8 @@ function IssueBacklogBMS() {
   }, []);
 
 
-  const { bmsList } = ticketService.FetchBugs(pid);
-  
+  const { bmsList, loading, error, message } = ticketService.FetchBugs(pid);
+
   let ticketlist = [];
   const { sprints } = sprintService.GetSprintList(pid);
   for (var i = 0; i < sprints.length; i++) {
@@ -93,7 +96,7 @@ function IssueBacklogBMS() {
 
   return (
     <div class="container-fluid mt-4">
-      {userRole == "Manager" && (
+      {!error && userRole == "Manager" && (
         <MaterialTable
           icons={{
             Filter: () => (
@@ -143,7 +146,7 @@ function IssueBacklogBMS() {
         />
       )}
 
-      {userRole == "Developer" && (
+      {!error && userRole == "Developer" && (
         <MaterialTable
           icons={{
             Filter: () => (
@@ -203,7 +206,7 @@ function IssueBacklogBMS() {
         />
       )}
 
-      {userRole == "QA" && (
+      {!error && userRole == "QA" && (
         <MaterialTable
           icons={{
             Filter: () => (
@@ -311,6 +314,22 @@ function IssueBacklogBMS() {
           />
         </Modal.Body>
       </Modal>
+
+      { loading && <div>
+
+        <Preloader />
+
+      </div>}
+
+      { error && <div>
+
+        {
+          <Error message={message} />
+        }
+
+      </div>}
+
+
     </div>
   );
 }

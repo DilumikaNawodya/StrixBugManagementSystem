@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import useredit from '../../../Assets/edit.svg'
 import useradd from '../../../Assets/add.svg'
 import Swal from 'sweetalert2'
 import { projectService } from '../../../Services/ProjectService';
+import * as AiIcons from 'react-icons/ai';
 
 function ProjectForm({ pid }) {
 
@@ -96,6 +97,7 @@ function ProjectForm({ pid }) {
         }
     }, [])
 
+    const [war, setWar] = useState(false)
 
     return (
         <Formik innerRef={formikRef} initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
@@ -116,8 +118,20 @@ function ProjectForm({ pid }) {
                             <div className="form-row">
                                 <div className="form-group col-12">
                                     <label>Project Name</label>
-                                    <Field name="projectname" type="text" className={'form-control' + (errors.projectname && touched.projectname ? ' is-invalid' : '')} />
+                                    <Field name="projectname" type="text" className={'form-control' + (errors.projectname && touched.projectname ? ' is-invalid' : '')} onClick={()=>setWar(true)}/>
                                     <ErrorMessage name="projectname" component="div" className="invalid-feedback" />
+
+                                    {!isAddMode && war && <div class="col-sm-12 col-md-12 mt-2">
+                                        <div class="alert alert-warning">
+                                            <AiIcons.AiOutlineWarning size={25} class="mb-1"/><button type="button" class="close" onClick={()=>setWar(false)} aria-hidden="true">
+                                                ×
+                                            </button>
+                                            <strong class="ml-2">Warning</strong>
+                                            <hr class="message-inner-separator" />
+                                            <i><p style={{fontFamily: 'roboto'}}>You are about to change a critical detail of this project.</p></i>
+                                        </div>
+                                    </div>}
+
                                 </div>
                             </div>
 

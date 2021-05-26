@@ -12,19 +12,26 @@ export const commentService = {
 function GetCommentList(tid){
     
     const [state, setState] = useState({
-        comments: []
+        comments: [],
+        error: false,
+        loading: true,
+        message: ""
     })
 
     useEffect(() => {
         API.get('/commentlist/?tid=' + tid)
             .then(function (response) {
                 setState({
-                    comments: response.data
+                    comments: response.data,
+                    loading: false
                 })
             })
             .catch(function (error) {
                 setState({
-                    comments: []
+                    comments: [],
+                    error: true,
+                    loading: false,
+                    message: error.response.data.detail
                 })
             })
     }, [])

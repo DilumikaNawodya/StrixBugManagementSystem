@@ -72,22 +72,22 @@ export default function DevPerformanceFiltering() {
               };
               API.post('/DeveloperPerformance/', article, { headers })
               .then(function(response){
-
                 setTest(response)
                 if(response.data.data.length ==0){
                     setNodata(true)
                 }
               })
-                 
-                  .catch((error) => console.log(error));
+              .catch((error) => {
+                window.location.reload(true)
+              });
           }
   
       useEffect(() => {
         const getData = async () =>{
-            const response = await fetch(
-                "http://127.0.0.1:8000/Projects/"
+            const response = await API.get(
+                "/Projects/"
             );
-            const res = await response.json();
+            const res = await response.data;
               setProject(res)      
         }
           getData();

@@ -12,7 +12,7 @@ import MaterialTable from 'material-table'
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import Tooltip from '@material-ui/core/Tooltip';
-
+import Error from '../../Common/Errors/Error';
 
 
 //my
@@ -84,6 +84,9 @@ function IssueBacklogBCL() {
   const [buglist, setbuglist] = useState([])
   const [pdetails, setpdetails] = useState([{ description: "", projectname: "" }])
   const [isLoading, setisLoading] = useState(false)
+
+  const [error, setError] = useState(false)
+  const [message, setMessage] = useState("")
   // let loc = useLocation().project
 
   //used for React-table remove if unnecessary
@@ -186,9 +189,14 @@ function IssueBacklogBCL() {
 
   async function fetchtickets() {
     setisLoading(true)
-    let a = await getTickets(pid)
-    assignsort(a)
-    setbuglist(a)
+    try {
+      let a = await getTickets(pid)
+      assignsort(a)
+      setbuglist(a)
+    } catch (error) {
+      setError(true)
+      setMessage(error.response.data.detail)
+    }
     setisLoading(false)
 
   }
@@ -216,7 +224,7 @@ function IssueBacklogBCL() {
       <Row >
         <div className="ml-2 mt-2 col-md-12">
           <Col className="">
-            <Row className="">
+            {!error && <Row className="">
               {/* <Card className="project_card">
                 <Card.Header className="pchead">
                   <Card.Title>{pdetails[0].projectname}</Card.Title>
@@ -231,16 +239,19 @@ function IssueBacklogBCL() {
                 <h1>{pdetails[0].projectname}</h1>
               </Col>
 
-            </Row>
-            <Row>
+            </Row>}
+
+            {!error && <Row>
               <Col>
                 <h5>{pdetails[0].description}</h5>
               </Col>
-            </Row>
-            <Row>
+            </Row>}
+
+            {!error && <Row>
               <Col><hr style={{ color: 'lightgray', marginTop: '0.5em' }} /></Col>
-            </Row>
-            <Row className="mt-2 mb-2" >
+            </Row>}
+
+            {!error && <Row className="mt-2 mb-2" >
               <div className="d-flex p-2 bd-highlight">
                 <Col md={12}>
                   <Button className="mr-sm-2" variant="success" data-toggle="tooltip" title="Go to issues"
@@ -255,29 +266,37 @@ function IssueBacklogBCL() {
 
                 </Col>
               </div>
-            </Row>
-            <Row>
-              
-                <Col md-12>
-                  <MaterialTable
-                    columns={[
-                      { title: 'Id', field: 'id' },
-                      { title: 'Title', field: 'issuename' },
-                      { title: "Date", field: "date", },
-                      { title: 'Priority', field: 'priority', render: rowData => <Badge variant={bagetype(rowData.priority)}>{rowData.priority}</Badge>, customSort: (a, b) => a.priorityid - b.priorityid },
-                      { title: 'Severity', field: 'severity', render: rowData => <Badge variant={severitytype(rowData.severity)}>{rowData.severity}</Badge>, customSort: (a, b) => a.severityid - b.severityid }
+            </Row>}
 
-                    ]}
-                    data={buglist}
-                    isLoading={isLoading}
-                    title="Issues"
-                    onRowClick={(event, rowData) => { tableticket(rowData.id) }}
-                  />
+            {!error && <Row>
+              <Col md-12>
+                <MaterialTable
+                  columns={[
+                    { title: 'Id', field: 'id' },
+                    { title: 'Title', field: 'issuename' },
+                    { title: "Date", field: "date", },
+                    { title: 'Priority', field: 'priority', render: rowData => <Badge variant={bagetype(rowData.priority)}>{rowData.priority}</Badge>, customSort: (a, b) => a.priorityid - b.priorityid },
+                    { title: 'Severity', field: 'severity', render: rowData => <Badge variant={severitytype(rowData.severity)}>{rowData.severity}</Badge>, customSort: (a, b) => a.severityid - b.severityid }
 
-                </Col>
-              
-            </Row>
+                  ]}
+                  data={buglist}
+                  isLoading={isLoading}
+                  title="Issues"
+                  onRowClick={(event, rowData) => { tableticket(rowData.id) }}
+                />
+
+              </Col>
+
+            </Row>}
           </Col>
+
+          {error && <div>
+
+            <Error message={message} />
+
+          </div>}
+
+
         </div>
       </Row>
     </div>

@@ -14,6 +14,7 @@ export const authenticationService = {
     get userRole () { return currentUserSubject.value.Role },
     get userID () { return currentUserSubject.value.id },
     get userName () { return currentUserSubject.value.Name },
+    get email () { return currentUserSubject.value.Email },
     get currentUserValue () { return currentUserSubject.value }
 };
 

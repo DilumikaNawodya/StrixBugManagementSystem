@@ -5,6 +5,7 @@ import useredit from '../../../Assets/edit.svg'
 import useradd from '../../../Assets/add.svg'
 import { userService } from '../../../Services/UserService';
 import Swal from 'sweetalert2'
+import * as AiIcons from 'react-icons/ai';
 
 function ExternalUserForm({ uid }) {
 
@@ -74,29 +75,29 @@ function ExternalUserForm({ uid }) {
 
     function updateUser(uid, fields, setSubmitting) {
         userService.UpdateExternalUser(uid, fields)
-        .then(function (response) {
-            Swal.fire({
-                position: 'middle',
-                icon: 'success',
-                title: response.data.data,
-                showConfirmButton: true,
-                timer: 5000
-            }).then(function () {
-                window.location = "/externalusers";
+            .then(function (response) {
+                Swal.fire({
+                    position: 'middle',
+                    icon: 'success',
+                    title: response.data.data,
+                    showConfirmButton: true,
+                    timer: 5000
+                }).then(function () {
+                    window.location = "/externalusers";
+                })
             })
-        })
-        .catch(function (error) {
-            setSubmitting(false);
-            Swal.fire({
-                position: 'middle',
-                icon: 'warning',
-                title: error.response.data.data,
-                showConfirmButton: true,
-                timer: 5000
-            }).then(function () {
-                window.location = "/externalusers"
+            .catch(function (error) {
+                setSubmitting(false);
+                Swal.fire({
+                    position: 'middle',
+                    icon: 'warning',
+                    title: error.response.data.data,
+                    showConfirmButton: true,
+                    timer: 5000
+                }).then(function () {
+                    window.location = "/externalusers"
+                })
             })
-        })
     }
 
 
@@ -113,6 +114,7 @@ function ExternalUserForm({ uid }) {
         }
     }, [])
 
+    const [war, setWar] = useState(false)
 
     return (
         <Formik innerRef={formikRef} initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
@@ -149,8 +151,20 @@ function ExternalUserForm({ uid }) {
                             <div className="form-row">
                                 <div className="form-group col-12">
                                     <label>Email</label>
-                                    <Field name="email" type="text" className={'form-control' + (errors.email && touched.email ? ' is-invalid' : '')} />
+                                    <Field name="email" type="text" className={'form-control' + (errors.email && touched.email ? ' is-invalid' : '')} onClick={()=>setWar(true)}/>
                                     <ErrorMessage name="email" component="div" className="invalid-feedback" />
+
+                                    {!isAddMode && war && <div class="col-sm-12 col-md-12 mt-2">
+                                        <div class="alert alert-warning">
+                                            <AiIcons.AiOutlineWarning size={25} class="mb-1"/><button type="button" class="close" onClick={()=>setWar(false)} aria-hidden="true">
+                                                ×
+                                            </button>
+                                            <strong class="ml-2">Warning</strong>
+                                            <hr class="message-inner-separator" />
+                                            <i><p style={{fontFamily: 'roboto'}}>You are about to change a critical detail of this user.</p></i>
+                                        </div>
+                                    </div>}
+
                                 </div>
                             </div>
 

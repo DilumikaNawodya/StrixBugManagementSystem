@@ -6,10 +6,13 @@ import { Modal } from 'react-bootstrap';
 import ProjectForm from "./ProjectForm";
 import Swal from 'sweetalert2'
 import ProjectDetailCard from "./ProjectDetails";
+import Preloader from "../../Common/Preloader/Preloader";
+import Error from "../../Common/Errors/Error";
 
-function Projects(){
-    
-  const {projects} = projectService.GetProjectList();
+
+function Projects() {
+
+  const { projects, loading, message, error } = projectService.GetProjectList();
 
   const [showAddProject, setShowAddProject] = useState(false)
   const [showDeleteProject, setShowDeleteProject] = useState(false)
@@ -33,7 +36,7 @@ function Projects(){
     settempDeleteID(id)
     deleteProjectModal()
   }
-  
+
   const deleteProjectConfirm = () => {
     deleteProjectModal()
 
@@ -77,52 +80,52 @@ function Projects(){
 
   return (
     <>
-    <div class="container-fluid mt-4">
-      <MaterialTable
-        title="Projects"
-        columns={[
-          {
-            title: 'Project ID', 
-            field: 'id', 
-            render: rowData => "Project - " + rowData.id
-          },
-          { title: 'Project Name', field: 'projectname'},
-          { 
-            title: 'Project Description', 
-            field: 'description', 
-            render: rowData => <div class="overflow-auto">{rowData.description}</div>   
-          }
-        ]}
-        data={projects}        
-        options={{
-          sorting: true,
-          actionsColumnIndex: -1,
-          cellStyle: { textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', maxWidth: 100}
-        }}
-        actions={[
-          {
-            icon: () => <i class="fas fa-edit success"></i>,
-            onClick: (event, rowData) => editProjects(rowData.id)
-          },
-          {
-            icon: () => <i class="fas fa-trash-alt"></i>,
-            onClick: (event, rowData) => deleteProjects(rowData.id)
-          },
-          {
-            icon: () => <i class="fas fa-plus-square"></i>,
-            isFreeAction: true ,
-            onClick: () => addProject()
-          },
-        ]}
-        detailPanel={rowData=>{
-          return(<ProjectDetailCard data={rowData}/>)
-        }}
-      />
-    </div>
+      {!error && <div class="container-fluid mt-4">
+        <MaterialTable
+          title="Projects"
+          columns={[
+            {
+              title: 'Project ID',
+              field: 'id',
+              render: rowData => "Project - " + rowData.id
+            },
+            { title: 'Project Name', field: 'projectname' },
+            {
+              title: 'Project Description',
+              field: 'description',
+              render: rowData => <div class="overflow-auto">{rowData.description}</div>
+            }
+          ]}
+          data={projects}
+          options={{
+            sorting: true,
+            actionsColumnIndex: -1,
+            cellStyle: { textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', maxWidth: 100 }
+          }}
+          actions={[
+            {
+              icon: () => <i class="fas fa-edit success"></i>,
+              onClick: (event, rowData) => editProjects(rowData.id)
+            },
+            {
+              icon: () => <i class="fas fa-trash-alt"></i>,
+              onClick: (event, rowData) => deleteProjects(rowData.id)
+            },
+            {
+              icon: () => <i class="fas fa-plus-square"></i>,
+              isFreeAction: true,
+              onClick: () => addProject()
+            },
+          ]}
+          detailPanel={rowData => {
+            return (<ProjectDetailCard data={rowData} />)
+          }}
+        />
+      </div>}
 
       <Modal show={showAddProject}>
         <Modal.Body class="container">
-          <ProjectForm pid={0}/>
+          <ProjectForm pid={0} />
           <button type="button" className="btnContact mb-4" onClick={addProject}>Cancel</button>
         </Modal.Body>
       </Modal>
@@ -142,10 +145,26 @@ function Projects(){
 
       <Modal show={showEditProject}>
         <Modal.Body class="container">
-          <ProjectForm pid={tempEditID}/>
+          <ProjectForm pid={tempEditID} />
           <button type="button" className="btnContact mb-4" onClick={editProjectModal}>Cancel</button>
         </Modal.Body>
       </Modal>
+
+      { loading && <div>
+
+        <Preloader />
+
+      </div>}
+
+      { error && <div>
+
+        {
+          <Error message={message} />
+        }
+
+      </div>}
+
+
 
     </>
   )

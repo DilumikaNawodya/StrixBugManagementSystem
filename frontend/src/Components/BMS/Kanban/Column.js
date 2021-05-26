@@ -12,31 +12,42 @@ const Container = styled.div`
   box-shadow: 1px 1px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
+  background-color: #e0e0e0;
 `;
 
-const Title = styled.h3`
-  padding: 8px;
-  background-color: #01161e;
-  color: lightgrey;
+const Title = styled.h6`
+  padding-top: 12px;
+  padding-left: 10px;
+  color: dark;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 0px;
   border-bottom-left-radius: 0px;
-  text-align: center;
+  text-align: left;
+  font-weight: bold;
 `;
 
 const BugList = styled.div`
   padding: 8px;
   transition: background-color 0.2s ease;
-  background-color: ${(props) => (props.isDraggingOver ? "darkgrey" : "white")};
+  background-color: ${(props) => (props.isDraggingOver ? "darkgrey" : "#e0e0e0")};
   flex-grow: 1;
   min-height: 500px;
 `;
+
+export const Hruler = styled.hr`
+  margin-top: 0px;
+  margin-left: 10px;
+  margin-right: 10px;
+  border-top: 1px solid black;
+`;
+
 
 const Column = (props) => {
   return (
     <Container>
       <Title>{props.column.title}</Title>
+      <Hruler/>
       <Droppable
         droppableId={props.column.id}
         type={

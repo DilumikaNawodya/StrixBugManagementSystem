@@ -85,6 +85,8 @@ function FetchBugs(pid) {
   const [state, setState] = useState({
     bmsList: [],
     error: false,
+    loading: true,
+    message: ""
   });
 
   useEffect(() => {
@@ -99,6 +101,8 @@ function FetchBugs(pid) {
         setState({
           bmsList: [],
           error: true,
+          loading: false,
+          message: error.response.data.detail
         });
       });
   }, []);
@@ -106,30 +110,7 @@ function FetchBugs(pid) {
   return state;
 }
 
-// async function FetchOneBug(pid, tid) {
-//   const [state, setState] = useState({
-//     issue: [],
-//     error: false,
-//   });
 
-//   useEffect(() => {
-//     API.get("/ticketlist/" + tid + "/?pid=" + pid)
-//       .then(function (response) {
-//         setState({
-//           issue: response.data,
-//           error: false,
-//         });
-//       })
-//       .catch(function (error) {
-//         setState({
-//           issue: [],
-//           error: true,
-//         });
-//       });
-//   }, []);
-
-//   return state;
-// }
 async function FetchOneBug(pid, tid) {
   let issue = await API.get("/ticketlist/" + tid + "/?pid=" + pid);
   return issue.data;
@@ -185,6 +166,8 @@ function FetchBugsForBSP(pid, statusid) {
   const [state, setState] = useState({
     BSPList: [],
     error: false,
+    loading: true,
+    message: ""
   });
 
   useEffect(() => {
@@ -199,6 +182,8 @@ function FetchBugsForBSP(pid, statusid) {
         setState({
           BSPList: [],
           error: true,
+          loading: false,
+          message: error.response.data.detail
         });
       });
   }, []);
@@ -209,19 +194,12 @@ function FetchBugsForBSP(pid, statusid) {
 
 ///////////////////////////////////////YR///////////////////////
 export default async function getTickets(pid) {
-
-
-  // API.get('getTicket/')
-  //     .then(response => { arr.push(response.data) })
-  //     .catch(err=>{console.log(err)})
-  // return arr
   const response = await API.get('getTicket/?project=' + pid);
   const arrr = response.data;
   return (arrr);
 }
 
-export async function 
-createTicket(data) {
+export async function createTicket(data) {
   try {
     let a = await API.post('getTicket/', data)
     if(a.status===200){

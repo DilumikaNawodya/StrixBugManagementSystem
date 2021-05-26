@@ -20,7 +20,7 @@ import AsyncSelect from 'react-select/async';
 import {IoMdArrowDropdown} from 'react-icons/io'
 import API from '../../../../Services/Base';
 
-function FilreredData() {
+function FilreredData(props) {
 
     const [submittedData, setSubmittedData] = useState([]);
     const { handleSubmit, register, control, errors, watch } = useForm();
@@ -63,8 +63,8 @@ function FilreredData() {
     
       // load options using API call
       const loadOptions = (inputValue) => {
-        return fetch(`http://127.0.0.1:8000/Dev_Users?userId=${inputValue}`)
-        .then(res => res.json());
+        return API.get(`/Dev_Users?userId=${inputValue}`)
+        .then(res => res.data);
       };
     // set value for default selection
   
@@ -72,17 +72,21 @@ function FilreredData() {
 
     const [devT, devTstate] = useState([])
 
-    useEffect(() => {
-      const getData = async () =>{
-          const response = await fetch(
-              "http://127.0.0.1:8000/Dev_Table/"
-          );
-          const res = await response.json();
-          console.log(res)
-            devTstate(res)
+    async function getData(){
+      try{
+        const response = await API.get("/Dev_Table/");
+        const res = await response.data;
+        devTstate(res)
+        props.loading()
+      }catch(error){
+        props.loading()
+        props.error()
+        props.message(error.response.data.detail)
       }
-    
-        getData();
+    }
+
+    useEffect(() => {
+      getData();
     }, []);
     
     //===============================Filtering by date and Developer name and Project===============================
@@ -172,25 +176,25 @@ function FilreredData() {
               setHcon(0);         
       }
 
-      useEffect(() => {
-        const getData = async () =>{
-            const response = await fetch(
-                " http://127.0.0.1:8000/Dev_Users/"
-            );
-            const res = await response.json();
-            console.log(res)
-            setdevP(res)   
-        }
-          getData();
-      }, []);
+      // useEffect(() => {
+      //   const getData = async () =>{
+      //       const response = await API.get(
+      //           "/Dev_Users"
+      //       );
+      //       const res = await response.data;
+      //       console.log(res)
+      //       setdevP(res)   
+      //   }
+      //   getData();
+      // }, []);
 
 
       useEffect(() => {
         const getData = async () =>{
-            const response = await fetch(
-                "http://127.0.0.1:8000/Projects/"
+            const response = await API.get(
+                "/Projects"
             );
-            const res = await response.json();
+            const res = await response.data;
             console.log(res)
               setProject(res)    
         }

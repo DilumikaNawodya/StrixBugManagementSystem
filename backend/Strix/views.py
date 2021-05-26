@@ -6,9 +6,7 @@ import json
 from django.core import serializers
 from django.db.models import Avg
 from django.contrib.postgres.aggregates.general import ArrayAgg
-from django.contrib.auth.mixins import PermissionRequiredMixin,LoginRequiredMixin
-from .mixins import RoleRequiredMixin
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate
@@ -58,7 +56,8 @@ class Login(APIView):
                     "Token": token.key,
                     "id": user.id,
                     "Role": role[0],
-                    "Name": user.first_name + " " + user.last_name 
+                    "Name": user.first_name + " " + user.last_name,
+                    "Email": user.email 
                 },status=200)
         else:
             return Response({"msg":"You are not a registered user try again"},status=404)
@@ -152,6 +151,7 @@ class ResetPassword(APIView):
 # Internal Users
 class InternalUserList(viewsets.ModelViewSet):
     serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
 
     def get_queryset(self):
         return User.objects.filter(groups__in=[3,4,2], is_active=True)
@@ -221,6 +221,7 @@ class InternalUserList(viewsets.ModelViewSet):
 # External Users
 class ExternalUserList(viewsets.ModelViewSet):
     serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
 
     def get_queryset(self):
         return User.objects.filter(groups=5, is_active=True)
@@ -290,6 +291,8 @@ class ExternalUserList(viewsets.ModelViewSet):
 
 # Blocked Users
 class BlockedUserList(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
+
     def update(self, request, pk, *args, **kwargs):
         createdby = request.user
         if UserValidation(createdby) and UserRole(createdby) == "Admin":
@@ -303,6 +306,7 @@ class BlockedUserList(viewsets.ModelViewSet):
 # Projects
 class ProjectList(viewsets.ModelViewSet):
     serializer_class = ProjectSerializer
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
 
     def get_queryset(self):
         user = self.request.user
@@ -367,6 +371,7 @@ class ProjectList(viewsets.ModelViewSet):
 
 class AccessList(viewsets.ModelViewSet):
     serializer_class = AccessListSerializer
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
 
     def get_queryset(self):
         user = self.request.user
@@ -409,7 +414,8 @@ class AccessList(viewsets.ModelViewSet):
 
 class AllUserList(viewsets.ModelViewSet):
     serializer_class = UserSerializer
-    
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
+
     def get_queryset(self):
         user = self.request.user
         pid = self.request.query_params.get('pid')[0]
@@ -420,6 +426,7 @@ class AllUserList(viewsets.ModelViewSet):
 
 class CommentList(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
 
     def get_queryset(self):
         user = self.request.user
@@ -497,7 +504,7 @@ class CommentList(viewsets.ModelViewSet):
 
 class Filters(APIView):
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
 
     def get(self,request):
 
@@ -538,6 +545,7 @@ class Filters(APIView):
 class TicketList(viewsets.ModelViewSet):
 
     serializer_class = BMSTicketSerializer
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
     
     def get_queryset(self):
         return Ticket.objects.filter(project=self.request.query_params.get("pid"))
@@ -583,6 +591,7 @@ class TicketList(viewsets.ModelViewSet):
 
 class BSPTicketList(viewsets.ModelViewSet):
     serializer_class = BMSTicketSerializer
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
 
     def get_queryset(self):
 
@@ -617,6 +626,7 @@ class BSPTicketList(viewsets.ModelViewSet):
 
 class TicketMediaList(viewsets.ModelViewSet):
     serializer_class = MediaSerializer
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
 
     def get_queryset(self):
         return TicketMedia.objects.filter(issuename=self.request.query_params.get("tid"))
@@ -650,6 +660,7 @@ class CustomeDataList(viewsets.ModelViewSet):
 class SprintList(viewsets.ModelViewSet):
 
     serializer_class = SprintSerializer
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
 
     def get_queryset(self):
         return Sprint.objects.filter(project=self.request.query_params.get("pid"), is_deleted=False)
@@ -675,6 +686,7 @@ class SprintList(viewsets.ModelViewSet):
 
 class EndSprint(viewsets.ModelViewSet):
     serializer_class = SprintSerializer
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
 
     def update(self, request, pk, *args, **kwargs):
         Sprint.objects.filter(id=pk).update(enddate=date.today(), status=False)
@@ -682,12 +694,14 @@ class EndSprint(viewsets.ModelViewSet):
 
 class SprintData(viewsets.ModelViewSet):
     serializer_class = SprintSerializer
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
 
     def get_queryset(self):
         return Sprint.objects.filter(id=self.request.query_params.get("sid")) 
 
 class AddToSprint(viewsets.ModelViewSet):
     serializer_class= SprintSerializer
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
 
     def update(self, request, pk, *args, **kwargs):
         createdby = request.user
@@ -704,6 +718,7 @@ class AddToSprint(viewsets.ModelViewSet):
 class PinnedSpintList(viewsets.ModelViewSet):
 
     serializer_class = PinnedSprintSerialzer
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
 
     def get_queryset(self):
         createdby = self.request.user
@@ -729,6 +744,9 @@ class PinnedSpintList(viewsets.ModelViewSet):
 
 class KanbanTicketsList(viewsets.ModelViewSet):
     
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
+
+
     def get_queryset(self):
         queryset_temp = Sprint.objects.get(id=self.request.query_params.get("sid"), is_deleted=False)
         return queryset_temp.ticketlist
@@ -766,26 +784,31 @@ class KanbanTicketsList(viewsets.ModelViewSet):
 class UserViewset(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class =  UserReportSerializer 
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
 
 class DevViewSet(viewsets.ModelViewSet):
     queryset = User.objects.filter(groups=3)
     serializer_class = DevUserSerializer
-
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
+    
 class DevTicketsViewSet(viewsets.ModelViewSet):
     queryset = DeveloperTicket.objects.all()
     serializer_class = UserDevTicketSerializer
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
 
 class BugSummaryStatViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = BugSummaryStatSerializer
-
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
 
 class ViewProjectViewsets(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ViewProjectsSerializer
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
 
 class DeveloperPerformance(viewsets.ModelViewSet):
     serializer_class = DeveloperPerformanceSerializer
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
 
     def create(self, request, *args, **kwargs):
 
@@ -872,6 +895,7 @@ class DeveloperPerformance(viewsets.ModelViewSet):
 # Developer and Project  Timesheet Viewset
 class ProjectDevTimeSheet(viewsets.ModelViewSet):
     serializer_class = ProjectDevTimeSerializer
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
 
     def get_queryset(self):
         return DeveloperTicket.objects.all()
@@ -939,7 +963,8 @@ class ProjectDevTimeSheet(viewsets.ModelViewSet):
 class ProjectBugDevelopmentViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectBugDevelopmentSerializer
     queryset = Ticket.objects.all()
-   
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
+
     def create(self, request, *args, **kwargs):
         queryset_temp = Ticket.objects.all().values('project__projectname').annotate(total_bugs=Count('id'), in_progress = Count('workstate', filter=Q(workstate__id__in=[2, 3])), resolved = Count('workstate', filter=Q(workstate__id=4)),open = Count('workstate', filter=Q(workstate__id=1)))  
         return Response({"data": queryset_temp}, status=200)
@@ -948,7 +973,8 @@ class ProjectBugDevelopmentViewSet(viewsets.ModelViewSet):
 class MonthBugDevelopementViewset(viewsets.ModelViewSet):
     serializer_class =  MonthBugDevelopmentSerializer
     queryset = Ticket.objects.all()
-
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
+    
     def create(self, request, *args, **kwargs):
         queryset_temp = Ticket.objects.all().values('date__year','date__month').annotate(total_bugs = Count('id'), in_progress = Count('workstate', filter=Q(workstate__id__in=[2, 3])), resolved = Count('workstate', filter=Q(workstate__id=4)))
         return Response({"data": queryset_temp}, status=200) 
@@ -961,6 +987,7 @@ class MonthBugDevelopementViewset(viewsets.ModelViewSet):
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
 
     def get_queryset(self):
         queryset = self.queryset
@@ -973,10 +1000,12 @@ class ProjectViewSet(viewsets.ModelViewSet):
 class TicketMediaViewset(viewsets.ModelViewSet):
     queryset = TicketMedia.objects.all()
     serializer_class = MediaSerializer
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
 
 class TicketViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
 
     def get_queryset(self):  # filter by id query
         queryset = self.queryset
@@ -1026,6 +1055,7 @@ class TicketViewSet(viewsets.ModelViewSet):
 class SprintSummary(viewsets.ModelViewSet):
     queryset = Sprint.objects.all()
     serializer_class = SprintSummarySerializer
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
 
     def get_queryset(self):  # filter by id query
         queryset = self.queryset
@@ -1045,7 +1075,8 @@ class SprintSummary(viewsets.ModelViewSet):
 class BugPerMonth(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
-    
+    permission_classes = [IsAuthenticated, IsBlockorDelete]
+
     def get_queryset(self):  # filter by date
         queryset = self.queryset
         filter_value1 = self.request.query_params.get('date1', None)
