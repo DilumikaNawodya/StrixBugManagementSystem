@@ -174,7 +174,7 @@ export const ManagerReportSideBarDrop = [
   export const ManagerReportSideBar = [
    
     {
-        title: 'Home',
+        title: 'Dashboard',
         path: '/home',
         icon: <AiIcons.AiFillHome />,
         cName: "nav-text"

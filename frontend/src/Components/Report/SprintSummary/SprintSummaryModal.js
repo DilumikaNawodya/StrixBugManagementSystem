@@ -50,9 +50,9 @@ function SprintModal(props) {
             case 'High':
                 return 'warning';
             case 'Medium':
-                return 'primary'
-            case 'Low':
                 return 'success'
+            case 'Low':
+                return 'primary'
         }
     }
     function severitytype(severity) {
@@ -114,7 +114,7 @@ function SprintModal(props) {
                                     }
                                 }>
                                     <h5>Estimated hours:{props.ehours} hrs. </h5>
-                                    <h5>Actual hour:{props.hours} hrs. </h5>
+                                    <h5>Actual hour:{props.ahours} hrs. </h5>
 
                                 </Col>
 

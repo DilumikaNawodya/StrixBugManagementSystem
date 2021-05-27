@@ -63,6 +63,7 @@ function MonthlyBugSummary() {
     for (var i = 0; i < buglist.length; i++) {
       if (buglist[i].id === e) {
         render(<Issuecard
+          id={buglist[i].id}
           name={buglist[i].issuename}
           priority={buglist[i].priority}
           type={buglist[i].bugtype}
@@ -109,9 +110,9 @@ function MonthlyBugSummary() {
       case 'High':
         return 'warning';
       case 'Medium':
-        return 'primary'
-      case 'Low':
         return 'success'
+      case 'Low':
+        return 'primary'
     }
   }
   function severitytype(severity) {
@@ -122,9 +123,9 @@ function MonthlyBugSummary() {
       case 'High':
         return 'warning';
       case 'Medium':
-        return 'primary'
-      case 'Low':
         return 'success'
+      case 'Low':
+        return 'primary'
     }
   }
 

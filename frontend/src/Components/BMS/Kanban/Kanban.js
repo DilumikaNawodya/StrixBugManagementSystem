@@ -25,16 +25,27 @@ const Kanban = () => {
     userRole = authenticationService.userRole;
   }
 
+  const [endBtnState, setEndBtnState] = useState({
+    ct: 0
+  })
+
   const initialData = SetKanbanData(sid);
   const [state, setState] = useState(initialData);
+
   const { sprintdata, loading, error, message } = sprintService.GetSprintData(sid)
   const [dropDetails, setDropDetails] = useState({
     destid: "",
     tid: "",
   });
 
+
   useEffect(() => {
     setState(initialData);
+    setEndBtnState({
+      ct: endBtnState.ct + 
+      initialData.columns["column-2"].taskIds.length +
+      initialData.columns["column-3"].taskIds.length 
+    })
   }, [initialData]);
 
   function SetDrop() {
@@ -48,6 +59,7 @@ const Kanban = () => {
   function onDragEnd(result) {
     const { destination, source, draggableId } = result;
 
+
     if (!destination) {
       return;
     }
@@ -58,10 +70,25 @@ const Kanban = () => {
         tid: draggableId,
       });
     } else {
+      if((source.droppableId === "column-2" || source.droppableId === "column-3") &&
+        (destination.droppableId === "column-2" || destination.droppableId === "column-3")){
+      }
+      else if((source.droppableId === "column-1" || source.droppableId === "column-4") &&
+        (destination.droppableId === "column-2" || destination.droppableId === "column-3")){
+          setEndBtnState({
+            ct: endBtnState.ct + 1
+          })
+      }
+      else if((destination.droppableId === "column-1" || destination.droppableId === "column-4") &&
+        (source.droppableId === "column-2" || source.droppableId === "column-3")){
+          setEndBtnState({
+            ct: endBtnState.ct - 1
+          })
+      }
       sprintService.UpdateWorkstate({
         destid: destination.droppableId,
         tid: draggableId,
-      });
+      })
     }
 
     if (
@@ -143,7 +170,7 @@ const Kanban = () => {
                   </div>
                   {userRole === "Manager" && (
                     <div className="col">
-                      <button
+                      {!endBtnState.ct && <button
                         class="btn btn-sm btn-dark float-right mt-2"
                         onClick={() =>
                           Swal.fire({
@@ -184,7 +211,7 @@ const Kanban = () => {
                         }
                       >
                         End Sprint
-                      </button>
+                      </button>}
                     </div>
                   )}
                 </div>

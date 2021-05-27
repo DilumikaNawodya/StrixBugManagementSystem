@@ -24,9 +24,9 @@ function bagetype(priority) {
     case 'High':
       return 'warning';
     case 'Medium':
-      return 'primary'
-    case 'Low':
       return 'success'
+    case 'Low':
+      return 'primary'
   }
 }
 function severitytype(severity) {
@@ -37,9 +37,9 @@ function severitytype(severity) {
     case 'High':
       return 'warning';
     case 'Medium':
-      return 'primary'
-    case 'Low':
       return 'success'
+    case 'Low':
+      return 'primary'
   }
 }
 

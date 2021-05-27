@@ -45,6 +45,7 @@ function IssueBacklogBMS() {
 
   let ticketlist = [];
   const { sprints } = sprintService.GetSprintList(pid);
+
   for (var i = 0; i < sprints.length; i++) {
     ticketlist = ticketlist.concat(sprints[i].ticketlist);
   }
@@ -78,6 +79,7 @@ function IssueBacklogBMS() {
         <Badge variant={row.Severity.color}> {row.Severity.severity} </Badge>
       ),
       lookup: filters.severity,
+      customSort: (a, b) => a.Severity.level - b.Severity.level
     },
     {
       title: "Priority",
@@ -87,6 +89,7 @@ function IssueBacklogBMS() {
         <Badge variant={row.Priority.color}> {row.Priority.priority}</Badge>
       ),
       lookup: filters.priority,
+      customSort: (a, b) => a.Priority.level - b.Priority.level
     },
     {
       title: "Date",
@@ -125,7 +128,7 @@ function IssueBacklogBMS() {
                 setisAddToSprintOpen(true);
                 setTicketData(rowData);
               },
-              disabled: ticketlist.some((sprint) => sprint == rowData.id),
+              disabled: ticketlist.some((sprint) => sprint == rowData.id && rowData.Workstate.id != "1"),
             }),
             {
               icon: () => <IoIcons.IoIosOpen />,

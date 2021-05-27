@@ -25,6 +25,9 @@ const Container = styled.div`
 `;
 
 const Bug = (props) => {
+
+  console.log(props)
+
   var userRole = "Block";
   if (authenticationService.currentUserValue != null) {
     userRole = authenticationService.userRole;
@@ -85,11 +88,11 @@ const Bug = (props) => {
               <Badge
                 pill
                 variant={
-                  props.task.priority === "Low"
+                  props.task.severity === "Low"
                     ? "primary"
-                    : props.task.priority === "Medium"
+                    : props.task.severity === "Medium"
                     ? "success"
-                    : props.task.priority === "High"
+                    : props.task.severity === "High"
                     ? "warning"
                     : "danger"
                 }
