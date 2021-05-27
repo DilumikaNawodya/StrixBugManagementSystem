@@ -1,8 +1,8 @@
 import React from 'react'
+import API from '../Base'
 
 function DevPerformance() {
-    return fetch('http://127.0.0.1:8000/DeveloperPerformance/')
-    .then(data => data.json())
+    return API.get('/DeveloperPerformance/')
 }
 
 export default DevPerformance

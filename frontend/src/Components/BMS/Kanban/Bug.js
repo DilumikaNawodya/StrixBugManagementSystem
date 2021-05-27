@@ -10,11 +10,12 @@ import { authenticationService } from "../../../Services/LoginService";
 
 const Container = styled.div`
   border: 1px solid lightgrey;
-  border-radius: 2px;
+  border-radius: 10px;
   padding: 8px;
-  min-height: 75px;
+  min-height: 50px;
   margin-bottom: 8px;
-  box-shadow: 1px 1px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  box-shadow: 2px 2px rgba(0, 0, 0, 0.1);
   background-color: ${(props) =>
     props.isDragDisabled
       ? "lightgrey"

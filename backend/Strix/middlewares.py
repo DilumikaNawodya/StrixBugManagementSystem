@@ -37,3 +37,18 @@ def CommentExists(cid):
 
 def UserRole(user):
     return(user.groups.values_list('name',flat=True)[0])
+
+
+# Custom permissions
+
+from rest_framework.permissions import BasePermission
+
+class IsBlockorDelete(BasePermission):
+
+    message = "You have been blocked or deleted by the system!"
+    def has_permission(self, request, view):
+        if request.user.is_blocked == False and request.user.is_active == True:
+            return True
+        else:
+            return False
+

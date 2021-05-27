@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
 import { projectService } from '../../../Services/ProjectService';
+import Error from '../../Common/Errors/Error';
 import Preloader from '../../Common/Preloader/Preloader';
 import  './BCLHome.scss'
 
@@ -43,7 +44,7 @@ function BCLHome(props){
 
                 { state.error && <div>
 
-                    {history.push('/error')}
+                    <Error message={state.message} />
 
                 </div>}
 

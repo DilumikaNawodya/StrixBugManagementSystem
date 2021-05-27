@@ -26,6 +26,7 @@ function GetSprintList(pid) {
     sprints: [],
     loading: true,
     error: false,
+    message: ""
   });
   useEffect(() => {
     API.get("/sprintlist/?pid=" + pid)
@@ -41,6 +42,7 @@ function GetSprintList(pid) {
           sprints: [],
           loading: false,
           error: true,
+          message: error.response.data.detail
         });
       });
   }, []);
@@ -65,17 +67,24 @@ function EndSprint(sid) {
 function GetSprintData(sid) {
   const [state, setState] = useState({
     sprintdata: [],
+    loading: true,
+    error: false,
+    message: ""
   });
   useEffect(() => {
     API.get("/sprintdata/?sid=" + sid)
       .then(function (response) {
         setState({
           sprintdata: response.data,
+          loading: false
         });
       })
       .catch(function (error) {
         setState({
           sprints: [],
+          error: true,
+          loading: false,
+          message: error.response.data.detail
         });
       });
   }, []);

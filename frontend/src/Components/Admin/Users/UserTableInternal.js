@@ -6,11 +6,14 @@ import { Modal } from 'react-bootstrap';
 import Swal from 'sweetalert2'
 import InternalUserForm from "./InternalUserForm";
 import UserDetailcard from "./UserDetailCard";
+import Preloader from "../../Common/Preloader/Preloader";
+import Error from "../../Common/Errors/Error";
 
 
-function UserTableInternal(){
 
-  const { internalusers } = userService.GetInternalUserList()
+function UserTableInternal() {
+
+  const { internalusers, loading, error, message } = userService.GetInternalUserList()
 
   const [showAddUser, setShowAddUser] = useState(false)
   const [showDeleteUser, setShowDeleteUser] = useState(false)
@@ -34,7 +37,7 @@ function UserTableInternal(){
     settempDeleteID(id)
     deleteUserModal()
   }
-  
+
   const deleteUserConfirm = () => {
     deleteUserModal()
 
@@ -76,7 +79,7 @@ function UserTableInternal(){
 
   return (
     <>
-      <div class="container-fluid mt-4">
+      {!error && <div class="container-fluid mt-4">
         <MaterialTable
           title="Internal Users"
           columns={[
@@ -109,20 +112,20 @@ function UserTableInternal(){
             },
             {
               icon: () => <i class="fas fa-plus-square"></i>,
-              isFreeAction: true ,
+              isFreeAction: true,
               onClick: (event, rowData) => addInternalUser()
             },
           ]}
-          detailPanel={rowData=>{
-            return(<UserDetailcard data={rowData}/>)
+          detailPanel={rowData => {
+            return (<UserDetailcard data={rowData} />)
           }}
         />
-      </div>
+      </div>}
 
 
       <Modal show={showAddUser}>
         <Modal.Body class="container">
-          <InternalUserForm uid={0}/>
+          <InternalUserForm uid={0} />
           <button type="button" className="btnContact mb-4" onClick={addInternalUser}>Cancel</button>
         </Modal.Body>
       </Modal>
@@ -142,12 +145,24 @@ function UserTableInternal(){
 
       <Modal show={showEditUser}>
         <Modal.Body class="container">
-          <InternalUserForm uid={tempEditID}/>
+          <InternalUserForm uid={tempEditID} />
           <button type="button" className="btnContact mb-4" onClick={editUserModal}>Cancel</button>
         </Modal.Body>
       </Modal>
 
+      { loading && <div>
 
+        <Preloader />
+
+      </div>}
+
+      { error && <div>
+
+        {
+          <Error message={message} />
+        }
+
+      </div>}
     </>
   )
 

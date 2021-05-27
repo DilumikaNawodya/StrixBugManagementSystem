@@ -22,7 +22,9 @@ export const userService = {
 function GetExternalUserList(){
     const [state, setState] = useState({
         externalusers:[],
-        error:false
+        error:false,
+        loading: true,
+        message: ""
     })
 
     useEffect(()=>{
@@ -30,13 +32,17 @@ function GetExternalUserList(){
             .then(function (response) {
                 setState({
                     externalusers: response.data,
-                    error:false
+                    error:false,
+                    loading: false,
+                    message: ""
                 })
             })
             .catch(function (error) {
                 setState({
                     externalusers:[],
-                    error:true
+                    error:true,
+                    loading: true,
+                    message: error.response.data.detail
                 })
             })
     },[])
@@ -81,7 +87,9 @@ function UpdateExternalUser(uid, fields){
 function GetInternalUserList(){
     const [state, setState] = useState({
         internalusers:[],
-        error:false
+        error:false,
+        loading: true,
+        message: ""
     })
 
     useEffect(()=>{
@@ -89,13 +97,17 @@ function GetInternalUserList(){
             .then(function (response) {
                 setState({
                     internalusers: response.data,
-                    error:false
+                    error:false,
+                    loading: false,
+                    message: ""
                 })
             })
             .catch(function (error) {
                 setState({
                     internalusers:[],
-                    error:true
+                    error:true,
+                    loading: true,
+                    message: error.response.data.detail
                 })
             })
     },[])

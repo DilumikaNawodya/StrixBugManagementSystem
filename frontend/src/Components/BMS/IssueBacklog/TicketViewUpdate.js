@@ -21,84 +21,120 @@ function TicketView(props) {
   };
 
   function onSubmitTotalEffort(id) {
-    ticketService
-      .UpdateByManager(totalEffort, id)
-      .then(function (response) {
-        Swal.fire({
-          position: "middle",
-          icon: "success",
-          title: response.data.data,
-          showConfirmButton: true,
-          timer: 5000,
-        }).then(function () {
-          window.location.reload(true);
-        });
-      })
-      .catch(function (error) {
-        Swal.fire({
-          position: "middle",
-          icon: "warning",
-          title: error.response.data.data,
-          showConfirmButton: true,
-          timer: 5000,
-        }).then(function () {
-          window.location.reload(true);
-        });
-      });
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You are about to change a critical detail",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        ticketService
+          .UpdateByManager(totalEffort, id)
+          .then(function (response) {
+            Swal.fire({
+              position: "middle",
+              icon: "success",
+              title: response.data.data,
+              showConfirmButton: true,
+              timer: 5000,
+            }).then(function () {
+              window.location.reload(true);
+            });
+          })
+          .catch(function (error) {
+            Swal.fire({
+              position: "middle",
+              icon: "warning",
+              title: error.response.data.data,
+              showConfirmButton: true,
+              timer: 5000,
+            }).then(function () {
+              window.location.reload(true);
+            });
+          });
+      }
+    })
   }
 
   function onSubmitDailyEffort(id) {
-    ticketService
-      .UpdateByDev(dailyEffort, id)
-      .then(function (response) {
-        Swal.fire({
-          position: "middle",
-          icon: "success",
-          title: response.data.data,
-          showConfirmButton: true,
-          timer: 5000,
-        }).then(function () {
-          window.location.reload(true);
-        });
-      })
-      .catch(function (error) {
-        Swal.fire({
-          position: "middle",
-          icon: "warning",
-          title: error.response.data.data,
-          showConfirmButton: true,
-          timer: 5000,
-        }).then(function () {
-          window.location.reload(true);
-        });
-      });
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You are about to change a critical detail",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        ticketService
+          .UpdateByDev(dailyEffort, id)
+          .then(function (response) {
+            Swal.fire({
+              position: "middle",
+              icon: "success",
+              title: response.data.data,
+              showConfirmButton: true,
+              timer: 5000,
+            }).then(function () {
+              window.location.reload(true);
+            });
+          })
+          .catch(function (error) {
+            Swal.fire({
+              position: "middle",
+              icon: "warning",
+              title: error.response.data.data,
+              showConfirmButton: true,
+              timer: 5000,
+            }).then(function () {
+              window.location.reload(true);
+            });
+          });
+      }
+    })
   }
 
   function onSubmit(fields) {
-    ticketService
-      .UpdateByQA(fields, props.data.id)
-      .then(function (response) {
-        Swal.fire({
-          position: "middle",
-          icon: "success",
-          title: response.data.data,
-          showConfirmButton: true,
-          timer: 5000,
-        }).then(function () {
-          window.location.reload(true);
-        });
-      })
-      .catch(function (error) {
-        Swal.fire({
-          position: "middle",
-          icon: "warning",
-          title: error.response.data.data,
-          showConfirmButton: true,
-          timer: 5000,
-        }).then(function () {
-          window.location.reload(true);
-        });
-      });
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You are about to change a critical detail",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        ticketService
+          .UpdateByQA(fields, props.data.id)
+          .then(function (response) {
+            Swal.fire({
+              position: "middle",
+              icon: "success",
+              title: response.data.data,
+              showConfirmButton: true,
+              timer: 5000,
+            }).then(function () {
+              window.location.reload(true);
+            });
+          })
+          .catch(function (error) {
+            Swal.fire({
+              position: "middle",
+              icon: "warning",
+              title: error.response.data.data,
+              showConfirmButton: true,
+              timer: 5000,
+            }).then(function () {
+              window.location.reload(true);
+            });
+          });
+      }
+    })
   }
 
   return (

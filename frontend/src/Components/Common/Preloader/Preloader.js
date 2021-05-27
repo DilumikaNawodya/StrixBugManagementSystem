@@ -1,20 +1,31 @@
 import React from 'react';
 import './Preloader.scss'
 
-function Preloader(){
-    return(
-        <div id="container">
-            <div class="divider" aria-hidden="true"></div>
-            <p class="loading-text" aria-label="Loading">
-                <span class="letter" aria-hidden="true">L</span>
-                <span class="letter" aria-hidden="true">o</span>
-                <span class="letter" aria-hidden="true">a</span>
-                <span class="letter" aria-hidden="true">d</span>
-                <span class="letter" aria-hidden="true">i</span>
-                <span class="letter" aria-hidden="true">n</span>
-                <span class="letter" aria-hidden="true">g</span>
-            </p>
+function Preloader() {
+    return (
+        <>
+        <div class="container-pre">
+            <div class="coast">
+                <div class="wave-rel-wrap">
+                    <div class="wave"></div>
+                </div>
+            </div>
+            <div class="coast delay">
+                <div class="wave-rel-wrap">
+                    <div class="wave delay"></div>
+                </div>
+            </div>
+            <div class="text text-w">S</div>
+            <div class="text text-a">T</div>
+            <div class="text text-v">R</div>
+            <div class="text text-e">I</div>
+            <div class="text text-s">X</div>
+
+            
+
         </div>
+        <div style={{backgroundColor: 'rgba(0,0,0,0.8)', zIndex: '10', position: 'absolute', height: '100%', overflow: 'hidden', width: '100%', top: '-10px', right: '0px'}}></div>
+        </>
     )
 }
 

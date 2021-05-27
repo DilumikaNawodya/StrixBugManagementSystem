@@ -150,7 +150,7 @@ DATABASES = {
 #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
 #         'NAME': 'Strix_DB',
 #         'USER': 'postgres',
-#         'PASSWORD': '*****',
+#         'PASSWORD': '***',
 #         'HOST': 'localhost',
 #         'PORT': '5432',
 #     }

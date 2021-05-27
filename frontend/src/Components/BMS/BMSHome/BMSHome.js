@@ -2,6 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { projectService } from '../../../Services/ProjectService';
 import { sprintService } from '../../../Services/SprintService';
+import Error from '../../Common/Errors/Error';
 import Preloader from '../../Common/Preloader/Preloader';
 
 
@@ -48,7 +49,9 @@ function BMSHome(props){
 
             { state.error && <div>
 
-                {history.push('/error')}
+                {
+                    <Error message={state.message}/>
+                }
 
             </div>}
 

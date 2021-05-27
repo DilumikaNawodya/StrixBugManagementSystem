@@ -6,6 +6,8 @@ import Badge from "react-bootstrap/Badge";
 import { Fragment } from "react";
 import * as AiIcons from "react-icons/ai";
 import MaterialTable from "material-table";
+import Preloader from "../../Common/Preloader/Preloader";
+import Error from "../../Common/Errors/Error";
 
 function SprintBacklog() {
 
@@ -21,15 +23,15 @@ function SprintBacklog() {
       })
   }, [])
 
-  const { sprints } = sprintService.GetSprintList(pid)
+  const { sprints, loading, error, message } = sprintService.GetSprintList(pid)
   const pinnedSprints = JSON.parse(sprintService.getPinnedSprints())
 
   const launchKanban = (sid) => {
-    history.push("/kanbanboard/"+sid)
+    history.push("/kanbanboard/" + sid)
   }
 
 
-  function handlePin(id){
+  function handlePin(id) {
     sprintService.ChangePin(id)
   }
 
@@ -59,7 +61,7 @@ function SprintBacklog() {
 
   return (
     <Fragment>
-      <div class="mt-4 mr-4 ml-4 mb-4">
+      {!error && <div class="mt-4 mr-4 ml-4 mb-4">
         <MaterialTable
           title={projectName}
           data={sprints}
@@ -73,7 +75,7 @@ function SprintBacklog() {
           actions={[
             (rowData) => (
               {
-                icon: () => pinnedSprints.some(sprint => sprint.sprint_id == rowData.id) ? <AiIcons.AiFillPushpin/> : <AiIcons.AiOutlinePushpin/>,
+                icon: () => pinnedSprints.some(sprint => sprint.sprint_id == rowData.id) ? <AiIcons.AiFillPushpin /> : <AiIcons.AiOutlinePushpin />,
                 onClick: (event) => handlePin(rowData.id),
                 disabled: rowData.status == false,
               }
@@ -86,7 +88,20 @@ function SprintBacklog() {
             )
           ]}
         />
-      </div>
+      </div>}
+      { loading && <div>
+
+        <Preloader />
+
+      </div>}
+
+      { error && <div>
+
+        {
+          <Error message={message} />
+        }
+
+      </div>}
     </Fragment>
   );
 }

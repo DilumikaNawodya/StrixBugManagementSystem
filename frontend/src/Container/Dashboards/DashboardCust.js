@@ -14,7 +14,7 @@ function DashboardCus() {
           <CommonLayout page={<BCLHome/>} SidebarItem={[]} SidebarItemDrop={[]}/>
         </Route>
         <Route exact path={'/issuebacklogbcl'}>
-          <CommonLayout page={<IssueBacklogBCL/>} SidebarItem={[]} SidebarItemDrop={[]}/>
+          <CommonLayout page={<IssueBacklogBCL/>} SidebarItem={SidebarItem} SidebarItemDrop={[]}/>
         </Route>
     </Switch>
   )
