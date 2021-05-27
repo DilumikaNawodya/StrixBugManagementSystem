@@ -224,11 +224,6 @@ function TicketView(props) {
               {props.data.date}
             </div>
           </div>
-          <div class="row container">
-            <div class="col  p-0 text-left">
-              <b class="mr-2">Updated:</b>2021-03-16
-            </div>
-          </div>
 
           <div class="row container">
             <b class="mr-2">Description:</b> {props.data.issuedescription}
@@ -361,13 +356,13 @@ function TicketView(props) {
           {ticketMedia.map((item, index) => {
             return (
               <div class="d-flex flex-row comment-row">
-                <video src={item.files} width="100%" height="auto" />
+                <img src={item.files} width="100%" height="auto" />
               </div>
             );
           })}
 
           <a
-            class="btn btn-light mr-2 pull-right"
+            class="btn btn-dark mr-2 mt-2 pull-right text-white"
             onClick={() => {
               setMediaModal(false);
             }}

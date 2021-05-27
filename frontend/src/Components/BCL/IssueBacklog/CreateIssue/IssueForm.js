@@ -143,11 +143,11 @@ function IsseForm(props) {
     }
 
     // const prioritylist = ['low', 'medium', 'high', 'urgent'];
-    const prioritylist=[{priority:"Low",id:4},{priority:"Medium",id:3},{priority:"High",id:2},{priority:"Urgent",id:1},]
+    const prioritylist=[{priority:"Urgent",id:1},{priority:"High",id:2},{priority:"Medium",id:3}, {priority:"Low",id:4}]
     // const typelist = ['Functional', 'Performance', 'Usability', 'Compatibility', 'Security'];
     const typelist=[{type:"Functional",id:1},{type:"Performance",id:2},{type:"Usability",id:3},{type:"Compatibility",id:4},{type:"Security",id:5},]
     // const severitylist = ['critical', 'high', 'medium', 'low']
-    const severitylist = [{severity:"critical",id:1},{severity:"high",id:2},{severity:"medium",id:3},{severity:"low",id:4},]
+    const severitylist = [{severity:"Critical",id:1},{severity:"High",id:2},{severity:"Medium",id:3},{severity:"Low",id:4},]
 
     return (
         <div>

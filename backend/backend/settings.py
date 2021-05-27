@@ -116,12 +116,12 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 
 # DATABASES = {
 #     'default': {
@@ -145,14 +145,32 @@ DATABASES = {
 #     }
 # }
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'Strix_DB',
+        'USER': 'postgres',
+        'PASSWORD': 'strix_db',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+
+
+# Azure Database
+
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'Strix_DB',
-#         'USER': 'postgres',
-#         'PASSWORD': '***',
-#         'HOST': 'localhost',
+#         'ENGINE': 'sql_server.pyodbc',
+#         'NAME': 'strix',
+#         'USER': 'dilumika@strix',
+#         'PASSWORD': 'H@rdwe11',
+#         'Trusted_Connection':'No', 
+#         'HOST': 'strix.postgres.database.azure.com',
 #         'PORT': '5432',
+#         # 'OPTIONS': {
+#         #    'dsn': 'strix',
+#         # },
 #     }
 # }
 

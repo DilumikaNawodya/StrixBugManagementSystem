@@ -179,7 +179,6 @@ function InternalUserForm({ uid }) {
                                         <option value="Manager">Manager</option>
                                         <option value="QA">QA</option>
                                         <option value="Developer">Developer</option>
-                                        <option value="Block">Block</option>
                                     </Field>
                                     <ErrorMessage name="role" component="div" className="invalid-feedback" />
                                 </div>

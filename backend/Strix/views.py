@@ -1057,19 +1057,19 @@ class SprintSummary(viewsets.ModelViewSet):
     serializer_class = SprintSummarySerializer
     permission_classes = [IsAuthenticated, IsBlockorDelete]
 
-    def get_queryset(self):  # filter by id query
-        queryset = self.queryset
-        filter_value = self.request.query_params.get('id', None)
-        if filter_value is not None:
-            queryset = queryset.filter(id=filter_value)
-        return queryset
+    # def get_queryset(self):  # filter by id query
+    #     queryset = self.queryset
+    #     filter_value = self.request.query_params.get('id', None)
+    #     if filter_value is not None:
+    #         queryset = queryset.filter(id=filter_value)
+    #     return queryset
 
-    def get_queryset(self):  # filter by id query
-        queryset = self.queryset
-        filter_value = self.request.query_params.get('project', None)
-        if filter_value is not None:
-            queryset = queryset.filter(project=filter_value)
-        return queryset
+    # def get_queryset(self):  # filter by id query
+    #     queryset = self.queryset
+    #     filter_value = self.request.query_params.get('project', None)
+    #     if filter_value is not None:
+    #         queryset = queryset.filter(project=filter_value)
+    #     return queryset
 
 
 class BugPerMonth(viewsets.ModelViewSet):
